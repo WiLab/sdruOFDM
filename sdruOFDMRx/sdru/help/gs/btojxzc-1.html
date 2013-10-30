@@ -1,0 +1,44 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>Did not receive expected number of samples in burst reception :: Troubleshooting Communications System Toolbox Support Package for USRP&reg; Radio (Getting Started)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="gs">
+<meta name="description" content="You may get an error message similar to the following while using burst mode:" />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btojxzc-1"></a><h2 class="title" id="btojxzc-1">Did not receive expected number of samples in burst reception</h2><a name="btokf0v"></a><h3 class="title" id="btokf0v">Problem</h3><p>You may get an error message similar to the following while
+using burst mode:</p><pre class="programlisting">Could not execute UHD driver command in 'receiveData_c': 
+libmwusrp_uhd_capi:receiveData:ErrWrongRecvSize 
+Did not receive expected number of samples in a burst reception. 
+This is likely due to overflow within the burst. 
+Use 'sysctl' to update the OS socket buffer size.
+Expected: 2752000
+Found : 94120
+</pre><p>This error occurs when the MATLAB&reg; or Simulink&reg; software
+does not receive the requested number of samples from the USRP&reg; radio.</p><a name="btokf1b-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btokf1b-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btokf1b-1">Possible Solutions</h3><p>The following are known causes of this problem:</p><ul type="disc"><li><p>On Linux<sup>&reg;</sup> systems, the OS socket buffer size may
+not be large enough for proper communication. Increase the socket
+size as described in the Ettus Research<sup>TM</sup> <a href="http://files.ettus.com/uhd_docs/manual/html/transport.html#windows-specific-notes" target="_top">UHD
+- Transport Application Notes</a>.</p></li><li><p>The Ethernet card is not able to provide high speed
+communication. You may want to try Intel chipsets, which can
+provide high quality connection in such cases.</p></li><li><p>The firewall or virus protection program on your system
+may be blocking or slowing down your connection. Turning off the firewall
+or virus program may eliminate this problem. Note that turning off
+your firewall may expose your host computer to unauthorized access
+through the Internet.</p></li><li><p>Some laptops may lose their Ethernet settings when
+the Ethernet connection is interrupted, for example when power cycling
+the USRP&reg; device. Check the Ethernet connection settings as
+described in <a href="btpn6dm.html#btoddx5-3">Configure Host Computer</a>.</p></li></ul>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btojxzc.html"><img src="b_prev.gif" border="0" align="bottom" alt="Troubleshooting"></a>&nbsp;</td><td align="left">Troubleshooting</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.</p>
+  <!-- Last updated: Wed Oct  3 10:45:06 EDT 2012--></body></html>

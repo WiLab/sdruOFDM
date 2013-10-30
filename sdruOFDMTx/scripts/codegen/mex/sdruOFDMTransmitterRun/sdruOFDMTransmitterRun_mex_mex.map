@@ -1,0 +1,10 @@
+MEX {
+	global:
+		mexFunction;
+		emlrtMexFcnProperties;
+		sdruOFDMTransmitterRun;
+		sdruOFDMTransmitterRun_initialize;
+		sdruOFDMTransmitterRun_terminate;
+	local:
+		*;
+};

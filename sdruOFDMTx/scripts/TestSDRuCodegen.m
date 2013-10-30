@@ -1,0 +1,16 @@
+function [ x ] = TestSDRuCodegen
+
+persistent hSDRu
+x=1;
+hSDRu = comm.SDRuReceiver( '192.168.10.2', ...
+    'CenterFrequency',      2.2e9 + 1000, ...
+    'DecimationFactor',     10,...
+    'FrameLength',          120,...
+    'OutputDataType',       'double',...
+    'Gain',                 18);
+
+
+release(hSDRu);
+
+end
+

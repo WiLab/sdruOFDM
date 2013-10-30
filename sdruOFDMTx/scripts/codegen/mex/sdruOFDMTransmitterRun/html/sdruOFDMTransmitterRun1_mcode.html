@@ -1,0 +1,17 @@
+<pre class="code">
+<span class="srcline"><span class="lineno"><a href="1,1" id="srcline1"> 1</a></span><span class="line"><span class="keyword">function</span> <span class="message error" id="M1F1C">sdruOFDMTransmitterRun</span>(<span class="var type1" id="S2T1U5">InterpolationFactor</span>, <span class="var type1" id="S3T93U6">txOrg</span>)</span></span>
+<span class="srcline"><span class="lineno"><a href="1,2" id="srcline2"> 2</a></span><span class="line"><span class="comment">% Setup transmitter</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,3" id="srcline3"> 3</a></span><span class="line"><span class="mxinfo" id="T92:U3"><span class="var type1" id="S4T92U9">hSDRu</span> = <span class="mxinfo" id="T92:U5">comm.<span class="fcn" id="F102N5:B13">SDRuTransmitter</span>(<span class="string">'192.168.10.2'</span>, <span class="keyword">...</span></span></span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,4" id="srcline4"> 4</a></span><span class="line"><span class="mxinfo" id="T92:U3"><span class="mxinfo" id="T92:U5">    <span class="string">'CenterFrequency'</span>,      2.2e9, <span class="keyword">...</span></span></span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,5" id="srcline5"> 5</a></span><span class="line"><span class="mxinfo" id="T92:U3"><span class="mxinfo" id="T92:U5">    <span class="string">'InterpolationFactor'</span>,  <span class="var type1" id="S2T1U18">InterpolationFactor</span>,<span class="keyword">...</span></span></span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,6" id="srcline6"> 6</a></span><span class="line"><span class="mxinfo" id="T92:U3"><span class="mxinfo" id="T92:U5">    <span class="string">'Gain'</span>,                 25)</span></span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="1,7" id="srcline7"> 7</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="1,8" id="srcline8"> 8</a></span><span class="line"><span class="comment">% Run transmitter</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,9" id="srcline9"> 9</a></span><span class="line"><span class="mxinfo" id="T15:U7"><span class="autoExtrinsicFcn" id="F245N20:B23">disp</span>(<span class="mxinfo" id="T170:U8"><span class="string">'Transmitting<span class="keyword">...</span> pew! pew!'</span></span>)</span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="1,10" id="srcline10">10</a></span><span class="line"><span class="keyword">for</span> <span class="var type1" id="S7T1U27">framesTransmitted</span> = <span class="mxinfo" id="T1:U10">1</span>:1e8</span></span>
+<span class="srcline"><span class="lineno"><a href="1,11" id="srcline11">11</a></span><span class="line">    <span class="comment">% Send data to USRP</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,12" id="srcline12">12</a></span><span class="line">    step(<span class="var type1" id="S4T92U34">hSDRu</span>, <span class="var type1" id="S3T93U35">txOrg</span>);</span></span>
+<span class="srcline"><span class="lineno"><a href="1,13" id="srcline13">13</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,14" id="srcline14">14</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="1,15" id="srcline15">15</a></span><span class="line">release(<span class="var type1" id="S4T92U39">hSDRu</span>);</span></span>
+</pre>

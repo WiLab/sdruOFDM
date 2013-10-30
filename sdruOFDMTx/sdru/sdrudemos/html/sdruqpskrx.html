@@ -1,0 +1,305 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>QPSK Receiver with USRP&reg; Hardware</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-19"><meta name="DC.source" content="sdruqpskrx.m"><link rel="stylesheet" type="text/css" href="./style.css"></head><body><div class="header"><div class="left">sdruqpskrx.mdl</div><div class="right"><a href="matlab:sdruqpskrx">Open this model</a></div></div><div class="content"><h1>QPSK Receiver with USRP&reg; Hardware</h1><!--introduction--><p>This model shows how to use the Universal Software Radio Peripheral&reg; (USRP&reg;) device with Simulink&reg; to implement a QPSK receiver. The receiver addresses practical issues in wireless communications, e.g. carrier frequency and phase offset, timing offset and frame synchronization. This model receives the signal sent by the <a href="matlab:showdemo('sdruqpsktx')">QPSK Transmitter with USRP&reg; Hardware</a> model. The receiver demodulates the received symbols and outputs a simple message to the MATLAB&reg; command line.</p><p>In order to run this model, you need to ensure that the specified center frequency of the SDRu Receiver is within the acceptable range of your USRP&reg; daughter board. Please refer to <a href="../../help/index.html">Getting Started</a> for details on configuring your host computer to work with the SDRu Receiver block.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Overview</a></li><li><a href="#2">Structure of the Example</a></li><li><a href="#6">Receiver</a></li><li><a href="#7">Raised Cosine Receive Filter</a></li><li><a href="#8">AGC</a></li><li><a href="#9">Coarse Frequency Compensation</a></li><li><a href="#10">Fine Frequency Compensation</a></li><li><a href="#11">Timing Recovery</a></li><li><a href="#13">Data Decoding</a></li><li><a href="#14">Running the Example</a></li><li><a href="#15">Exploring the Example</a></li><li><a href="#16">References</a></li><li><a href="#17">Copyright Notice</a></li></ul></div><h2>Overview<a name="1"></a></h2><p>This model performs all processing at complex baseband to handle a time-varying frequency offset, a time-varying symbol delay, and Gaussian noise. To cope with the above-mentioned impairments, this example provides a reference design of a practical digital receiver, which includes FFT-based coarse frequency compensation, PLL-based fine frequency compensation, timing recovery with fixed-rate resampling and bit stuffing/skipping, frame synchronization, and phase ambiguity resolution. The example implements some key algorithms in MATLAB, emphasizing textual algorithm expression over graphical algorithm expression. For example, the model uses MATLAB to implement some key processing in the PLL for fine frequency compensation and timing recovery, and some data extraction/control functionalities.</p><h2>Structure of the Example<a name="2"></a></h2><p>The top-level structure of the model is shown in the following figure.</p><img vspace="5" hspace="5" src="sdruqpskrx_01.png" alt=""> <p>The detailed structures of the <b>QPSK Receiver</b> subsystem are illustrated in the following figure.</p><img vspace="5" hspace="5" src="sdruqpskrx_02.png" alt=""> <p>The components are further described in the following sections.</p><div><ul><li><b>Raised Cosine Receive Filter</b> - Uses a rolloff factor of 0.5, and downsamples the input signal by two</li><li><b>Coarse Frequency Compensation</b> - Estimates an approximate frequency offset of the received signal and corrects it</li><li><b>Fine Frequency Compensation</b> - Compensates for the residual frequency offset and the phase offset</li><li><b>Timing Recovery</b> - Resamples the input signal according to a recovered timing strobe so that symbol decisions are made at the optimum sampling instants</li><li><b>Data Decoding</b> - Aligns the frame boundaries, resolves the phase ambiguity caused by the Fine Frequency Compensation subsystem, demodulates the signal, and decodes the text message</li></ul></div><h2>Receiver<a name="6"></a></h2><h2>Raised Cosine Receive Filter<a name="7"></a></h2><p>The <b>Raised Cosine Receive Filter</b> downsamples the input signal by a factor of two, with a rolloff factor of 0.5. It provides matched filtering for the transmitted waveform.</p><h2>AGC<a name="8"></a></h2><p>The phase error detector gain <img src="sdruqpskrx_eq63713.png" alt="$K_p$"> of the phase and timing error detectors is proportional to the received signal amplitude and the average symbol energy. To ensure an optimum loop design, the signal amplitude at the inputs of the carrier recovery and timing recovery loops must be stable. The AGC ensures that the amplitude of the input of the <b>Coarse Frequency Compensation</b> subsystem is <i>1/Upsampling Factor</i> , so that the equivalent gains of the phase and timing error detectors keep constant over time. The AGC is placed before the <b>Raised Cosine Receive Filter</b> so that the signal amplitude can be measured with an oversampling factor of four, thus improving the accuracy of the estimate. You can refer to Chapter 7.2.2 and Chapter 8.4.1 of [ <a href="#16">1</a> ] for details on how to design the phase detector gain <img src="sdruqpskrx_eq63713.png" alt="$K_p$">. The <b>AGC</b> subsystem updates its compensation gain for each ten QPSK symbols. So that the <b>AGC</b> can smooth out the variation of signal amplitude.</p><h2>Coarse Frequency Compensation<a name="9"></a></h2><p>The <b>Coarse Frequency Compensation</b> subsystem corrects the input signal with a rough estimate of the frequency offset. The following diagram shows the <b>Find Frequency Offset</b> subsystem in the <b>Coarse Frequency Compensation</b> subsystem. This subsystem uses a baseband QPSK signal with a designated phase index <img src="sdruqpskrx_eq25947.png" alt="$n$">, frequency offset <img src="sdruqpskrx_eq85486.png" alt="$\Delta f$"> and phase offset <img src="sdruqpskrx_eq61901.png" alt="$\Delta \phi$"> expressed as <img src="sdruqpskrx_eq06057.png" alt="$e^{(j(n\pi/2+\Delta ft+\Delta \phi))}$">, <img src="sdruqpskrx_eq05236.png" alt="$n=0,1,2,3$">. First, the subsystem raises the input signal to the power of four to obtain <img src="sdruqpskrx_eq57183.png" alt="$e^{(j(4\Delta ft+4\Delta \phi))}$">, which is not a function of the QPSK modulation. Then it performs an FFT on the modulation-independent signal to estimate the tone at four times the frequency offset. After dividing the estimate by four, the <b>Phase/Frequency Offset</b> library block corrects the frequency offset. There is usually a residual frequency offset even after the coarse frequency compensation, which would cause a slow rotation of the constellation.  The <b>Fine Frequency Compensation</b> subsystem compensates for this residual frequency.</p><img vspace="5" hspace="5" src="sdruqpskrx_03.png" alt=""> <img vspace="5" hspace="5" src="sdruqpskrx_04.png" alt=""> <h2>Fine Frequency Compensation<a name="10"></a></h2><p>The Fine Frequency Compensation subsystem implements a phase-locked loop (PLL), described in Chapter 7 of [ <a href="#16">1</a> ], to track the residual frequency offset and the phase offset in the input signal, as shown in the following figure. The PLL uses a <b>Direct Digital Synthesizer (DDS)</b> to generate the compensating phase that offsets the residual frequency and phase offsets. The phase offset estimate from <b>DDS</b> is the integral of the phase error output of the <b>Loop Filter</b>.</p><p>A maximum likelihood <b>Phase Error Detector (PED)</b> , described in Chapter 7.2.2 of [ <a href="#16">1</a> ], generates the phase error. A tunable proportional-plus-integral <b>Loop Filter</b> , described in Appendix C.2 of [ <a href="#16">1</a> ] filters the error signal and then feeds it into the <b>DDS</b>. The <i>Loop Bandwidth</i> (normalized by the sample rate) and the <i>Loop Damping Factor</i> are tunable for the <b>Loop Filter</b>. The default normalized loop bandwidth is set to 0.06 and the default damping factor is set to 2.5 (over damping) so that the PLL quickly locks to the intended phase while introducing little phase noise.</p><img vspace="5" hspace="5" src="sdruqpskrx_05.png" alt=""> <h2>Timing Recovery<a name="11"></a></h2><p>The <b>Timing Recovery</b> subsystem implements a PLL, described in Chapter 8 of [ <a href="#16">1</a> ], to correct the timing error in the received signal. The input of the <b>Timing Recovery</b> subsystem is oversampled by two. On average the <b>Timing Recovery</b> subsystem generates one output sample for every two input samples. The <b>NCO Control</b> subsystem implements a decrementing modulo-1 counter described in Chapter 8.4.3 of [ <a href="#16">1</a> ] to generate the control signal for the <b>Modified Buffer</b> to select the interpolants of the <b>Interpolation Filter</b>. This control signal also enables the <b>Timing Error Detector (TED)</b>, so that it calculates the timing errors at the correct timing instants. The <b>NCO Control</b> subsystem updates the timing difference for the <b>Interpolation Filter</b> , generating interpolants at optimum sampling instants. The <b>Interpolation Filter</b> is a Farrow parabolic filter with <img src="sdruqpskrx_eq79758.png" alt="$\alpha=0.5$"> as described in Chapter 8.4.2 of [ <a href="#16">1</a> ]. The filter uses an <img src="sdruqpskrx_eq87919.png" alt="$\alpha$"> of 0.5 so that all the filter coefficients become only 1, -1/2 and 3/2, which significantly simplifies the interpolator structure. Based on the interpolants, timing errors are generated by a zero-crossing <b>Timing Error Detector</b> as described in Chapter 8.4.1 of [ <a href="#16">1</a> ], filtered by a tunable proportional-plus-integral <b>Loop Filter</b> as described in Appendix C.2 of [ <a href="#16">1</a> ], and fed into the <b>NCO Control</b> for a timing difference update. The <i>Loop Bandwidth</i> (normalized by the sample rate) and <i>Loop Damping Factor</i> are tunable for the <b>Loop Filter</b>. The default normalized loop bandwidth is set to 0.01 and the default damping factor is set to unity (critical damping) so that the PLL quickly locks to the correct timing while introducing little phase noise.</p><p>When the timing error (delay) reaches symbol boundaries, there will be one extra or missing interpolant in the output.  The TED implements bit stuffing/skipping to handle the extra/missing interpolants. You can refer to Chapter 8.4.4 of [ <a href="#16">1</a> ] for details of bit stuffing/skipping.</p><img vspace="5" hspace="5" src="sdruqpskrx_06.png" alt=""> <p>The timing recovery loop normally generates 100 QPSK symbols per frame, one output symbol for every two input samples. It also outputs a timing strobe that runs at the input sample rate. Under normal circumstances, the strobe value is simply a sequence of alternating ones and zeros. However, this occurs only when the relative delay between Tx and Rx contains some fractional part of one symbol period and the integer part of the delay (in symbols) remains constant. If the integer part of the relative delay changes, the strobe value can have two consecutive zeros or two consecutive ones. In that case, the timing recovery loop generates 99 or 101 QPSK output symbols per frame. However, the downstream processing must use a frame size of 100 symbols, which is ensured by the <b>Modified Buffer</b> subsystem.</p><p>The <b>Modified Buffer</b> subsystem uses the strobe to fill up a delay line with properly sampled QPSK symbols. As each QPSK symbol is added to the delay line, a counter increments the number of symbols in the line. At each sampling instant, the delay line outputs a frame of size 100 to the <b>Data Decoding</b> subsystem. However, the <b>Data Decoding</b> subsystem runs on its received data only when its enable signal goes high. This occurs when both the counter value reaches 100 and the strobe is high, i.e. each time exactly 100 valid QPSK symbols are present at the <b>Modified Buffer</b>.</p><h2>Data Decoding<a name="13"></a></h2><p>The <b>Data Decoding</b> subsystem performs frame synchronization, phase ambiguity resolution, demodulation and text message decoding. The subsystem uses a QPSK-modulated Barker code, generated by the <b>Bits Generation</b> subsystem, to correlate against the received QPSK symbols and achieve frame synchronization. The <b>Compute Delay</b> subsystem correlates the data input with the QPSK modulated Barker code, and uses the index of the peak amplitude to find the delay.</p><p>The carrier phase PLL of the <b>Fine Frequency Compensation</b> subsystem may lock to the unmodulated carrier with a phase shift of 0, 90, 180, or 270 degrees, which can cause a phase ambiguity. For details of phase ambiguity and its resolution, please refer to Chapter 7.2.2 and 7.7 in [ <a href="#16">1</a> ]. The <b>Phase Offset Estimator</b> subsystem determines this phase shift. The <b>Phase Ambiguity Correction &amp; Demodulation</b> subsystem rotates the input signal by the estimated phase offset and demodulates the corrected data. The payload bits are descrambled, and the first 105 payload bits are extracted and stored in a workspace variable. All the stored bits are converted to characters and printed out at the MATLAB command window while the simulation is running.</p><h2>Running the Example<a name="14"></a></h2><p>Before running this model, first start the <a href="matlab:open('sdruqpsktx')">QPSK Transmitter with USRP&reg; Hardware</a> model.</p><p>This receiver model is capable to handle a frequency offset of 12.5kHz between the transmitter and receiver boards. However, when the frequency offset exceeds this range, the <b>Coarse Frequency Compensation</b> subsystem cannot accurately determine the offset of the received signal, which is critical for correct timing recovery and data decoding. We encourage you to run the companion frequency calibration <a href="matlab:open('sdrufreqcalibtx')">transmitter</a> and <a href="matlab:open('sdrufreqcalibrx')">receiver</a> models with your USRP&reg; transmitter and receiver hardware to roughly determine the frequency offset between your two USRP&reg; boards. With that frequency offset value, you can manually adjust the <i>Center frequency</i> of the <b>SDRu Receiver</b> subsystem in the receiver model to ensure a residual frequency offset that the model can track.</p><p>If the received signal is too weak or too strong, you might notice some garbled message output. In that case, You can change the gain of either the <b>SDRu Transmitter</b> subsystem in the <a href="matlab:open('sdruqpsktx')">QPSK Transmitter with USRP&reg; Hardware</a> model or the <b>SDRu Receiver</b> subsystem in the current model for better reception.</p><p>To run this model, first turn on the USRP&reg; hardware and connect it to the computer. Set the <i>Center frequency</i> parameter of the <b>SDRu Receiver</b> block according to the center frequency setting of the <a href="matlab:open('sdruqpsktx')">QPSK Transmitter with USRP&reg; Hardware</a> model and the frequency calibration result. Then run the model. To ensure real-time processing, the model is by default set to run in Accelerator mode, and to remove all signal visualization. The received messages are decoded and printed out in the MATLAB command window while the simulation is running.</p><h2>Exploring the Example<a name="15"></a></h2><p>The example allows you to experiment with multiple system capabilities to examine their effect on bit error rate performance.</p><p>You can tune the <i>FFT Size</i> and <i>Number of Spectrum Averages</i> for the <b>Coarse Frequency Compensation</b> subsystem to see the effect of the estimation accuracy and the tolerance to a high noise level. The resolution of the estimate is the frequency spacing between two adjacent FFT points, i.e. <i>100 kHz/FFT Size</i>. There is a speed versus accuracy tradeoff when choosing the value of <i>FFT Size</i>. To get a more accurate frequency estimate usually requires a larger <i>FFT Size</i>. However, a larger <i>FFT Size</i> also incurs a higher computational burden. If the resolution of the <b>Coarse Frequency Compensation</b> subsystem is low, then the <b>Fine Frequency Compensation</b> subsystem must have a wider frequency tracking range.</p><p>Due to the existence of noise and zero padding of the input, the FFT output might have some outliers in the estimation results. To ease the effect of these bad estimates, you can adjust the <i>Number of Spectrum Averages</i> to average the FFT result across multiple frames. The larger <i>Number of Spectrum Averages</i> improves the robustness of the coarse frequency estimation, but this also incurs a greater computational burden. Also, the fourth-power operation can correctly estimate an offset only if the offset satisfies the following inequality:</p><p><img src="sdruqpskrx_eq57272.png" alt="$4*\Delta f_{\max} \le f_s/2$">, or</p><p><img src="sdruqpskrx_eq27745.png" alt="$4*\Delta f_{\max} \le 2*R_{sym}/2$">, or</p><p><img src="sdruqpskrx_eq19953.png" alt="$\Delta f_{\max} \le R_{sym}/4$">.</p><p>Also, this FFT-based <b>Coarse Frequency Compensation</b> subsystem was designed for a scenario with a static frequency offset. In practice, the frequency offset might vary over time. This model can still track a time-varying frequency drift by the <b>Coarse Frequency Compensation</b> subsystem. However, the coarse frequency estimates take on discrete values, separated by the frequency resolution of the subsystem. You might observe jumps between frequency estimates. You can also implement coarse frequency compensation with a filter to get a smoother estimation output.</p><p>You can adjust the PLL design parameters such as <i>Loop Bandwidth</i> and <i>Damping Factor</i> in both <b>Fine Frequency Compensation</b> and <b>Timing Recovery</b> subsystems to see their effect on pull-in range, convergence time and the estimation accuracy. With a large <i>Loop Bandwidth</i> and <i>Damping Factor</i>, the PLL can acquire over a greater frequency offset range. However a large <i>Loop Bandwidth</i> allows more noise, which leads to a large mean squared error in the phase estimation. "Underdamped systems (with Damping Factor less than one) have a fast settling time, but exhibit overshoot and oscillation; overdamped systems (with Damping Factor greater than one) have a slow settling time but no oscillations." [ <a href="#16">1</a> ]. For more detail on the design of these PLL parameters, you can refer to Appendix C in [ <a href="#16">1</a> ].</p><p>The <b>Timing Recovery</b> subsystem relies on a stable constellation which does not rotate over time. So this requires an accurate frequency offset compensation. In this model, if the actual frequency offset exceeds the maximum frequency offset that can be tracked by the current coarse compensation subsystem, you can increase its tracking range by increasing the oversampling factor. Another way to adjust the tracking range is to implement a rotationally-invariant timing error detector (e.g., Gardner timing error detector described in Chapter 8.4.1 of [ <a href="#16">1</a> ]) first and correct the rotation afterwards.</p><h2>References<a name="16"></a></h2><p>1. Michael Rice, "Digital Communications - A Discrete-Time Approach", Prentice Hall, April 2008.</p><h2>Copyright Notice<a name="17"></a></h2><p>USRP&reg; is a trademark of National Instruments Corp.</p><p class="footer">Copyright 2011-2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% QPSK Receiver with USRP(R) Hardware
+% This model shows how to use the Universal Software Radio Peripheral(R)
+% (USRP(R)) device with Simulink(R) to implement a QPSK receiver. The
+% receiver addresses practical issues in wireless communications, e.g.
+% carrier frequency and phase offset, timing offset and frame
+% synchronization. This model receives the signal sent by the
+% <matlab:showdemo('sdruqpsktx') QPSK Transmitter with USRP(R) Hardware>
+% model. The receiver demodulates the received symbols and outputs a simple
+% message to the MATLAB(R) command line.
+% 
+% In order to run this model, you need to ensure that the specified center
+% frequency of the SDRu Receiver is within the acceptable range of your
+% USRP(R) daughter board. Please refer to <../../help/index.html Getting
+% Started> for details on configuring your host computer to work with the
+% SDRu Receiver block.
+
+% Copyright 2011-2012 The MathWorks, Inc.
+% $Revision: 1.1.6.3 $ $Date: 2012/10/29 19:27:07 $
+
+%% Overview
+% This model performs all processing at complex baseband to handle a
+% time-varying frequency offset, a time-varying symbol delay, and Gaussian
+% noise. To cope with the above-mentioned impairments, this example
+% provides a reference design of a practical digital receiver, which
+% includes FFT-based coarse frequency compensation, PLL-based fine
+% frequency compensation, timing recovery with fixed-rate resampling and
+% bit stuffing/skipping, frame synchronization, and phase ambiguity
+% resolution. The example implements some key algorithms in MATLAB,
+% emphasizing textual algorithm expression over graphical algorithm
+% expression. For example, the model uses MATLAB to implement some key
+% processing in the PLL for fine frequency compensation and timing
+% recovery, and some data extraction/control functionalities.
+%% Structure of the Example
+% The top-level structure of the model is shown in the following figure.
+%
+modelname = 'sdruqpskrx';
+open_system(modelname);
+set_param(modelname, 'SimulationCommand', 'update')
+%%
+% The detailed structures of the *QPSK Receiver*
+% subsystem are illustrated in the following figure.
+%%
+%
+open_system([modelname '/QPSK Receiver']);
+%%
+% The components are further described in the following sections.
+%
+% * *Raised Cosine Receive Filter* - Uses a rolloff factor of 0.5, and
+% downsamples the input signal by two
+% * *Coarse Frequency Compensation* - Estimates an approximate frequency
+% offset of the received signal and corrects it
+% * *Fine Frequency Compensation* - Compensates for the residual frequency
+% offset and the phase offset
+% * *Timing Recovery* - Resamples the input signal according to a recovered
+% timing strobe so that symbol decisions are made at the optimum sampling
+% instants
+% * *Data Decoding* - Aligns the frame boundaries, resolves the phase
+% ambiguity caused by the Fine Frequency Compensation subsystem, demodulates
+% the signal, and decodes the text message
+%% Receiver
+%% Raised Cosine Receive Filter
+% The *Raised Cosine Receive Filter* downsamples the input signal by a factor
+% of two, with a rolloff factor of 0.5. It provides matched filtering for 
+% the transmitted waveform.
+%% AGC
+% The phase error detector gain $K_p$ of the phase and timing error detectors is 
+% proportional to the received signal amplitude and the average symbol energy. 
+% To ensure an optimum loop design, the signal amplitude at the inputs of 
+% the carrier recovery and timing recovery loops must be stable. The AGC 
+% ensures that the amplitude of the input of the *Coarse Frequency Compensation*
+% subsystem is _1/Upsampling Factor_ , so that the equivalent gains of the 
+% phase and timing error detectors keep constant over time. The AGC is placed
+% before the *Raised Cosine Receive Filter* so that the signal amplitude can 
+% be measured with an oversampling factor of four, thus improving the accuracy
+% of the estimate. You can refer to Chapter 7.2.2 and Chapter 8.4.1 of [ <#16 1> ] 
+% for details on how to design the phase detector gain $K_p$. The *AGC* subsystem updates
+% its compensation gain for each ten QPSK symbols. So that the *AGC* can smooth out the
+% variation of signal amplitude.
+%% Coarse Frequency Compensation
+% The *Coarse Frequency Compensation* subsystem corrects the input signal 
+% with a rough estimate of the frequency offset. The following diagram shows the
+% *Find Frequency Offset* subsystem in the *Coarse Frequency Compensation* 
+% subsystem. This subsystem uses a baseband QPSK signal with a
+% designated phase index $n$, frequency offset $\Delta f$ and phase offset 
+% $\Delta \phi$ expressed as $e^{(j(n\pi/2+\Delta ft+\Delta \phi))}$,
+% $n=0,1,2,3$. First, the subsystem raises the input signal to the power of four to 
+% obtain $e^{(j(4\Delta ft+4\Delta \phi))}$, which is not a function of the
+% QPSK modulation. Then it performs an FFT on the modulation-independent 
+% signal to estimate the tone at four times the frequency offset. After 
+% dividing the estimate by four, the *Phase/Frequency Offset* library block
+% corrects the frequency offset. There is usually a residual frequency offset
+% even after the coarse frequency compensation, which would cause a slow 
+% rotation of the constellation.  The *Fine Frequency Compensation* subsystem
+% compensates for this residual frequency.
+%
+close_system([modelname '/QPSK Receiver']);
+open_system([modelname '/QPSK Receiver/Coarse Frequency Compensation/Find Frequency Offset'],'force');
+%% Fine Frequency Compensation
+% The Fine Frequency Compensation subsystem implements a phase-locked loop 
+% (PLL), described in Chapter 7 of [ <#16 1> ], to track the residual frequency 
+% offset and the phase offset in the input signal, as shown in the following
+% figure. The PLL uses a *Direct Digital Synthesizer (DDS)* to generate
+% the compensating phase that offsets the residual frequency and phase
+% offsets. The phase offset estimate from *DDS* is the integral of the phase
+% error output of the *Loop Filter*. 
+%
+% A maximum likelihood *Phase Error Detector (PED)* , described in Chapter 
+% 7.2.2 of [ <#16 1> ], generates the phase error. A tunable proportional-plus-integral
+% *Loop Filter* , described in Appendix C.2 of [ <#16 1> ] filters the error
+% signal and then feeds it into the *DDS*. The _Loop Bandwidth_ (normalized
+% by the sample rate) and the _Loop Damping Factor_ are tunable for the *Loop 
+% Filter*. The default normalized loop bandwidth is set to 0.06 and the 
+% default damping factor is set to 2.5 (over damping) so that the PLL
+% quickly locks to the intended phase while introducing little phase noise.
+%
+close_system([modelname '/QPSK Receiver/Coarse Frequency Compensation/Find Frequency Offset']);
+open_system([modelname '/QPSK Receiver/Fine Frequency Compensation']);
+%% Timing Recovery
+% The *Timing Recovery* subsystem implements a PLL, described in Chapter 8 
+% of [ <#16 1> ], to correct the timing error in the received signal. The input of 
+% the *Timing Recovery* subsystem is oversampled by two. On average the *Timing
+% Recovery* subsystem generates one output sample for every two input samples.
+% The *NCO Control* subsystem implements a decrementing modulo-1 counter 
+% described in Chapter 8.4.3 of [ <#16 1> ] to generate the control signal for the 
+% *Modified Buffer* to select the interpolants of the *Interpolation Filter*.
+% This control signal also enables the *Timing Error Detector (TED)*, so that
+% it calculates the timing errors at the correct timing instants. The
+% *NCO Control* subsystem updates the timing difference for the *Interpolation
+% Filter* , generating interpolants at optimum sampling instants. The *Interpolation
+% Filter* is a Farrow parabolic filter with $\alpha=0.5$ as described in 
+% Chapter 8.4.2 of [ <#16 1> ]. The filter uses an $\alpha$ of 0.5 so that all the 
+% filter coefficients become only 1, -1/2 and 3/2, which significantly 
+% simplifies the interpolator structure. Based on the interpolants, timing 
+% errors are generated by a zero-crossing *Timing Error Detector* as described
+% in Chapter 8.4.1 of [ <#16 1> ], filtered by a tunable proportional-plus-integral
+% *Loop Filter* as described in Appendix C.2 of [ <#16 1> ], and fed into the *NCO 
+% Control* for a timing difference update. The _Loop Bandwidth_ (normalized by
+% the sample rate) and _Loop Damping Factor_ are tunable for the *Loop Filter*.
+% The default normalized loop bandwidth is set to 0.01 and the default 
+% damping factor is set to unity (critical damping) so that the PLL
+% quickly locks to the correct timing while introducing little phase noise.
+%
+% When the timing error (delay) reaches symbol boundaries, there will be one
+% extra or missing interpolant in the output.  The TED implements bit 
+% stuffing/skipping to handle the extra/missing interpolants. You can refer
+% to Chapter 8.4.4 of [ <#16 1> ] for details of bit stuffing/skipping.
+% 
+close_system([modelname '/QPSK Receiver/Fine Frequency Compensation']);
+open_system([modelname '/QPSK Receiver/Timing Recovery/Timing Recovery PLL']);
+%%
+% The timing recovery loop normally generates 100 QPSK symbols per frame, 
+% one output symbol for every two input samples. It also outputs a timing 
+% strobe that runs at the input sample rate. Under normal circumstances,
+% the strobe value is simply a sequence of alternating ones and zeros. However,
+% this occurs only when the relative delay between Tx and Rx contains some 
+% fractional part of one symbol period and the integer part of the delay (in 
+% symbols) remains constant. If the integer part of the relative delay changes,
+% the strobe value can have two consecutive zeros or two consecutive ones. 
+% In that case, the timing recovery loop generates 99 or 101 QPSK output 
+% symbols per frame. However, the downstream processing must use a frame size
+% of 100 symbols, which is ensured by the *Modified Buffer* subsystem.
+% 
+% The *Modified Buffer* subsystem uses the strobe to fill up a delay line 
+% with properly sampled QPSK symbols. As each QPSK symbol is added to the 
+% delay line, a counter increments the number of symbols in the line. At each
+% sampling instant, the delay line outputs a frame of size 100 to the *Data
+% Decoding* subsystem. However, the *Data Decoding* subsystem runs on its 
+% received data only when its enable signal goes high. This occurs when both
+% the counter value reaches 100 and the strobe is high, i.e. each time
+% exactly
+% 100 valid QPSK symbols are present at the *Modified Buffer*.
+%% Data Decoding
+% The *Data Decoding* subsystem performs frame synchronization, phase 
+% ambiguity resolution, demodulation and text message decoding. The subsystem
+% uses a QPSK-modulated Barker code, generated by the *Bits Generation* subsystem,
+% to correlate against the received QPSK symbols and achieve frame synchronization.
+% The *Compute Delay* subsystem correlates the data input with the QPSK modulated
+% Barker code, and uses the index of the peak amplitude to find the delay.
+%
+% The carrier phase PLL of the *Fine Frequency Compensation* subsystem may 
+% lock to the unmodulated carrier with a phase shift of 0, 90, 180, or 270 degrees,
+% which can cause a phase ambiguity. For details of phase ambiguity and its
+% resolution, please refer to Chapter 7.2.2 and 7.7 in [ <#16 1> ]. The *Phase Offset
+% Estimator* subsystem determines this phase shift. The *Phase Ambiguity 
+% Correction & Demodulation* subsystem rotates the input signal by the 
+% estimated phase offset and demodulates the corrected data. The payload 
+% bits are descrambled, and the first 105 payload bits are extracted and 
+% stored in a workspace variable. All the stored bits are converted to 
+% characters and printed out at the MATLAB command window while the 
+% simulation is running.
+%% Running the Example
+% Before running this model, first start the <matlab:open('sdruqpsktx')
+% QPSK Transmitter with USRP(R) Hardware> model.
+% 
+% This receiver model is capable to handle a frequency offset of 12.5kHz between the transmitter
+% and receiver boards. However, when the frequency offset exceeds this range,
+% the *Coarse Frequency Compensation* subsystem cannot accurately determine the offset
+% of the received signal, which is critical for correct timing recovery and data 
+% decoding. We encourage you to run the companion frequency 
+% calibration <matlab:open('sdrufreqcalibtx') transmitter> and 
+% <matlab:open('sdrufreqcalibrx') receiver> models with your USRP(R) transmitter
+% and receiver hardware to roughly determine the frequency offset between 
+% your two USRP(R) boards. With that frequency offset value, you can
+% manually adjust the _Center frequency_ of the *SDRu Receiver*
+% subsystem in the receiver model to ensure a residual frequency offset that 
+% the model can track.
+% 
+% If the received signal is too weak or too strong, you might notice some garbled
+% message output. In that case, You can change the gain of either the *SDRu Transmitter* 
+% subsystem in the <matlab:open('sdruqpsktx') QPSK Transmitter with 
+% USRP(R) Hardware> model or the *SDRu Receiver* subsystem in the 
+% current model for better reception.
+% 
+% To run this model, first turn on the USRP(R) hardware and connect it to
+% the computer. Set the _Center frequency_ parameter of the *SDRu Receiver*
+% block according to the center frequency setting of the
+% <matlab:open('sdruqpsktx') QPSK Transmitter with USRP(R) Hardware> model
+% and the frequency calibration result. Then run the model. To ensure
+% real-time processing, the model is by default set to run in Accelerator
+% mode, and to remove all signal visualization. The received messages are
+% decoded and printed out in the MATLAB command window while the simulation
+% is running.
+%% Exploring the Example
+% The example allows you to experiment with multiple system capabilities to
+% examine their effect on bit error rate performance.
+% 
+% You can tune the _FFT Size_ and _Number of Spectrum Averages_ for the
+% *Coarse Frequency Compensation* subsystem to see the effect of the estimation
+% accuracy and the tolerance to a high noise level. The resolution of the 
+% estimate is the frequency spacing between two adjacent FFT points, i.e. 
+% _100 kHz/FFT Size_. There is a speed versus accuracy tradeoff when choosing 
+% the value of _FFT Size_. To get a more accurate frequency estimate usually
+% requires a larger _FFT Size_. However, a larger _FFT Size_ also incurs a 
+% higher computational burden. If the resolution of the *Coarse Frequency 
+% Compensation* subsystem is low, then the *Fine Frequency Compensation* 
+% subsystem must have a wider frequency tracking range.
+%
+% Due to the existence of noise and zero padding of the input, the FFT output
+% might have some outliers in the estimation results. To ease the effect of
+% these bad estimates, you can adjust the _Number of Spectrum Averages_ to 
+% average the FFT result across multiple frames. The larger _Number of Spectrum
+% Averages_ improves the robustness of the coarse frequency estimation, but
+% this also incurs a greater computational burden. Also, the fourth-power 
+% operation can correctly estimate an offset only if the offset satisfies 
+% the following inequality:
+% 
+% $4*\Delta f_{\max} \le f_s/2$, or
+% 
+% $4*\Delta f_{\max} \le 2*R_{sym}/2$, or
+% 
+% $\Delta f_{\max} \le R_{sym}/4$.
+% 
+% Also, this FFT-based *Coarse Frequency Compensation* subsystem was
+% designed for a scenario with a static frequency offset. In practice, 
+% the frequency offset might vary over time. This model can still
+% track a time-varying frequency drift by the *Coarse Frequency Compensation*
+% subsystem. However, the coarse frequency estimates take on discrete values,
+% separated by the frequency resolution of the subsystem. You might observe
+% jumps between frequency estimates. You can also implement coarse frequency
+% compensation with a filter to get a smoother estimation output.
+% 
+% You can adjust the PLL design parameters such as _Loop Bandwidth_ and
+% _Damping Factor_ in both *Fine Frequency Compensation* and *Timing Recovery*
+% subsystems to see their effect on pull-in range, convergence time and the
+% estimation accuracy. With a large _Loop Bandwidth_ and _Damping Factor_, 
+% the PLL can acquire over a greater frequency offset range. However a large
+% _Loop Bandwidth_ allows more noise, which leads to a large mean squared 
+% error in the phase estimation. "Underdamped systems (with Damping Factor less than one)
+% have a fast settling time, but exhibit overshoot and oscillation; overdamped
+% systems (with Damping Factor greater than one) have a slow settling time but no 
+% oscillations." [ <#16 1> ]. For more detail on the design of these PLL parameters,
+% you can refer to Appendix C in [ <#16 1> ].
+% 
+% The *Timing Recovery* subsystem relies on a stable constellation which 
+% does not rotate over time. So this requires an accurate frequency offset 
+% compensation. In this model, if the actual frequency offset exceeds the 
+% maximum frequency offset that can be tracked by the current coarse 
+% compensation subsystem, you can increase its tracking range by increasing
+% the oversampling factor. Another way to adjust the tracking range is to implement a 
+% rotationally-invariant timing error detector (e.g., Gardner timing error 
+% detector described in Chapter 8.4.1 of [ <#16 1> ]) first and correct the rotation
+% afterwards. 
+close_system([modelname '/QPSK Receiver/Timing Recovery/Timing Recovery PLL']);
+close_system(modelname, 0);
+%% References
+% 1. Michael Rice, "Digital Communications - A Discrete-Time
+% Approach", Prentice Hall, April 2008.
+%% Copyright Notice
+% USRP(R) is a trademark of National Instruments Corp.
+
+
+##### SOURCE END #####
+--></body></html>

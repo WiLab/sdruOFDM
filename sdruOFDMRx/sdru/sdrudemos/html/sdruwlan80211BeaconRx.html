@@ -1,0 +1,135 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>IEEE 802.11 WLAN - Beacon Frame Receiver with USRP&reg; Hardware</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-19"><meta name="DC.source" content="sdruwlan80211BeaconRx.m"><link rel="stylesheet" type="text/css" href="./style.css"></head><body><div class="header"><div class="left">sdruwlan80211BeaconRx.mdl</div><div class="right"><a href="matlab:sdruwlan80211BeaconRx">Open this model</a></div></div><div class="content"><h1>IEEE 802.11 WLAN - Beacon Frame Receiver with USRP&reg; Hardware</h1><!--introduction--><p>This example shows reception of beacon frames in an 802.11 wireless local area network (WLAN) as described in [ <a href="#8">1</a> ]. The example utilizes USRP&reg; hardware to receive radio signals and transfer to Simulink&reg; for processing. For more information refer to <a href="commwlan80211Beacon.html">IEEE 802.11 WLAN - Beacon Frame</a> and <a href="commwlan80211BeaconRx.html">IEEE 802.11 WLAN - Beacon Frame with Captured Data</a> examples.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Structure of the Example</a></li><li><a href="#3">SDRu Receiver</a></li><li><a href="#4">Receiver</a></li><li><a href="#5">Running the Example</a></li><li><a href="#6">Exploring the Example</a></li><li><a href="#8">Selected Bibliography</a></li><li><a href="#9">Copyright Notice</a></li></ul></div><h2>Structure of the Example<a name="1"></a></h2><p>The model has three main parts:</p><div><ul><li><tt>Model Parameters</tt> block, where you can adjust several receiver parameters,</li><li>802.11 receiver, which comprises a receiver front end, receiver controller, and detector,</li><li>Results, where you view several signals and the received information.</li></ul></div><p>The following describes modifications made to the model presented in <a href="commwlan80211Beacon.html">IEEE 802.11 WLAN - Beacon Frame Receiver with Captured Data</a> example to make it work with the USRP&reg; hardware.</p><img vspace="5" hspace="5" src="sdruwlan80211BeaconRx_01.png" alt=""> <p>This 802.11 WLAN example includes all the receiver signal processing in an enabled subsystem. Connecting the <tt>Data Len</tt> output of the <tt>SDRu Receiver</tt> block to the enable input of the subsystem ensures that the receiver only processes valid data. This approach is a best practice when using the <tt>SDRu Receiver</tt> block.</p><h2>SDRu Receiver<a name="3"></a></h2><p>802.11 uses 1e6 symbols per second for beacon signaling. Since the standard [ <a href="#8">1</a> ] calls for a spreading factor for 11, the chip rate is 11e6 chips per second. The receiver needs at least two samples per chip and the maximum data rate the USRP&reg; hardware can pass to the host computer is 25e6 samples per second. Therefore, this example uses a decimation factor of four.</p><p>Running this receiver simulation requires more time than processing the same data in real-time, especially when using the visualization scopes. To help alleviate this time requirement, the SDRu Receiver block uses burst mode processing.  Burst mode processing enables you to utilize the visualization capabilities of Simulink, while processing real data without the need of capturing and saving it.</p><p>In burst mode, the block stores a contiguous burst of samples. The number of samples is determined by the values you specify for the number of frames in burst parameter and the frame length parameter. Each Simulink time step, the SDRu Receiver block sends a frame of samples to the Receiver subsystem. Most Wi-Fi routers use a beacon interval of 100 Time Units (TU), which is 102.4 msec and the beacon packet length of approximately 3 msec. Therefore, the receiver requires at least 106 msec of data to receive one beacon packet. A frame length of 3200 samples and 860 frames per burst, results in more than 110 msec of data, which is enough to receive at least one beacon packet per burst.</p><h2>Receiver<a name="4"></a></h2><p>Since the chip rate is 11e6 chips per second, the receiver utilizes an <b>FIR Rate Conversion</b> block that resamples the signals to 22e6 samples per second. This approach provides an oversampling factor of two.</p><img vspace="5" hspace="5" src="sdruwlan80211BeaconRx_02.png" alt=""> <h2>Running the Example<a name="5"></a></h2><p>If the received signal is too weak or too strong, you might notice some garbled message output. In that case, you can change the gain of the <b>SDRu Receiver</b> block for better reception.</p><p>To run this example, turn on the USRP&reg; hardware and connect it to the computer. Then, run the model. You can observe several signals in the scopes. The (MAC Protocol Data Unit) MPDU GUI figure shows (Physical Layer Convergence Procedure) PLCP and MPDU CRC status and also the content of correctly decoded MPDU packets.</p><h2>Exploring the Example<a name="6"></a></h2><p>You can try different channel numbers from the <b>Model Parameters</b> block mask. The most widely used channels are 6 and 11.</p><p>This example allows you to modify several receiver parameters through the <b>Model Parameters</b> block mask dialog to optimize the receiver performance. If you notice that the (Automatic Gain Control) AGC gain reaches its maximum gain even when your signal is present at the receiver input, increase the maximum gain of the AGC. If the AGC is slow to respond to changes in the input signal amplitude, increase the AGC loop gain. Observe the AGC behavior in the AGC scope.</p><p>If your signal results in smaller peaks in the Synchronization Scope, which do not turn the receiver on, reduce the synchronization threshold.</p><h2>Selected Bibliography<a name="8"></a></h2><div><ol><li>IEEE Std 802.11-2007: <i>IEEE Standard for Information technology - Telecommunications and information exchange between systems - Local and metropolitan area networks - Specific requirements, Part 11: Wireless LAN Medium Access Control (MAC) and Physical Layer (PHY) Specifications</i>, IEEE, New York, NY, USA, 1999-2007.</li></ol></div><h2>Copyright Notice<a name="9"></a></h2><p>USRP&reg; is a registered trademark of National Instruments Corp.</p><p class="footer">Copyright 2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% IEEE 802.11 WLAN - Beacon Frame Receiver with USRP(R) Hardware
+%
+% This example shows reception of beacon frames in an 802.11 wireless local
+% area network (WLAN) as described in [ <#8 1> ]. The example utilizes
+% USRP(R) hardware to receive radio signals and transfer to Simulink(R) for
+% processing. For more information refer to <commwlan80211Beacon.html IEEE
+% 802.11 WLAN - Beacon Frame> and <commwlan80211BeaconRx.html IEEE 802.11
+% WLAN - Beacon Frame with Captured Data> examples.
+%
+% Copyright 2012 The MathWorks, Inc.
+
+%% Structure of the Example
+% The model has three main parts: 
+% 
+% * |Model Parameters| block, where you can adjust several receiver
+% parameters,
+% * 802.11 receiver, which comprises a receiver front end, receiver
+% controller, and detector,
+% * Results, where you view several signals and the received information.
+%
+% The following describes modifications made to the model presented in
+% <commwlan80211Beacon.html IEEE 802.11 WLAN - Beacon Frame Receiver with
+% Captured Data> example to make it work with the USRP(R) hardware.
+
+modelname = 'sdruwlan80211BeaconRx';
+
+% Define Simulink(R) blocks as variables
+receiver = [modelname ...
+    '/Receiver'];
+  
+open_system(modelname);
+set_param(modelname, 'SimulationCommand', 'update');
+
+%%
+% This 802.11 WLAN example includes all the receiver signal processing in
+% an enabled subsystem. Connecting the |Data Len| output of the |SDRu
+% Receiver| block to the enable input of the subsystem ensures that the
+% receiver only processes valid data. This approach is a best practice when
+% using the |SDRu Receiver| block.
+
+%% SDRu Receiver
+% 802.11 uses 1e6 symbols per second for beacon signaling. Since the
+% standard [ <#8 1> ] calls for a spreading factor for 11, the chip rate
+% is 11e6 chips per second. The receiver needs at least two samples per
+% chip and the maximum data rate the USRP(R) hardware can pass to the host
+% computer is 25e6 samples per second. Therefore, this example uses a
+% decimation factor of four.
+%
+% Running this receiver simulation requires more time than processing the
+% same data in real-time, especially when using the visualization scopes.
+% To help alleviate this time requirement, the SDRu Receiver block uses
+% burst mode processing.  Burst mode processing enables you to utilize the
+% visualization capabilities of Simulink, while processing real data
+% without the need of capturing and saving it.
+%
+% In burst mode, the block stores a contiguous burst of samples. The number
+% of samples is determined by the values you specify for the number of
+% frames in burst parameter and the frame length parameter. Each Simulink
+% time step, the SDRu Receiver block sends a frame of samples to the
+% Receiver subsystem. Most Wi-Fi routers use a beacon interval of 100 Time
+% Units (TU), which is 102.4 msec and the beacon packet length of
+% approximately 3 msec. Therefore, the receiver requires at least 106 msec
+% of data to receive one beacon packet. A frame length of 3200 samples and
+% 860 frames per burst, results in more than 110 msec of data, which is
+% enough to receive at least one beacon packet per burst.
+
+%% Receiver
+% Since the chip rate is 11e6 chips per second, the receiver utilizes an
+% *FIR Rate Conversion* block that resamples the signals to 22e6 samples
+% per second. This approach provides an oversampling factor of two.
+
+open_system(receiver)
+
+%% Running the Example
+% If the received signal is too weak or too strong, you might notice some
+% garbled message output. In that case, you can change the gain of the
+% *SDRu Receiver* block for better reception.
+% 
+% To run this example, turn on the USRP(R) hardware and connect it to the
+% computer. Then, run the model. You can observe several signals in the
+% scopes. The (MAC Protocol Data Unit) MPDU GUI figure shows (Physical
+% Layer Convergence Procedure) PLCP and MPDU CRC status and also the
+% content of correctly decoded MPDU packets.
+
+%% Exploring the Example
+% You can try different channel numbers from the *Model Parameters* block
+% mask. The most widely used channels are 6 and 11.
+%
+% This example allows you to modify several receiver parameters through the
+% *Model Parameters* block mask dialog to optimize the receiver
+% performance. If you notice that the (Automatic Gain Control) AGC gain
+% reaches its maximum gain even when your signal is present at the receiver
+% input, increase the maximum gain of the AGC. If the AGC is slow to
+% respond to changes in the input signal amplitude, increase the AGC loop
+% gain. Observe the AGC behavior in the AGC scope.
+%
+% If your signal results in smaller peaks in the Synchronization Scope,
+% which do not turn the receiver on, reduce the synchronization threshold.
+
+%%
+
+% Cleanup
+% 
+% To clear all variables set in the above MATLAB code and close the model,
+% type the following commands at the MATLAB command prompt.
+
+close_system(modelname, 0);
+clear modelname sdruBlock receiver
+
+%% Selected Bibliography
+% # IEEE Std 802.11-2007: _IEEE Standard for Information technology -
+% Telecommunications and information exchange between systems - Local and
+% metropolitan area networks - Specific requirements, Part 11: Wireless LAN
+% Medium Access Control (MAC) and Physical Layer (PHY) Specifications_, 
+% IEEE, New York, NY, USA, 1999-2007.
+
+displayEndOfDemoMessage(mfilename)
+
+%% Copyright Notice
+% USRP(R) is a registered trademark of National Instruments Corp.
+
+##### SOURCE END #####
+--></body></html>

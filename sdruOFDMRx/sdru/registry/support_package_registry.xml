@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--Copyright 2012 The MathWorks, Inc. -->
+<!--USRP(R) Support Package Repository -->
+<PackageRepository>
+    <SupportPackage 
+        name="USRP(R) Radio"
+        fullname="Communications System Toolbox Support Package for USRP(R) Radio"
+        version="5.0" 
+        platform="PCWIN,PCWIN64,GLNXA64,MACI64"
+        visible="1"
+        enable="1"
+        baseproduct="Communications System Toolbox"
+        customlicense="yes"
+        customlicensenotes="This utility enables you to download and install the third party software listed above. This software contains open source software licensed under the terms of the General Public License and other licenses. Consult each file for the specific license that applies to that file.\n\nIf you click ''Install'' on the next screen, you will be downloading and installing the software listed above.\n\nIf you click ''Cancel'' you will not be downloading and installing the software."
+        showsplicense="no"
+        url="http://www.mathworks.com" 
+        downloadurl="http://sharepoint/dev/spc/verdeploy/installer/Documents/target_packages" 
+        licenseurl=""
+        folder="sdru" 
+        firmwareupdate=""
+        postinstallcmd="matlab:usrpSetEnvironment"
+        demoxml="sdrudemos/demos.xml">
+        <Path name="$(INSTALLDIR)/sdru"></Path>
+        <Path name="$(INSTALLDIR)/sdru/usrp_uhd_mapi"></Path>
+        <Path name="$(INSTALLDIR)/sdru/sdrudemos"></Path>
+        <Path name="$(INSTALLDIR)/sdru/uhdapps"></Path>
+        <Path name="$(INSTALLDIR)/sdru/fpgatarget"></Path>
+        <Path name="$(INSTALLDIR)/sdru/bin/$(ARCH)"></Path>
+        <FilesToPackage>
+          <File name="Contents.m"></File>
+        </FilesToPackage>
+    </SupportPackage>
+</PackageRepository>

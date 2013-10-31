@@ -1,0 +1,10 @@
+MEX {
+	global:
+		mexFunction;
+		emlrtMexFcnProperties;
+		runSDRuQPSKTransmitter;
+		runSDRuQPSKTransmitter_initialize;
+		runSDRuQPSKTransmitter_terminate;
+	local:
+		*;
+};

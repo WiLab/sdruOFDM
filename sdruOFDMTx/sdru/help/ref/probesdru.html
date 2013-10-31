@@ -1,0 +1,280 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>probesdru :: MATLAB Functions (Communications System Toolbox&#8482; Support Package for USRP&#8482; Radio)</title><link rel="stylesheet" href="docstyle.css" type="text/css"><meta name="chunktype" content="refpage"><meta name="refentity" itemprop="refentity" content="function:probesdru">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="ug">
+<meta name="description" content="This MATLAB function returns detailed information about the USRP&reg; radio connected to the host computer." />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btqjld8"></a><h1 class="reftitle" itemprop="title">probesdru</h1><!-- SYNCHTO: bth5xqd.html --><p class="purpose">Provides detailed USRP&reg; radio information</p>
+<a name="btqjlgk"></a><h2 id="syntax">Syntax</h2><div class="syntax_signature"><p class="synopsis"><tt>I=probesdru<br>I=probesdru(IPADDRESS)<br>[I,S]=probesdru<br></tt></p></div><div class="clear"></div><a name="btqjld8-5"></a><h2>Description</h2><p><span itemprop="syntax"><tt><tt>I</tt>=probesdru</tt></span> returns
+detailed information about the USRP&reg; radio connected to the
+host computer. The information is returned in argument <tt>I</tt> as
+a string. If there is more than one USRP&reg; radio connected to
+the host computer, function <tt>probesdru</tt> returns
+radio information for the first discovered radio. Function <tt>probesdru</tt> works
+by calling theUHD<sup>TM</sup> application <tt>uhd_usrp_probe</tt>,
+provided by Ettus Research<sup>TM</sup>, as a system command and returns the command
+output.</p><p><span itemprop="syntax"><tt><tt>I</tt>=probesdru(<tt>IPADDRESS</tt>)</tt></span> returns
+detailed information on the USRP&reg; radio at IP address <tt>IPADDRESS</tt>. <tt>IPADDRESS</tt> is
+a dotted quad string, for example, "192.168.10.2".</p><p><span itemprop="syntax"><tt>[<tt>I</tt>,<tt>S</tt>]=probesdru</tt></span> returns
+the status of the system command execution in <tt>S</tt>.
+A non-zero <tt>S</tt> value indicates an error.</p><a name="btqjlv2-1"></a><h2>Examples</h2><p> Get detailed information on a USRP&reg; radio connected
+to your host computer.</p><pre class="programlisting">&gt;&gt;probesdru</pre><pre class="programlisting codeoutput">Win32; Microsoft Visual C++ version 10.0; Boost_104900; UHD_003.004.002-0-unknown
+
+-- Opening a USRP2/N-Series device...
+-- Current recv frame size: 1472 bytes
+-- Current send frame size: 1472 bytes
+
+UHD Warning:
+    The MTU (1472) is larger than the FastSendDatagramThreshold (1024)!
+    This will negatively affect the transmit performance.
+    See the transport application notes for more detail.
+  _____________________________________________________
+/
+|       Device: USRP2 / N-Series Device
+|     _____________________________________________________
+|    /
+|   |       Mboard: USRP2-REV4
+|   |   hardware: 1024
+|   |   mac-addr: 00:50:c2:85:33:69
+|   |   ip-addr: 192.168.10.2
+|   |   gpsdo: none
+|   |   serial: 873
+|   |   
+|   |   Time sources: none, external, _external_, mimo
+|   |   Clock sources: internal, external, mimo
+|   |   Sensors: mimo_locked, ref_locked
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX DSP: 0
+|   |   |   Freq range: -50.000 to 50.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX DSP: 1
+|   |   |   Freq range: -50.000 to 50.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX Dboard: A
+|   |   |   ID: WBX, WBX + Simple GDB (0x0053)
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       RX Subdev: 0
+|   |   |   |   Name: WBX RX v2 + Simple GDB
+|   |   |   |   Antennas: TX/RX, RX2, CAL
+|   |   |   |   Sensors: lo_locked
+|   |   |   |   Freq range: 68.750 to 2200.000 Mhz
+|   |   |   |   Gain range PGA0: 0.0 to 31.5 step 0.5 dB
+|   |   |   |   Connection Type: IQ
+|   |   |   |   Uses LO offset: No
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       RX Codec: A
+|   |   |   |   Name: ltc2284
+|   |   |   |   Gain Elements: None
+|   |     _____________________________________________________
+|   |    /
+|   |   |       TX DSP: 0
+|   |   |   Freq range: -250.000 to 250.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       TX Dboard: A
+|   |   |   ID: WBX (0x0052)
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       TX Subdev: 0
+|   |   |   |   Name: WBX TX v2 + Simple GDB
+|   |   |   |   Antennas: TX/RX, CAL
+|   |   |   |   Sensors: lo_locked
+|   |   |   |   Freq range: 68.750 to 2200.000 Mhz
+|   |   |   |   Gain range PGA0: 0.0 to 25.0 step 0.1 dB
+|   |   |   |   Connection Type: IQ
+|   |   |   |   Uses LO offset: No
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       TX Codec: A
+|   |   |   |   Name: ad9777
+|   |   |   |   Gain Elements: None
+</pre><p>This function will return radio information for the first radio
+it finds. If you have more than one radio, you might want to use <tt>probesdru(IPADDRESS)</tt> instead.</p><table class="divider" cellpadding="0" cellspacing="0" width="100%"><tbody><tr valign="top"><td class="argumentlistentrycell" height="1"><img src="pixelclear.gif" width="1" height="1"></td></tr><tr height="0"><td>&nbsp;</td></tr></tbody></table><p>Get detailed information on the USRP&reg; radio located at
+IP  address 192.168.10.2.</p><pre class="programlisting">&gt;&gt;probesdru('192.168.10.2')</pre><table class="divider" cellpadding="0" cellspacing="0" width="100%"><tbody><tr valign="top"><td class="argumentlistentrycell" height="1"><img src="pixelclear.gif" width="1" height="1"></td></tr><tr height="0"><td>&nbsp;</td></tr></tbody></table><p>Get a list of all USRP&reg; radios connected to the host
+computer and retrieve radio information for each one, using functions <tt>findsdru</tt> and <tt>probesdru</tt>.</p><pre class="programlisting">rawDeviceList = findsdru();
+
+<span style="color:#0000FF">for</span> p=1:length(rawDeviceList)
+    Info{p} = probesdru(rawDeviceList(p).IPAddress);
+    disp([<span style="color:#A020F0">'Info for device '</span> num2str(p) <span style="color:#A020F0">':'</span>]);
+    disp(Info{p});
+<span style="color:#0000FF">end</span>
+</pre><pre class="programlisting codeoutput">Info for device 1:
+Win32; Microsoft Visual C++ version 10.0; Boost_104900; UHD_003.004.002-0-unknown
+
+-- Opening a USRP2/N-Series device...
+-- Current recv frame size: 1472 bytes
+-- Current send frame size: 1472 bytes
+
+  _____________________________________________________
+/
+|       Device: USRP2 / N-Series Device
+|     _____________________________________________________
+|    /
+|   |       Mboard: USRP2-REV4
+|   |   hardware: 1024
+|   |   mac-addr: 00:50:c2:85:33:69
+|   |   ip-addr: 192.168.10.2
+|   |   gpsdo: none
+|   |   serial: 873
+|   |   
+|   |   Time sources: none, external, _external_, mimo
+|   |   Clock sources: internal, external, mimo
+|   |   Sensors: mimo_locked, ref_locked
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX DSP: 0
+|   |   |   Freq range: -50.000 to 50.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX DSP: 1
+|   |   |   Freq range: -50.000 to 50.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX Dboard: A
+|   |   |   ID: WBX, WBX + Simple GDB (0x0053)
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       RX Subdev: 0
+|   |   |   |   Name: WBX RX v2 + Simple GDB
+|   |   |   |   Antennas: TX/RX, RX2, CAL
+|   |   |   |   Sensors: lo_locked
+|   |   |   |   Freq range: 68.750 to 2200.000 Mhz
+|   |   |   |   Gain range PGA0: 0.0 to 31.5 step 0.5 dB
+|   |   |   |   Connection Type: IQ
+|   |   |   |   Uses LO offset: No
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       RX Codec: A
+|   |   |   |   Name: ltc2284
+|   |   |   |   Gain Elements: None
+|   |     _____________________________________________________
+|   |    /
+|   |   |       TX DSP: 0
+|   |   |   Freq range: -250.000 to 250.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       TX Dboard: A
+|   |   |   ID: WBX (0x0052)
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       TX Subdev: 0
+|   |   |   |   Name: WBX TX v2 + Simple GDB
+|   |   |   |   Antennas: TX/RX, CAL
+|   |   |   |   Sensors: lo_locked
+|   |   |   |   Freq range: 68.750 to 2200.000 Mhz
+|   |   |   |   Gain range PGA0: 0.0 to 25.0 step 0.1 dB
+|   |   |   |   Connection Type: IQ
+|   |   |   |   Uses LO offset: No
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       TX Codec: A
+|   |   |   |   Name: ad9777
+|   |   |   |   Gain Elements: None
+
+
+Info for device 2:
+Win32; Microsoft Visual C++ version 10.0; Boost_104900; UHD_003.004.002-0-unknown
+
+-- Opening a USRP2/N-Series device...
+-- Current recv frame size: 1472 bytes
+-- Current send frame size: 1472 bytes
+
+  _____________________________________________________
+/
+|       Device: USRP2 / N-Series Device
+|     _____________________________________________________
+|    /
+|   |       Mboard: USRP2-REV4
+|   |   hardware: 1024
+|   |   mac-addr: 00:50:c2:85:35:64
+|   |   ip-addr: 192.168.20.2
+|   |   gpsdo: none
+|   |   serial: 1380
+|   |   
+|   |   Time sources: none, external, _external_, mimo
+|   |   Clock sources: internal, external, mimo
+|   |   Sensors: mimo_locked, ref_locked
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX DSP: 0
+|   |   |   Freq range: -50.000 to 50.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX DSP: 1
+|   |   |   Freq range: -50.000 to 50.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       RX Dboard: A
+|   |   |   ID: TVRX (0x0040)
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       RX Subdev: 0
+|   |   |   |   Name: TVRX (0x0040)
+|   |   |   |   Antennas: RX
+|   |   |   |   Sensors: 
+|   |   |   |   Freq range: 50.000 to 860.000 Mhz
+|   |   |   |   Gain range RF: -13.3 to 50.3 step 0.0 dB
+|   |   |   |   Gain range IF: -1.5 to 32.5 step 0.0 dB
+|   |   |   |   Connection Type: I
+|   |   |   |   Uses LO offset: No
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       RX Codec: A
+|   |   |   |   Name: ltc2284
+|   |   |   |   Gain Elements: None
+|   |     _____________________________________________________
+|   |    /
+|   |   |       TX DSP: 0
+|   |   |   Freq range: -250.000 to 250.000 Mhz
+|   |     _____________________________________________________
+|   |    /
+|   |   |       TX Dboard: A
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       TX Subdev: 0
+|   |   |   |   Name: Unknown (0xffff) - 0
+|   |   |   |   Antennas: 
+|   |   |   |   Sensors: 
+|   |   |   |   Freq range: 0.000 to 0.000 Mhz
+|   |   |   |   Gain Elements: None
+|   |   |   |   Connection Type: IQ
+|   |   |   |   Uses LO offset: No
+|   |   |     _____________________________________________________
+|   |   |    /
+|   |   |   |       TX Codec: A
+|   |   |   |   Name: ad9777
+|   |   |   |   Gain Elements: None 
+</pre>
+<table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="../index.html"><img src="b_prev.gif" border="0" align="bottom" alt="Communications System Toolbox Support&#xA;Package for USRP&reg; Radio"></a>&nbsp;</td><td align="left">Communications System Toolbox Support Package for USRP&reg; Radio</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/patents.html">Patents</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/trademarks.html">Trademarks</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/">Privacy Policy</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/piracy.html">Preventing Piracy</a></p>
+
+
+  <!-- Last updated: Tue Nov  6 09:59:09 EST 2012--></body></html>

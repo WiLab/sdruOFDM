@@ -1,0 +1,478 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>FRS/GMRS Walkie-Talkie Receiver with USRP&reg; Hardware</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-10-10"><meta name="DC.source" content="sdruFRSGMRSReceiver.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>FRS/GMRS Walkie-Talkie Receiver with USRP&reg; Hardware</h1><!--introduction--><p>This example shows how to use the Universal Software Radio Peripheral&reg; (USRP&reg;) device with MATLAB&reg; to implement a walkie-talkie receiver. The specific radio standard that this example follows is FRS/GMRS (Family Radio Service / General Mobile Radio Service) with CTCSS (Continuous Tone-Coded Squelch System).  You can transmit a signal to the implemented receiver using a commercial walkie-talkie device.</p><p>In order to run this example, you need a USRP&reg; board with an appropriate receiver daughterboard that supports the UHF 462-467 MHz band (for example, WBX).  Please refer to <a href="../../help/index.html">Getting Started</a> for details on configuring your host computer to work with the SDRu Receiver System object, comm.SDRuReceiver.</p><p>This example is designed to work with USA standards for FRS/GMRS operation. The technical specifications for these standards can be found at [&lt;#20 1&gt; ] and [ <a href="#20">2</a> ]. Operation in other countries may or may not work.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Overview</a></li><li><a href="#2">Initialization</a></li><li><a href="#3">FRS/GMRS Receiver</a></li><li><a href="#11">SDRu</a></li><li><a href="#13">Running the Example</a></li><li><a href="#17">Conclusion</a></li><li><a href="#18">Further Exploration</a></li><li><a href="#19">Appendix</a></li><li><a href="#20">References</a></li><li><a href="#21">Copyright Notice</a></li></ul></div><h2>Overview<a name="1"></a></h2><p>Please refer to the <a href="sdruFRSGMRSTransmitter.html">FRS/GMRS Walkie-Talkie Transmitter with USRP&reg; Hardware</a> example for general information and overview details.  Note that all the information in that section applies to this example, except that this example is designed to receive signals instead of transmit them.</p><p>Also, please refer to the Simulink&reg; model in the <a href="sdruFRSGMRSRx.html">FRS/GMRS Walkie-Talkie Receiver with USRP&reg; Hardware</a> example for a block diagram view of the system.</p><h2>Initialization<a name="2"></a></h2><p>The <a href="matlab:edit('configureSdruFRSGMRSRxDemo.m')">configureSdruFRSGMRSRxDemo.m</a> script initializes some simulation parameters and generates a structure, frsRx. The fields of this structure are the parameters of the FRS/GMRS receiver system at hand.</p><pre class="codeinput"><span class="comment">% Configure the example to receive on channel 12 with the CTCSS code 5 with</span>
+<span class="comment">% a detection threshold of 0.1.</span>
+channel            = 12;
+CTCSSCode          = 5;
+detectionThreshold = 0.1;
+
+frsRx = configureSdruFRSGMRSRxDemo(channel, CTCSSCode, detectionThreshold)
+</pre><pre class="codeoutput">
+frsRx = 
+
+      USRPDecimationFactor: 500
+                  USRPGain: 5
+        FrontEndSampleRate: 200000
+           USRPFrameLength: 4000
+           ToneFrequencies: [38x1 double]
+          DecimationFactor: 25
+                SampleRate: 8000
+                 Numerator: [1x600 double]
+    ChannelFilterNumerator: [1x33 double]
+      AudioFilterNumerator: [1x135 double]
+      GoertzelCoefficients: [38x1 double]
+          AudioFrameLength: 160
+                   Channel: 12
+                 CTCSSCode: 5
+        DetectionThreshold: 0.1000
+    CTCSSDecodeBlockLength: 4000
+                  StopTime: 10
+             USRPFrameTime: 0.0200
+
+</pre><h2>FRS/GMRS Receiver<a name="3"></a></h2><p>The FRS/GMRS receiver example tunes the USRP&reg; board to receive at the center frequency specified by the channel selection. The script applies automatic gain control (AGC) and FM demodulates the received signal. A CTCSS tone decoder passes the demodulated signal to an audio device if the received code matches the selected code.</p><p><b>AGC and Channel Selectivity Filter</b></p><p>Automatic gain controller applies a variable gain to the received signal to assure that the received signal amplitude is at a known level. Set the DesiredAmplitude property to 1. The AGC updates the gain periodically. Set UpdatePeriod property to 200. You can increase the update period, until it equals the input length, to increase the speed of the AGC algorithm. In this example, the walkie-talkie transmitter is likely nearby the USRP&reg; board, which implies that the received signal should not suffer from fading, and the received signal-to-noise ratio (SNR) should be high. In practice, the received signals will likely suffer from fading and low SNR.</p><pre class="codeinput">hAGC = comm.AGC(<span class="string">'UpdatePeriod'</span>, 200, <span class="keyword">...</span>
+  <span class="string">'StepSize'</span>,     0.1);
+</pre><p>This script uses a low pass channel separation filter to reduce the signals from an adjacent channel.  The gap between adjacent channels is 25 kHz, which means the baseband bandwidth is at most 12.5 kHz. Thus, we choose the cutoff frequency to be 10 kHz. Create a digital filter System object that implements an FIR transfer function and set the Numerator property to the value specified in the frsRx structure.</p><pre class="codeinput">hChanFilt = dsp.DigitalFilter(<span class="string">'TransferFunction'</span>, <span class="string">'FIR (all zeros)'</span>, <span class="keyword">...</span>
+  <span class="string">'Numerator'</span>, frsRx.ChannelFilterNumerator);
+</pre><p>Next, a channel selector computes the average power of the filtered signal. If it is greater than a threshold (set to a default of 10%), the channel selector determines that the received signal is from the correct channel and it allows the signal to pass through.  In the case of an out-of-band signal, although the channel separation filter reduces its magnitude, it is still FM modulated and the modulating signal will be present after FM demodulation.  To reject such a signal completely, the channel selector outputs zero.</p><p><b>FM Demodulation and Decimation</b></p><p>This example implements FM demodulation by taking the phase difference of consecutive complex samples. Use a delay System object to delay the received baseband signal to prepare for the phase difference calculation.</p><pre class="codeinput">hDelay = dsp.Delay;
+</pre><p>A decimation filter converts the sampling rate to 8 kHz. This rate is one of the native sampling rates of your host computer's output audio device. Use an FIR decimator System object to convert the 200 kHz signal to an 8 kHz signal. Set the decimation factor to 25, and the numerator to the value specified in the frsRx structure.</p><pre class="codeinput">hDecimator = dsp.FIRDecimator(frsRx.DecimationFactor, frsRx.Numerator);
+</pre><p><b>Continuous Tone-Coded Squelch System (CTCSS)</b></p><p>The CTCSS [ <a href="#20">3</a> ] decoder computes the power at each CTCSS tone frequency using the Goertzel algorithm [ <a href="#20">4</a> ] and outputs the code with the largest power. The Goertzel algorithm provides an efficient method to compute the frequency components at predetermined frequencies, i.e., the tone code frequencies used by FRS/GMRS.</p><p>The script compares the estimated received code with the preselected code and then sends the signal to the audio device if the two codes match. When the preselected code is zero, it indicates no squelch system is used and the decision block passes the signal at the channel to the audio device no matter which code is used.</p><pre class="codeinput">hDecoder = FRSGMRSDemoCTCSSDecoder(<span class="keyword">...</span>
+  <span class="string">'MinimumBlockLength'</span>, frsRx.CTCSSDecodeBlockLength, <span class="keyword">...</span>
+  <span class="string">'SampleRate'</span>,         frsRx.SampleRate);
+</pre><p><b>Audio Output</b></p><p>A high pass filter with a cutoff frequency of 260 Hz filters out the CTCSS tones, which have a maximum frequency of 250 Hz. Use an audio player System object to play the received signals through your computer's speakers. If you do not hear any sound, please select another device using the DeviceName property of the audio player object, hAudio.</p><pre class="codeinput">hAudioFilt = dsp.DigitalFilter(<span class="string">'TransferFunction'</span>, <span class="string">'FIR (all zeros)'</span>, <span class="keyword">...</span>
+  <span class="string">'Numerator'</span>, frsRx.AudioFilterNumerator);
+
+hAudio = dsp.AudioPlayer(frsRx.SampleRate);
+</pre><h2>SDRu<a name="11"></a></h2><p>The script communicates with the USRP&reg; board using the SDRu receiver System object. You can supply the IP address of the USRP&reg; board as an argument when you construct the object. The IP address can be any address within the same sub-network as the host computer. You set the rest of the properties using name-value pair arguments. Set the center frequency source to input port and the gain to 5 dB.</p><p>Set the decimation factor to 500 so that the example uses round numbers to convert the sampling rate to 8 kHz using small resampling filters. Because the USRP&reg; board samples at a rate of 100 MHz, set the sample rate to 100 MHz / 500 = 200 kHz, which is the sample rate of the data received from the USRP&reg; board. Frame length controls the number of samples at the output of the SDRu receiver, which is the input to the AGC. The frame length must be an integer multiple of the decimation factor, which is 25. Set the frame length to 4000 samples. Select the output data type as single to reduce the required memory and speed up execution.</p><pre class="codeinput">hSDRu = comm.SDRuReceiver(<span class="string">'192.168.10.2'</span>, <span class="keyword">...</span>
+  <span class="string">'CenterFrequencySource'</span>, <span class="string">'Input port'</span>, <span class="keyword">...</span>
+  <span class="string">'Gain'</span>,                  frsRx.USRPGain, <span class="keyword">...</span>
+  <span class="string">'DecimationFactor'</span>,      frsRx.USRPDecimationFactor, <span class="keyword">...</span>
+  <span class="string">'SampleRate'</span>,            frsRx.FrontEndSampleRate, <span class="keyword">...</span>
+  <span class="string">'FrameLength'</span>,           frsRx.USRPFrameLength, <span class="keyword">...</span>
+  <span class="string">'OutputDataType'</span>,        <span class="string">'single'</span>)
+</pre><pre class="codeoutput">
+hSDRu = 
+
+  System: comm.SDRuReceiver 
+
+  Properties:
+                      IPAddress: '192.168.10.2'
+          CenterFrequencySource: 'Input port'  
+          ActualCenterFrequency: 0             
+    LocalOscillatorOffsetSource: 'Property'    
+          LocalOscillatorOffset: 0             
+    ActualLocalOscillatorOffset: 0             
+                     GainSource: 'Property'    
+                           Gain: 5             
+                     ActualGain: 0             
+         DecimationFactorSource: 'Property'    
+               DecimationFactor: 500           
+         ActualDecimationFactor: 0             
+              OverrunOutputPort: false         
+                     SampleRate: 200000        
+                 OutputDataType: 'single'      
+                    FrameLength: 4000          
+                EnableBurstMode: false         
+                                               
+</pre><h2>Running the Example<a name="13"></a></h2><p>Turn on your walkie-talkie, set the channel to 12 and the private code to 5. The center frequency is a function of the selected channel number.</p><pre class="codeinput"><span class="comment">% Get the carrier frequency for the selected channel</span>
+fc = convertChan2FreqFRSGMRSDemo(frsRx.Channel);
+</pre><p><b>Stream Processing Loop</b></p><p>Capture FRS/GMRS signals and demodulate for 10 seconds, which is specified by frsRx.StopTime. The SDRu object returns a column vector, x. Because the MATLAB script may run faster than the hardware, the object also returns the actual size of the valid data in x using the second output argument, len. If len is zero, then there is no new data for the demodulator code to process.</p><p>Check for the status of the USRP&reg; radio</p><pre class="codeinput">radio = findsdru(hSDRu.IPAddress);
+<span class="keyword">if</span> radio.Status == UsrpErrorCapiEnumT.UsrpDriverSuccess
+  <span class="comment">% Loop until the example reaches the target stop time.</span>
+  timeCounter = 0;
+  <span class="keyword">while</span> timeCounter &lt; frsRx.StopTime
+
+    [data, len] = step(hSDRu, fc);
+    <span class="keyword">if</span> len &gt; 0
+
+      <span class="comment">% AGC and channel selectivity</span>
+      outAGC      = step(hAGC, data);
+
+      outChanFilt = step(hChanFilt, outAGC);
+      rxAmp       = mean(abs(outChanFilt));
+      <span class="keyword">if</span> rxAmp &gt; frsRx.DetectionThreshold
+        x = outChanFilt;
+      <span class="keyword">else</span>
+        x = complex(single(zeros(frsRx.USRPFrameLength, 1)));
+      <span class="keyword">end</span>
+
+      <span class="comment">% FM demodulator and decimation</span>
+      xDelay  = step(hDelay, x);
+      y       = angle(xDelay .* conj(x));
+      outRC   = step(hDecimator, y);
+
+      <span class="comment">% CTCSS decoder</span>
+      rcvdCode = step(hDecoder, outRC);
+      <span class="keyword">if</span> (rcvdCode == frsRx.CTCSSCode) || (frsRx.CTCSSCode == 0)
+        rcvdSig = outRC;
+      <span class="keyword">else</span>
+        rcvdSig = single(zeros(frsRx.AudioFrameLength, 1));
+      <span class="keyword">end</span>
+
+      <span class="comment">% Output to audio device</span>
+      audioSig = step(hAudioFilt, rcvdSig);
+      step(hAudio, audioSig);
+
+      timeCounter = timeCounter + frsRx.USRPFrameTime;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">else</span>
+  warning(message(<span class="string">'sdru:sysobjdemos:MainLoop'</span>))
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: Device at '192.168.10.2' is not responding. Attach a device at the
+specified address, correct the specified address to match an already attached
+device, set the host subnet value to match the device subnet value, or continue
+working in offline mode. Subnet value is the third field of the IP address. 
+Warning: No available USRP(R) devices found. Skipping main loop. 
+</pre><p>Release the audio and USRP&reg; resources.</p><pre class="codeinput">release(hAudio)
+release(hSDRu); clear <span class="string">hSDRu</span>
+</pre><h2>Conclusion<a name="17"></a></h2><p>In this example, you used Communications System Toolbox&#8482; System objects to build an FRS/GMRS receiver utilizing the USRP&reg; device. The example showed that the MATLAB script can process signals captured by the USRP&reg; device in real time.</p><h2>Further Exploration<a name="18"></a></h2><p>The CTCSS decoding computes the DFT (Discrete-Time Fourier Transform) of the incoming signal using the Goertzel algorithm and computes the power at the tone frequencies. Since the tone frequencies are very close to each other (only 3-4 Hz apart) the block length of the DFT should be large enough to provide enough resolution for the frequency analysis. However, long block lengths cause decoding delay. For example, a block length of 16000 will cause 2 seconds of delay because the CTCSS decoder operates at an 8 kHz sampling rate.  This creates a trade-off between detection performance and processing latency. The optimal block length may depend on the quality of the transmitter and receiver, the distance between the transmitter and receiver, and other factors. You are encouraged to change the block length in the initialization function by navigating to the getParamsSdruFRSGMRSRxDemo function and changing the value of the CTCSSDecodeBlockLength field.  This will enable you to observe the trade-off and find the optimal value for your transmitter/receiver pair.</p><h2>Appendix<a name="19"></a></h2><p>The following scripts are used in this example.</p><div><ul><li><a href="matlab:edit('configureSdruFRSGMRSRxDemo.m')">configureSdruFRSGMRSRxDemo.m</a></li><li><a href="matlab:edit('getParamsSdruFRSGMRSRxDemo.m')">getParamsSdruFRSGMRSRxDemo.m</a></li></ul></div><h2>References<a name="20"></a></h2><div><ul><li><a href="http://en.wikipedia.org/wiki/Family_Radio_Service">Family Radio Service on Wikipedia</a></li><li><a href="http://en.wikipedia.org/wiki/General_Mobile_Radio_Service">General Mobile Radio Service on Wikipedia</a></li><li><a href="http://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System">Continuous Tone-Coded Squelch System on Wikipedia</a></li><li><a href="http://en.wikipedia.org/wiki/Goertzel_algorithm">Goertzel Algorithm on Wikipedia</a></li></ul></div><h2>Copyright Notice<a name="21"></a></h2><p>Universal Software Radio Peripheral&reg; and USRP&reg; are trademarks of National Instruments Corp.</p><p class="footer">Copyright 2011-2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% FRS/GMRS Walkie-Talkie Receiver with USRP(R) Hardware
+% This example shows how to use the Universal Software Radio Peripheral(R)
+% (USRP(R)) device with MATLAB(R) to implement a walkie-talkie receiver.
+% The specific radio standard that this example follows is FRS/GMRS (Family
+% Radio Service / General Mobile Radio Service) with CTCSS (Continuous
+% Tone-Coded Squelch System).  You can transmit a signal to the implemented
+% receiver using a commercial walkie-talkie device.
+%
+% In order to run this example, you need a USRP(R) board with an
+% appropriate receiver daughterboard that supports the UHF 462-467 MHz band
+% (for example, WBX).  Please refer to <../../help/index.html Getting
+% Started> for details on configuring your host computer to work with the
+% SDRu Receiver System object, comm.SDRuReceiver.
+% 
+% This example is designed to work with USA standards for FRS/GMRS
+% operation. The technical specifications for these standards can be found
+% at [<#20 1> ] and [ <#20 2> ]. Operation in other countries may or may
+% not work.
+
+%   Copyright 2011-2012 The MathWorks, Inc.
+
+%% Overview
+% Please refer to the <sdruFRSGMRSTransmitter.html FRS/GMRS Walkie-Talkie
+% Transmitter with USRP(R) Hardware> example for general information and
+% overview details.  Note that all the information in that section applies
+% to this example, except that this example is designed to receive signals
+% instead of transmit them.
+%
+% Also, please refer to the Simulink(R) model in the <sdruFRSGMRSRx.html
+% FRS/GMRS Walkie-Talkie Receiver with USRP(R) Hardware> example for a
+% block diagram view of the system.
+
+%% Initialization
+% The <matlab:edit('configureSdruFRSGMRSRxDemo.m')
+% configureSdruFRSGMRSRxDemo.m> script initializes some simulation
+% parameters and generates a structure, frsRx. The fields of this structure
+% are the parameters of the FRS/GMRS receiver system at hand.
+
+% Configure the example to receive on channel 12 with the CTCSS code 5 with
+% a detection threshold of 0.1.
+channel            = 12;
+CTCSSCode          = 5;
+detectionThreshold = 0.1;
+
+frsRx = configureSdruFRSGMRSRxDemo(channel, CTCSSCode, detectionThreshold)
+
+%% FRS/GMRS Receiver
+% The FRS/GMRS receiver example tunes the USRP(R) board to receive at the
+% center frequency specified by the channel selection. The script applies
+% automatic gain control (AGC) and FM demodulates the received signal. A
+% CTCSS tone decoder passes the demodulated signal to an audio device if
+% the received code matches the selected code.
+
+%%
+% *AGC and Channel Selectivity Filter*
+%
+% Automatic gain controller applies a variable gain to the received signal
+% to assure that the received signal amplitude is at a known level. Set the
+% DesiredAmplitude property to 1. The AGC updates the gain periodically.
+% Set UpdatePeriod property to 200. You can increase the update period,
+% until it equals the input length, to increase the speed of the AGC
+% algorithm. In this example, the walkie-talkie transmitter is likely
+% nearby the USRP(R) board, which implies that the received signal should
+% not suffer from fading, and the received signal-to-noise ratio (SNR)
+% should be high. In practice, the received signals will likely suffer from
+% fading and low SNR.
+
+hAGC = comm.AGC('UpdatePeriod', 200, ...
+  'StepSize',     0.1);
+
+%%
+% This script uses a low pass channel separation filter to reduce the
+% signals from an adjacent channel.  The gap between adjacent channels is
+% 25 kHz, which means the baseband bandwidth is at most 12.5 kHz. Thus, we
+% choose the cutoff frequency to be 10 kHz. Create a digital filter System
+% object that implements an FIR transfer function and set the Numerator
+% property to the value specified in the frsRx structure.
+
+hChanFilt = dsp.DigitalFilter('TransferFunction', 'FIR (all zeros)', ...
+  'Numerator', frsRx.ChannelFilterNumerator);
+
+%%
+% Next, a channel selector computes the average power of the filtered
+% signal. If it is greater than a threshold (set to a default of 10%), the
+% channel selector determines that the received signal is from the correct
+% channel and it allows the signal to pass through.  In the case of an
+% out-of-band signal, although the channel separation filter reduces its
+% magnitude, it is still FM modulated and the modulating signal will be
+% present after FM demodulation.  To reject such a signal completely, the
+% channel selector outputs zero.
+
+%% 
+% *FM Demodulation and Decimation*
+%
+% This example implements FM demodulation by taking the phase difference of
+% consecutive complex samples. Use a delay System object to delay the
+% received baseband signal to prepare for the phase difference calculation.
+
+hDelay = dsp.Delay;
+
+%%
+% A decimation filter converts the sampling rate to 8 kHz. This rate is one
+% of the native sampling rates of your host computer's output audio device.
+% Use an FIR decimator System object to convert the 200 kHz signal to an 8
+% kHz signal. Set the decimation factor to 25, and the numerator to the
+% value specified in the frsRx structure.
+
+hDecimator = dsp.FIRDecimator(frsRx.DecimationFactor, frsRx.Numerator);
+
+%% 
+% *Continuous Tone-Coded Squelch System (CTCSS)*
+%
+% The CTCSS [ <#20 3> ] decoder computes the power at each CTCSS tone
+% frequency using the Goertzel algorithm [ <#20 4> ] and outputs the code
+% with the largest power. The Goertzel algorithm provides an efficient
+% method to compute the frequency components at predetermined frequencies,
+% i.e., the tone code frequencies used by FRS/GMRS.
+%
+% The script compares the estimated received code with the preselected code
+% and then sends the signal to the audio device if the two codes match.
+% When the preselected code is zero, it indicates no squelch system is used
+% and the decision block passes the signal at the channel to the audio
+% device no matter which code is used.
+
+hDecoder = FRSGMRSDemoCTCSSDecoder(...
+  'MinimumBlockLength', frsRx.CTCSSDecodeBlockLength, ...
+  'SampleRate',         frsRx.SampleRate);
+
+%% 
+% *Audio Output*
+%
+% A high pass filter with a cutoff frequency of 260 Hz filters out the
+% CTCSS tones, which have a maximum frequency of 250 Hz. Use an audio
+% player System object to play the received signals through your computer's
+% speakers. If you do not hear any sound, please select another device
+% using the DeviceName property of the audio player object, hAudio.
+
+hAudioFilt = dsp.DigitalFilter('TransferFunction', 'FIR (all zeros)', ...
+  'Numerator', frsRx.AudioFilterNumerator);
+
+hAudio = dsp.AudioPlayer(frsRx.SampleRate);
+
+%% SDRu
+% The script communicates with the USRP(R) board using the SDRu receiver
+% System object. You can supply the IP address of the USRP(R) board as an
+% argument when you construct the object. The IP address can be any address
+% within the same sub-network as the host computer. You set the rest of the
+% properties using name-value pair arguments. Set the center frequency
+% source to input port and the gain to 5 dB.
+
+%%
+% Set the decimation factor to 500 so that the example uses round numbers
+% to convert the sampling rate to 8 kHz using small resampling filters.
+% Because the USRP(R) board samples at a rate of 100 MHz, set the sample
+% rate to 100 MHz / 500 = 200 kHz, which is the sample rate of the data
+% received from the USRP(R) board. Frame length controls the number of
+% samples at the output of the SDRu receiver, which is the input to the
+% AGC. The frame length must be an integer multiple of the decimation
+% factor, which is 25. Set the frame length to 4000 samples. Select the
+% output data type as single to reduce the required memory and speed up
+% execution.
+
+hSDRu = comm.SDRuReceiver('192.168.10.2', ...
+  'CenterFrequencySource', 'Input port', ...
+  'Gain',                  frsRx.USRPGain, ...
+  'DecimationFactor',      frsRx.USRPDecimationFactor, ...
+  'SampleRate',            frsRx.FrontEndSampleRate, ...
+  'FrameLength',           frsRx.USRPFrameLength, ...
+  'OutputDataType',        'single')
+
+%% Running the Example
+% Turn on your walkie-talkie, set the channel to 12 and the private code to
+% 5. The center frequency is a function of the selected channel number.
+
+% Get the carrier frequency for the selected channel
+fc = convertChan2FreqFRSGMRSDemo(frsRx.Channel);
+
+%% 
+% *Stream Processing Loop*
+%
+% Capture FRS/GMRS signals and demodulate for 10 seconds, which is
+% specified by frsRx.StopTime. The SDRu object returns a column vector, x.
+% Because the MATLAB script may run faster than the hardware, the object
+% also returns the actual size of the valid data in x using the second
+% output argument, len. If len is zero, then there is no new data for the
+% demodulator code to process.
+
+%%
+% Check for the status of the USRP(R) radio
+radio = findsdru(hSDRu.IPAddress); 
+if radio.Status == UsrpErrorCapiEnumT.UsrpDriverSuccess
+  % Loop until the example reaches the target stop time.
+  timeCounter = 0;
+  while timeCounter < frsRx.StopTime
+    
+    [data, len] = step(hSDRu, fc);
+    if len > 0
+      
+      % AGC and channel selectivity
+      outAGC      = step(hAGC, data);
+      
+      outChanFilt = step(hChanFilt, outAGC);
+      rxAmp       = mean(abs(outChanFilt));
+      if rxAmp > frsRx.DetectionThreshold
+        x = outChanFilt;
+      else
+        x = complex(single(zeros(frsRx.USRPFrameLength, 1)));
+      end
+      
+      % FM demodulator and decimation
+      xDelay  = step(hDelay, x);
+      y       = angle(xDelay .* conj(x));
+      outRC   = step(hDecimator, y);
+      
+      % CTCSS decoder
+      rcvdCode = step(hDecoder, outRC);
+      if (rcvdCode == frsRx.CTCSSCode) || (frsRx.CTCSSCode == 0)
+        rcvdSig = outRC;
+      else
+        rcvdSig = single(zeros(frsRx.AudioFrameLength, 1));
+      end
+      
+      % Output to audio device
+      audioSig = step(hAudioFilt, rcvdSig);
+      step(hAudio, audioSig);
+      
+      timeCounter = timeCounter + frsRx.USRPFrameTime;
+    end
+  end
+else
+  warning(message('sdru:sysobjdemos:MainLoop'))
+end
+
+%% 
+% Release the audio and USRP(R) resources.
+
+release(hAudio)
+release(hSDRu); clear hSDRu
+
+%% Conclusion
+% In this example, you used Communications System Toolbox(TM) System
+% objects to build an FRS/GMRS receiver utilizing the USRP(R) device. The
+% example showed that the MATLAB script can process signals captured by the
+% USRP(R) device in real time.
+
+%% Further Exploration
+% The CTCSS decoding computes the DFT (Discrete-Time Fourier Transform) of
+% the incoming signal using the Goertzel algorithm and computes the power
+% at the tone frequencies. Since the tone frequencies are very close to
+% each other (only 3-4 Hz apart) the block length of the DFT should be
+% large enough to provide enough resolution for the frequency analysis.
+% However, long block lengths cause decoding delay. For example, a block
+% length of 16000 will cause 2 seconds of delay because the CTCSS decoder
+% operates at an 8 kHz sampling rate.  This creates a trade-off between
+% detection performance and processing latency. The optimal block length
+% may depend on the quality of the transmitter and receiver, the distance
+% between the transmitter and receiver, and other factors. You are
+% encouraged to change the block length in the initialization function by
+% navigating to the getParamsSdruFRSGMRSRxDemo function and changing the
+% value of the CTCSSDecodeBlockLength field.  This will enable you to
+% observe the trade-off and find the optimal value for your
+% transmitter/receiver pair.
+
+%% Appendix
+% The following scripts are used in this example.
+%
+% * <matlab:edit('configureSdruFRSGMRSRxDemo.m') configureSdruFRSGMRSRxDemo.m>
+% * <matlab:edit('getParamsSdruFRSGMRSRxDemo.m') getParamsSdruFRSGMRSRxDemo.m>
+
+%% References
+% * <http://en.wikipedia.org/wiki/Family_Radio_Service Family Radio Service on Wikipedia>
+% * <http://en.wikipedia.org/wiki/General_Mobile_Radio_Service General Mobile Radio Service on Wikipedia>
+% * <http://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System Continuous Tone-Coded Squelch System on Wikipedia>
+% * <http://en.wikipedia.org/wiki/Goertzel_algorithm Goertzel Algorithm on Wikipedia>
+%
+
+%% Copyright Notice
+% Universal Software Radio Peripheral(R) and USRP(R) are trademarks of
+% National Instruments Corp.
+
+displayEndOfDemoMessage(mfilename)
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,219 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>comm.SDRuReceiver class :: System Object Reference (Communications System Toolbox&#8482; Support Package for USRP&#8482; Radio)</title><link rel="stylesheet" href="docstyle.css" type="text/css"><meta name="chunktype" content="refpage"><meta name="refentity" itemprop="refentity" content="class:comm.SDRuReceiver">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="ug">
+<meta name="description" content="The comm.SdruReceiver System objectTM receives data from a Universal Software Radio Peripheral USRP&reg;) hardware device, allowing simulation and development for various software-defined radio applications." />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="bs8j0cy-1"></a><h1 class="reftitle" itemprop="title">comm.SDRuReceiver class</h1><!-- SYNCHTO: bthj6sw.html --><p><b>Package: </b>comm</p><p class="purpose">Receive data from USRP&reg; device</p><a name="bs8j0cy-2"></a><h2>Description</h2><p>The comm.SdruReceiver System object<sup>TM</sup> receives data from a Universal
+Software Radio Peripheral USRP&reg;) hardware device, allowing
+simulation and development for various software-defined radio applications.
+The SDRuReceiver System object<sup>TM</sup> enables communication with a USRP&reg; board
+on the same Ethernet subnetwork. You can write a MATLAB&reg; application
+that uses the System object<sup>TM</sup> or you can generate code for the System object<sup>TM</sup> without
+being connected to a USRP&reg; radio.</p><p>This object receives signal and control data from a USRP&reg; board
+using the Universal Hardware Driver (UHD<sup>TM</sup>) from Ettus Research<sup>TM</sup>.
+The SDRuReceiver System object<sup>TM</sup> is a signal source that receives data
+from a USRP&reg; board and outputs a column vector signal of fixed
+length. The first call to this object may contain transient values
+which result in packets containing undefined data.</p><a name="constructor_comm.SDRuReceiver"></a><a name="bs8j0cy-3"></a><h2>Construction</h2><p><span itemprop="syntax"><tt class="synopsis">H = comm.SDRuReceiver</tt></span> creates an SDRu Receiver System object<sup>TM</sup>, <tt>H</tt>.
+This object supports communication between MATLAB and a USRP&reg; board
+on the same Ethernet subnetwork, allowing simulation and development
+of various software-defined radio applications.</p><p><span itemprop="syntax"><tt class="synopsis">H = comm.SDRuReceiver(<tt>Name</tt>,<tt>Value</tt>)</tt></span> creates
+an SDRu Receiver object, <tt>H</tt>, with the specified
+property name set to the specified value. You can specify additional
+name-value pair arguments in any order as  (Name1,Value1,...,NameN,ValueN).</p><p><span itemprop="syntax"><tt class="synopsis">H = comm.SDRuReceiver(ADDRESS,Name,Value)</tt></span> creates
+an SDRu Receiver object, <tt>H</tt>. This object has the <tt>IPAddress</tt> property
+set to <tt>ADDRESS</tt> and the other specified properties
+set to the specified values.</p><a name="bs8j0cy-4"></a><h2>Properties</h2><table cellpadding="4" cellspacing="0" width="100%"><tbody><tr valign="top"><td class="firstargumentlistentrycell" width="150"><a name="prop_IPAddress"></a><p><tt>IPAddress</tt></p></td><td class="firstargumentlistentrycell"><a name="comm.SDRuReceiver.IPAddress"></a>
+<p>IP address of the USRP&reg; device</p>
+<p></p>
+<p>Specify the logical network location of the USRP&reg; device
+as a string.  The default value is '192.168.10.2'. You can find all
+connected USRP&reg; radios with the <tt>findsdru</tt> function.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_CenterFrequencySource"></a><p><tt>CenterFrequencySource</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.CenterFrequencySource"></a>
+<p>Source of the center frequency</p>
+<p>Specify the source of the center frequency as one of <tt>Property</tt> | <tt>Input
+port</tt>. The default is <tt>Property</tt>. Set <tt>CenterFrequencySource</tt> to <tt>Input
+port</tt> to specify the center frequency value using an input
+to the step method. Set <tt>CenterFrequencySource</tt> to <tt>Property</tt> to
+specify the center frequency value using the <a name="missinglink"></a><tt>CenterFrequency</tt> property.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_CenterFrequency"></a><p><tt>CenterFrequency</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.CenterFrequency"></a>
+<p>Center frequency in Hertz</p>
+<p>Specify the desired center frequency as a double-precision,
+nonnegative, finite scalar.  The default is <tt>2.45</tt> Gigahertz.
+The valid range of values for this property depends on the RF daughter
+card of the USRP&reg; device. This property applies when you  set
+the <a name="missinglink"></a><tt>CenterFrequencySource</tt> to <tt>Property</tt>.
+This property is tunable.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_ActualCenterFrequency"></a><p><tt>ActualCenterFrequency</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.ActualCenterFrequency"></a>
+<p>Actual center frequency in Hertz</p>
+<p>Report the actual center frequency of the daughterboard. Desired
+and actual center frequency can be slightly different due to quantization.
+This property is read-only.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_LocalOscillatorOffsetSource"></a><p><tt>LocalOscillatorOffsetSource</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.LocalOscillatorOffsetsource"></a>
+<p>Source of local oscillator offset</p>
+<p>Specify the source of the local oscillator offset as one of <tt>Property</tt> | <tt>Input
+port</tt>. The default is <tt>Property</tt>. Set the <tt>LocalOscillatorOffsetSource</tt> property
+to <tt>Input port</tt> to specify the local oscillator offset
+value using an input to the step method. Set the <tt>LocalOscillatorOffsetSource</tt> property
+to <tt>Property</tt> to specify the local oscillator offset
+value using the <a name="missinglink"></a><tt>LocalOscillatorOffset</tt> property.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_LocalOscillatorOffset"></a><p><tt>LocalOscillatorOffset</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.LocalOscillatorOffset"></a>
+<p>Local oscillator offset in Hertz</p>
+<p>Specify the desired local oscillator offset frequency as a double
+precision scalar. The default is <tt>0</tt> Hz. The valid
+range of this property depends on the RF daughterboard of the USRP&reg; device.
+This property applies when you set the <a name="missinglink"></a><tt>LocalOscillatorOffsetSource</tt> to <tt>Property</tt>.
+This property is tunable.</p>
+<p>The local oscillator offset does not affect the received center
+frequency. It does affect the intermediate center frequency in the USRP&reg; hardware,
+as shown in the following illustration.</p>
+<p>
+<img src="sdru_local_oscillator_offset_rx.png" height="150" width="327" alt=""></p>
+<p>Where</p>
+<ul type="disc"><li><p>f<sub>RF</sub> represents the received
+RF frequency</p></li><li><p>f<sub>Center</sub> represents the center
+frequency specified by the System object<sup>TM</sup></p></li><li><p>f<sub>LO offset</sub> is the local oscillator
+offset frequency</p></li><li><p>Ideally, f<sub>RF</sub> - f<sub>Center</sub> =
+0</p></li></ul>
+<p>Use <tt>LocalOscillatorOffset</tt> to move the center
+frequency away from interference or harmonics generated by the USRP&reg; hardware.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_ActualLocalOscillatorOffset"></a><p><tt>ActualLocalOscillatorOffset</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.ActualLocalOscillatorOffset"></a>
+<p>Actual local oscillator offset in Hertz</p>
+<p>Report the actual local oscillator offset of the daughterboard.
+Desired and actual offset can be slightly different due to quantization.
+This property is read-only.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_GainSource"></a><p><tt>GainSource</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.GainSource"></a>
+<p>Source of the gain</p>
+<p>Specify the source of the gain as one of <tt>Property</tt> | <tt>Input
+port</tt>.  The default is <tt>Property</tt>. Set <a name="missinglink"></a><tt>GainSource</tt> to <tt>Input
+port</tt> to specify the gain value using an input to the step
+method. Set <tt>GainSource</tt> to <tt>Property</tt> to
+specify the gain value using the <a name="missinglink"></a><tt>Gain</tt> property.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_Gain"></a><p><tt>Gain</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.Gain"></a>
+<p>Specify the overall gain of the USRP&reg; hardware receiver
+data path</p>
+<p>Specify the overall gain, both analog and digital, of the USRP&reg; hardware
+receiver data path as a double scalar using decibels. The default
+is <tt>8</tt>. The valid range of this property depends
+on the RF daughterboard of the USRP&reg; device. This property
+applies when you set the <a name="missinglink"></a><tt>GainSource</tt> to <tt>Property</tt>.
+This property is tunable.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_ActualGain"></a><p><tt>ActualGain</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.ActualGain"></a>
+<p>Actual gain in decibels.</p>
+<p>Report the actual gain of the daughterboard. Desired and actual
+gain can be slightly different due to quantization. This property
+is read-only.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_DecimationFactorSource"></a><p><tt>DecimationFactorSource</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.DecimationSource"></a>
+<p>Source of the decimation factor</p>
+<p>Specify the source of the decimation factor as one of <tt>Property</tt> |
+ <tt>Input port</tt>. The default is <tt>Property</tt>.
+Set <tt>DecimationFactorSource</tt> to <tt>Input
+port</tt> to specify the decimation factor value using an input
+to the step method. Set <a name="missinglink"></a><tt>DecimationFactorSource</tt> to <tt>Property</tt> to
+specify the decimation factor value using the <a name="missinglink"></a><tt>DecimationFactor</tt> property.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_DecimationFactor"></a><p><tt>DecimationFactor</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.Decimation"></a>
+<p>Decimation factor</p>
+<p>Specify the decimation factor for the SDRu receiver as an integer
+scalar.  The default is <tt>512</tt>. Select an integer
+value within the following ranges:</p><ul type="disc"><li><p>4 to 128</p></li><li><p>128 to 256 (values in this range must be even) </p></li><li><p>256 to 512 (values in this range must be evenly divisible
+by 4)</p></li></ul><p>This property applies when you set the <a name="missinglink"></a><tt>DecimationFactorSource</tt> to <tt>Property</tt>.
+This property is tunable.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_ActualDecimationFactor"></a><p><tt>ActualDecimationFactor</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.ActualDecimationFactor"></a>
+<p>Actual decimation factor</p>
+<p>Report the actual decimation factor value of the daughterboard.
+Desired and actual decimation factors can be slightly different due
+to quantization. This property is read-only.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_OverrunOutputPort"></a><p><tt>OverrunOutputPort</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.OverrunOutputPort"></a>
+<p>Enable an output port that indicates dropped packets</p>
+<p>Set this property to true so that the step method outputs a
+value to indicate if one or more packets is dropped during host reception
+of  USRP&reg; hardware data.</p>
+<ul type="disc"><li><p> Zero indicates no data loss </p></li><li><p>A positive number indicates that overruns occurred</p></li></ul>
+<p> The default value for <tt>OverrunOutputPort</tt> is
+false, which means that the port is not enabled and no information
+about dropped packets is displayed.</p>
+<p>This port is a useful diagnostic tool to determine real time
+operation of the .  If your model is not running
+in real time, you can increase the decimation factor to approach or
+achieve real-time performance.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_SampleRate"></a><p><tt>SampleRate</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.SampleTime"></a>
+<p>Specify the sample rate of the input signal, in Hertz, as a
+double-precision, positive, scalar value. The default is <tt>1</tt>.
+Sample rate is the rate between successive samples of MATLAB data,
+not successive frames of data.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_OutputDataType"></a><p><tt>OutputDataType</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.OutputDataType"></a>
+<p>Data type of output</p>
+<p>Specify the data type of the output signal as <tt>double</tt>, <tt>single</tt>,
+or <tt>int16</tt>. The default is <tt>int16</tt>,
+with a range of <tt>[-32768, 32767]</tt>. This block supports
+the following complex output data types:</p>
+<ul type="disc"><li><p>Double-precision floating point</p></li><li><p>Single-precision floating point</p></li><li><p>16-bit signed integers</p></li></ul>
+<p>When you set <tt>OutputDataType</tt> to either Double-precision
+floating point or Single-precision floating point, the range is <tt>[-1,
+1]</tt>.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_FrameLength"></a><p><tt>FrameLength</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.FrameLength"></a>
+<p>Frame length</p>
+<p>Specify the frame length of the output signal that the object
+generates as a positive, scalar integer. The default value is <tt>362</tt>.
+This value optimally utilizes the underlying Ethernet packets, which
+have a size of 1500 8-bit bytes.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_EnableBurstMode"></a><p><tt>EnableBurstMode</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReciever.BurstMode"></a>
+<p>Turn burst mode on or off</p>
+<p>When set to true, this property produces a set of contiguous
+frames without an overrun or underrun to the radio.  This setting
+can help simulate models that cannot run in real time.  When enabled,
+specify the desired amount of contiguous data using the <tt>NumFramesInBurst</tt> property.
+The default value is false.</p>
+</td></tr><tr valign="top"><td class="argumentlistentrycell"><a name="prop_NumFramesInBurst"></a><p><tt>NumFramesInBurst</tt></p></td><td class="argumentlistentrycell"><a name="comm.SDRuReceiver.FramesInBurst"></a>
+<p>Number of frames in contiguous burst</p>
+<p>This property is valid when <tt>EnableBurstMode</tt> property
+is set to true. The default number of frames in a burst is 100.</p>
+</td></tr></tbody></table><a name="bs8j0cy-22"></a><h2>Methods</h2><p><a href="comm.sdrureceiver.info.html" target="_top">info</a></p><p><a href="comm.sdrureceiver.islocked.html" target="_top">isLocked</a></p><p><a href="comm.sdrureceiver.release.html" target="_top">release</a></p><p><a href="comm.sdrureceiver.step.html" target="_top">step</a></p><a name="bs8j0cy-23"></a><h2>Examples</h2><p>Configure a USRP&reg; board with an IP address of 192.168.10.2
+to receive at 2.5 GHz with a decimation factor of 256. Save the data
+using a signal logger System object<sup>TM</sup>.</p><pre class="programlisting">    hSDRu = comm.SDRuReceiver('192.168.10.2', ...
+              'CenterFrequency', 2.5e9, ...
+              'DecimationFactor', 256);
+    hLogger = dsp.SignalLogger;
+    for counter = 1:20
+      data = step(hSDRu);
+      step(hLogger, data);
+    end</pre><p>For additional demonstrations that use the SDRu Receiver System object<sup>TM</sup>,
+see the following examples:</p><ul type="disc"><li><p><a href="../../sdrudemos/html/sdruFMMonoReceiver.html" target="_top">FM
+Monophonic Receiver with USRP&reg; Hardware</a>: To open this
+example file, enter <tt>edit sdruFMMono</tt> at the MATLAB command
+line.</p></li><li><p><a href="../../sdrudemos/html/sdruFMStereoReceiver.html" target="_top">FM Stereo Receiver
+with USRP&reg; Hardware</a>: To open this example file, enter <tt>edit
+sdruFMStereoReceiver</tt> at the MATLAB command line.</p></li><li><p><a href="../../sdrudemos/html/sdruFRSGMRSReceiver.html" target="_top">FRS/GMRS Walkie-Talkie
+Receiver with USRP&reg; Hardware</a>: To open this example
+file, enter <tt>edit sdruFRSGMRSReceiver</tt> at the MATLAB command
+line.</p></li></ul><a name="bs8j0cy-24"></a><h2>Algorithms</h2><p>This object implements the algorithm, inputs, and outputs described
+on the <a href="sdrureceiver.html" target="_top">SDRu Receiver</a> block
+reference page. The object properties correspond to the block parameters. </p><h2>See Also</h2><p><a href="comm.sdrutransmitterclass.html">comm.SDRuTransmitter</a></p>
+<table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="../index.html"><img src="b_prev.gif" border="0" align="bottom" alt="Communications System Toolbox Support&#xA;Package for USRP&reg; Radio"></a>&nbsp;</td><td align="left">Communications System Toolbox Support Package for USRP&reg; Radio</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/patents.html">Patents</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/trademarks.html">Trademarks</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/">Privacy Policy</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/piracy.html">Preventing Piracy</a></p>
+
+
+  <!-- Last updated: Wed Oct  3 13:03:25 EDT 2012--></body></html>

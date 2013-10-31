@@ -1,0 +1,40 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>Buffer could not be resized :: Troubleshooting Communications System Toolbox Support Package for USRP&reg; Radio (Getting Started)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="gs">
+<meta name="description" content="You may see one of the following messages from the UHDTM driver in the MATLAB&reg; command window." />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btojzto-1"></a><h2 class="title" id="btojzto-1">Buffer could not be resized</h2><a name="btokgvt"></a><h3 class="title" id="btokgvt">Problem</h3><p>You may see one of the following messages from the UHD<sup>TM</sup> driver
+in the MATLAB&reg; command window.</p><p>The recv buffer could not be resized:</p><pre class="programlisting codeoutput">---------- begin libuhd warning message output ----------
+The recv buffer could not be resized sufficiently.
+Target sock buff size: 50000000 bytes.
+Actual sock buff size: 131071 bytes.
+See the transport application notes on buffer resizing.
+Please run: sudo sysctl -w net.core.rmem_max=50000000
+---------- end libuhd warning message output ----------
+</pre><p>The send buffer could not be resized:</p><pre class="programlisting codeoutput">---------- begin libuhd warning message output ----------
+The send buffer could not be resized sufficiently.
+Target sock buff size: 1048576 bytes.
+Actual sock buff size: 131071 bytes.
+See the transport application notes on buffer resizing.
+Please run: sudo sysctl -w net.core.wmem_max=1048576
+---------- end libuhd warning message output ----------
+</pre><a name="btokgvz-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btokgvz-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btokgvz-1">Possible Solution</h3><p>If you encounter either of these messages, run the sysctl commands
+provided in the message in a Linux shell.</p>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btojxzc.html"><img src="b_prev.gif" border="0" align="bottom" alt="Troubleshooting"></a>&nbsp;</td><td align="left">Troubleshooting</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.</p>
+  <!-- Last updated: Wed Oct  3 10:45:06 EDT 2012--></body></html>

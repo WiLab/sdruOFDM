@@ -1,0 +1,10 @@
+MEX {
+	global:
+		mexFunction;
+		emlrtMexFcnProperties;
+		TestSDRuCodegen;
+		TestSDRuCodegen_initialize;
+		TestSDRuCodegen_terminate;
+	local:
+		*;
+};

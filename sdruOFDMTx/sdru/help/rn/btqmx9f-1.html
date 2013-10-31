@@ -1,0 +1,84 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>Version 5.0 (R2013a) Communications System Toolbox Support Package for USRP&reg; Radio :: Communications System Toolbox Support Package for USRP&reg; Radio (Communications System Toolbox&#8482; Support Package for USRP&reg; Radio)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="rn">
+<meta name="description" content="This table summarizes what's new in V5.0 (R2013a):" />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btqmx9f-1"></a><h2 class="title" id="btqmx9f-1">Version 5.0 (R2013a) Communications System Toolbox Support Package
+for USRP&reg; Radio</h2><p>This table summarizes what's new in V5.0 (R2013a):</p><table cellspacing="0" class="body" cellpadding="4" width="100%" border="2"><colgroup><col width="33%"><col width="33%"><col width="34%"></colgroup><thead><tr valign="top"><th bgcolor="#B2B2B2" valign="top">New Features and Changes</th><th bgcolor="#B2B2B2" valign="top">Version Compatibility Considerations</th><th bgcolor="#B2B2B2" valign="top">Fixed Bugs and Known Problems</th></tr>
+</thead><tbody><tr valign="top"><td bgcolor="#F2F2F2">Yes<br>Details below<br></td><td bgcolor="#F2F2F2">None</td><td bgcolor="#F2F2F2">No Bug Fixes</td></tr>
+</tbody></table><p></p><ul><li><p><a href="btqmx9f-1.html#btqmx9f-2">"Target for Use with USRP&reg; Radio" Renamed
+to "Communications System Toolbox Support Package for USRP&reg; Radio"</a></p></li><li><p><a href="btqmx9f-1.html#btq7jzu">New Getting Started Section for Getting Your Radio Up and Running</a></p></li><li><p><a href="btqmx9f-1.html#btqmx9f-3">System Objects Support Offline Mode</a></p></li><li><p><a href="btqmx9f-1.html#btqmyea">Updated Radio Discovery Function Also Returns Radio Status</a></p></li><li><p><a href="btqmx9f-1.html#btqmx9f-4">Added Functions for Getting Radio Information and Setting IP
+Addresses</a></p></li><li><p><a href="btqmx9f-1.html#btvob3z-1">QPSK Receiver and Transmitter Examples for MATLAB</a></p></li><li><p><a href="btqmx9f-1.html#btqmyfw-1">Hardware Support</a></p></li><li><p><a href="btqmx9f-1.html#btry5cn-1">Known Issues</a></p></li></ul><a name="btqmx9f-2"></a><h3 class="title" id="btqmx9f-2">"Target for Use with USRP&reg; Radio" Renamed
+to "Communications System Toolbox Support Package for USRP&reg; Radio"</h3><p>As of release R2013a, "Target for Use with USRP&reg; Radio"
+is known as "Communications System Toolbox&#8482; Support Package for USRP&reg; Radio".</p><a name="btq7jzu"></a><h3 class="title" id="btq7jzu">New Getting Started Section for Getting Your Radio Up and Running</h3><p>The example "Getting Started with the SDRu" has been replaced
+with new documentation detailing the steps you must follow to connect
+your host computer with your USRP&reg; hardware. See the Getting
+Started section on <a href="../index.html" target="_top">the main documenation
+page</a> for Communications System Toolbox Support Package for USRP&reg; Radio.</p><a name="btqmx9f-3"></a><h3 class="title" id="btqmx9f-3">System Objects Support Offline Mode</h3><p>You can program with and generate code for the Receiver and
+Transmitter System objects without a connection to a USRP&reg; radio.</p><ul type="disc"><li><p>You can set the IPAddress property of System objects
+to any legal IP address value without having a connection to a USRP&reg; radio
+at that IP address connected to your host computer.</p></li><li><p>You cannot use tab completion on the IPAddress property
+to get a list of connected USRP&reg; radios. You can find all connected USRP&reg; radios
+with the <tt>findsdru</tt> function.</p></li><li><p>You no longer have to set the IPAddress property as
+a value-only property for code generation.</p></li><li><p>You can generate code from these System objects even
+if you do not have a USRP&reg; radio with the specified IP address
+connected to your host computer. </p></li></ul><a name="btqmyea"></a><h3 class="title" id="btqmyea">Updated Radio Discovery Function Also Returns Radio Status</h3><p>Function <tt>findsdru</tt> now returns a structure
+containing the radio IP address and its current status.</p><table cellspacing="0" class="body" cellpadding="4" border="2"><colgroup><col width="39%"><col width="61%"></colgroup><thead><tr valign="top"><th bgcolor="#B2B2B2" valign="top">Status message</th><th bgcolor="#B2B2B2" valign="top">Meaning</th></tr>
+</thead><tbody><tr valign="top"><td bgcolor="#F2F2F2"><tt>Success</tt></td><td bgcolor="#F2F2F2">Device is available.</td></tr>
+<tr valign="top"><td bgcolor="#F2F2F2"><tt>Not compatible</tt></td><td bgcolor="#F2F2F2">Device with incompatible firmware. To communicate with this
+device,  you must update the firmware to the version returned by the
+function <tt>getSDRuDriverVersion()</tt>. Refer to <a href="../gs/btojxzc.html" target="_top">Troubleshooting</a> for instructions.</td></tr>
+<tr valign="top"><td bgcolor="#F2F2F2"><tt>Not responding</tt></td><td bgcolor="#F2F2F2">Device not responding. It could mean one of the following:<ul type="disc"><li><p>The device may not be attached to the computer.</p></li><li><p>There may not be a device with the specified IP address.</p></li><li><p>The subnet address of the host computer may not match
+the subnet address of the device (the subnet address is the third
+field of the IP address).</p></li></ul></td></tr>
+<tr valign="top"><td bgcolor="#F2F2F2"><tt>Busy</tt></td><td bgcolor="#F2F2F2"> Device is in use. The device is already owned by a block,
+block dialog, or System object<sup>TM</sup>.</td></tr>
+<tr valign="top"><td bgcolor="#F2F2F2"><tt>Unknown error</tt></td><td bgcolor="#F2F2F2">Unknown problem.</td></tr>
+</tbody></table><p></p><a name="btqmx9f-4"></a><h3 class="title" id="btqmx9f-4">Added Functions for Getting Radio Information and Setting IP
+Addresses</h3><p>Two new functions have been added:</p><ul type="disc"><li><p><tt>probesdru</tt>: Provides detailed
+information about the USRP&reg; radio connected to the host computer. </p></li><li><p><tt>setsdruip</tt>: Sets the IP address
+of the USRP&reg; device to a new IP address.</p></li></ul><a name="btvob3z-1"></a><h3 class="title" id="btvob3z-1">QPSK Receiver and Transmitter Examples for MATLAB</h3><p>Examples are now available for developing a QPSK (Quadrature
+Phase Shift Keying) Receiver and QPSK Transmitter using Communications System Toolbox Support
+Package for USRP&reg; Radio.</p><ul type="disc"><li><p><a href="../../sdrudemos/html/sdruQPSKReceiver.html" target="_top">QPSK
+Receiver with USRP&reg; Hardware</a>: To open this example, enter <tt>showdemo('sdruQPSKReceiver')</tt> at
+the MATLAB<sup>&reg;</sup> command line. </p></li><li><p><a href="../../sdrudemos/html/sdruQPSKTransmitter.html" target="_top">QPSK Transmitter
+with USRP&reg; Hardware</a>:  To open this example, enter <tt>showdemo('sdruQPSKTransmitter')</tt> at
+the MATLAB command line. </p></li></ul><a name="btqmyfw-1"></a><h3 class="title" id="btqmyfw-1">Hardware Support</h3><p>New motherboards, daughterboards, and firmware updated since
+the prior release are listed in this section.</p><p>Communications System Toolbox Support Package for USRP&reg; Radio
+supports only UHD<sup>TM</sup>-based Ettus Research<sup>TM</sup> radios that communicate
+using Ethernet. This feature has been tested with the configurations
+listed in the following table.</p><table cellspacing="0" class="body" cellpadding="4" border="2"><colgroup><col width="33%"><col width="33%"><col width="34%"></colgroup><thead><tr valign="top"><th bgcolor="#B2B2B2" valign="top">Motherboards Tested</th><th bgcolor="#B2B2B2" valign="top">Daughterboards Tested</th><th bgcolor="#B2B2B2" valign="top">UHD<sup>TM</sup> Firmware/FPGA
+Release</th></tr>
+</thead><tbody><tr valign="top"><td bgcolor="#F2F2F2">N210 (Rev 2.0, Rev 4.0)<br>USRP2&reg; (Rev 4.0)</td><td bgcolor="#F2F2F2">DBSRX<br>DBSRX2<br>LFRX<br>LFTX<br>SBX<br>TVRX<br>TVRX2<br>WBX<br>XCVR2450<br></td><td bgcolor="#F2F2F2">003.004.002 </td></tr>
+</tbody></table><p></p><ul><a name="zmw57dd0e413"></a><table cellspacing="0" class="note" summary="Note" cellpadding="5" border="1"><tr width="90%"><td><p><b>Note</b>&nbsp;&nbsp;
+
+
+It is possible that MATLAB System objects and Simulink<sup>&reg;</sup> blocks
+will work with versions of motherboards, daughterboards, and firmware
+not listed in the previous table. See <a href="http://www.mathworks.com/discovery/sdr/usrp.html" target="_top">USRP&reg; Hardware
+Support from MATLAB and Simulink </a> for additional information.</p></td></tr></table></ul><a name="btry5cn-1"></a><h3 class="title" id="btry5cn-1">Known Issues</h3><a name="btry5cn-2"></a><h4 class="title" id="btry5cn-2">Limitation When Using XCVR2450 Daughterboard</h4><p>MATLAB will abort if you disconnect a USRP&reg; device
+with an XCVR2450 daughterboard under one of the following conditions:</p><ul type="disc"><li><p>You are simulating a model that contains a Support
+Package for USRP&reg; Radio Simulink block and the block dialog
+is open, or</p></li><li><p>You are using a Support Package for USRP&reg; Radio System object<sup>TM</sup> that
+is communicating with the USRP&reg; hardware.</p></li></ul><a name="btry5cn-4"></a><h4 class="title" id="btry5cn-4">Multiple-Input Multiple-Output (MIMO) Support</h4><p>Use Support Package for USRP&reg; Radio in single-input,
+single output (SISO) applications. This software does not support
+the transmission of multiple, synchronized data streams to and from
+multiple USRP&reg; transmitters and receivers.</p><a name="btry5cn-5"></a><h4 class="title" id="btry5cn-5">Antenna Configuration</h4><p>Antenna configurations for daughterboards remain in their default
+settings and cannot be changed. For more information, see <a href="http://www.ettus.com/content/files/kb/Selecting_an_RF_Daughterboard.pdf" target="_top">Selecting
+an RF Daughterboard</a> on the Ettus Research<sup>TM</sup> <a href="http://www.ettus.com/" target="_top"> web site</a> for details.</p>
+<table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p><table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="bs4muej-2.html"><img src="b_prev.gif" border="0" align="bottom" alt="Communications System Toolbox Support Package for USRP&reg; Radio"></a>&nbsp;</td><td align="left">Communications System Toolbox Support Package for USRP&reg; Radio</td><td>&nbsp;</td><td align="right">Version 4.0 (R2012b) Target for Use with USRP&reg; Radio</td><td align="right" width="20"><a href="btfya5f-1.html"><img src="b_next.gif" border="0" align="bottom" alt="Version 4.0 (R2012b) Target for Use with USRP&reg; Radio"></a></td></tr></table><br>
+
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+       <tt class="minicdot">&#149;</tt> <a href="../../../../license.txt">Terms of Use</a> <tt class="minicdot">&#149;</tt> <a href="../../../../patents.txt">Patents</a> <tt class="minicdot">&#149;</tt> <a href="../../../../trademarks.txt">Trademarks</a> <tt class="minicdot">&#149;</tt> <a href="../../../../help/acknowledgments.html">Acknowledgments</a></p>
+  <!-- Last updated: Mon Jan  7 20:13:55 EST 2013--></body></html>

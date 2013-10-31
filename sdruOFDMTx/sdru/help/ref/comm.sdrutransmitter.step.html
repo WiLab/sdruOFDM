@@ -1,0 +1,70 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>step (comm.SDRuTransmitter) :: USRP&#8482; Radio Support Package System Object Reference (Communications System Toolbox&#8482; Support Package for USRP&#8482; Radio)</title><link rel="stylesheet" href="docstyle.css" type="text/css"><meta name="chunktype" content="refpage"><meta name="refentity" itemprop="refentity" content="method:comm.SDRuTransmitter.step">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="ug">
+<meta name="description" content="step(H,X) transmits signal and control data to a USRP&reg; board using User Datagram Protocol (UDP) packets." />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="bs8j3tw-1"></a><h1 class="reftitle" itemprop="title">step</h1><!-- SYNCHTO: bthj6sw.html --><p><b>Class: </b><a href="comm.sdrutransmitterclass.html">comm.SDRuTransmitter</a><br><b>Package: </b>comm</p><p class="purpose">Transmit signal and control data to USRP&reg; board</p>
+<h2 id="syntax">Syntax</h2><div class="syntax_signature"><p class="synopsis"><tt>step(H,X)<br>UNDER = step(H,X)<br>step(H,X,FC)<br>step(H,X,LO)<br>step(H,X,GAIN)<br>step(H,X,INTERP)<br></tt></p></div><div class="clear"></div><a name="bs8j3tw-2"></a><h2>Description</h2><p><span itemprop="syntax"><tt>step(H,X)</tt></span> transmits signal and control
+data to a USRP&reg; board using User Datagram Protocol (UDP) packets.
+The input signal, <tt>X</tt>, is a column vector of double
+values.</p><p><span itemprop="syntax"><tt>UNDER = step(H,X)</tt></span> outputs a value indicating
+that underruns occurred. This port is enabled when you set the <tt>UnderrunOutputPort</tt> property
+to true. A value of zero indicates no data loss occurred. Any value
+equal to or greater than 1 indicates data loss. Although the value
+reported does not represent the actual number of packets dropped,
+the higher this value, the farther you are from achieving real-time
+performance.</p><p><span itemprop="syntax"><tt>step(H,X,FC)</tt></span> configures the USRP&reg;
+board to transmit at the center frequency, <tt>FC</tt>, when
+you set the <a name="missinglink"></a><tt>CenterFrequencySource</tt> property
+to <tt>Input port</tt>. Center frequency, <tt>FC</tt>,
+must be a double precision scalar.</p><p><span itemprop="syntax"><tt>step(H,X,LO)</tt></span> configures the USRP&reg;
+board to apply a local oscillator offset, LO, when you set the <tt>LocalOscillatorOffsetSource</tt> property
+to <tt>Input port</tt>. The offset, LO, must be a double
+precision scalar.</p><p><span itemprop="syntax"><tt>step(H,X,GAIN)</tt></span> configures the USRP&reg;
+board to transmit using a gain specified by the input, GAIN, when
+you set the <a name="missinglink"></a><tt>GainSource</tt> property
+to <tt>Input port</tt>. The Input, <tt>GAIN</tt>,
+must be a double precision scalar.</p><p><span itemprop="syntax"><tt>step(H,X,INTERP)</tt></span> configures the USRP&reg;
+board to transmit using an interpolation factor, <tt>INTERP</tt>,
+when you set the <a name="missinglink"></a><tt>InterpolationfactorSource</tt> property
+to <tt>Input port</tt>. Input, <tt>INTERP</tt>,
+must be an integer scalar.</p><p>You can combine optional input arguments when you set their
+enabling properties. Optional inputs must be listed in the same order
+as the order of the enabling properties. For example, <tt>step(H,X,FC,LO,GAIN,INTERP)</tt>.</p><ul><a name="zmw57dd0e2512"></a><table cellspacing="0" class="note" summary="Note" cellpadding="5" border="1"><tr width="90%"><td><p><b>Note</b>&nbsp;&nbsp;
+
+
+The object performs an initialization the first time the <tt>step</tt> method
+is executed. This initialization locks <a href="../../../toolbox/comm/gs/bsmo27_.html#bsb82pk">nontunable
+properties</a> and input specifications, such as dimensions, complexity,
+and data type of the input data. If you change a nontunable property
+or an input specification, the  issues an error.
+To change nontunable properties or inputs, you must first call the <tt>release</tt> method
+to unlock the object.</p></td></tr></table></ul>
+<table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="comm.sdrutransmitterclass.html"><img src="b_prev.gif" border="0" align="bottom" alt="comm.SDRuTransmitter class"></a>&nbsp;</td><td align="left">comm.SDRuTransmitter class</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/patents.html">Patents</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/trademarks.html">Trademarks</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/">Privacy Policy</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/piracy.html">Preventing Piracy</a></p>
+
+
+  <!-- Last updated: Tue Oct  2 15:42:17 EDT 2012--></body></html>

@@ -1,0 +1,20 @@
+# Make settings for TestSDRuCodegen
+CC=gcc-4.4
+CFLAGS=-ansi -D_GNU_SOURCE  -fexceptions -fPIC -fno-omit-frame-pointer -pthread
+CLIBS=-Wl,-rpath-link,/opt/MATLAB/R2013a/bin/glnxa64 -L/opt/MATLAB/R2013a/bin/glnxa64 -lmx -lmex -lmat -lm -L /opt/MATLAB/R2013a/sys/os/glnxa64 -lstdc++
+COPTIMFLAGS=-O -DNDEBUG
+CDEBUGFLAGS=-g
+CXX=g++-4.4
+CXXFLAGS=-ansi -D_GNU_SOURCE -fPIC -fno-omit-frame-pointer -pthread
+CXXLIBS=-Wl,-rpath-link,/opt/MATLAB/R2013a/bin/glnxa64 -L/opt/MATLAB/R2013a/bin/glnxa64 -lmx -lmex -lmat -lm
+CXXOPTIMFLAGS=-O -DNDEBUG
+CXXDEBUGFLAGS=-g
+LD=gcc-4.4
+LDFLAGS=-pthread -shared -Wl,--version-script,/opt/MATLAB/R2013a/extern/lib/glnxa64/mexFunction.map -Wl,--no-undefined
+LDOPTIMFLAGS=-O
+LDDEBUGFLAGS=-g
+Arch=glnxa64
+OMPFLAGS=
+OMPLINKFLAGS=
+EMC_COMPILER=
+EMC_CONFIG=optim

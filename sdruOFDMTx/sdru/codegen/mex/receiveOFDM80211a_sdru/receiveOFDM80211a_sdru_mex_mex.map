@@ -1,0 +1,10 @@
+MEX {
+	global:
+		mexFunction;
+		emlrtMexFcnProperties;
+		receiveOFDM80211a_sdru;
+		receiveOFDM80211a_sdru_initialize;
+		receiveOFDM80211a_sdru_terminate;
+	local:
+		*;
+};

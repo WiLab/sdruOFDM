@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>RTW Report - resample.c</title>
+<script language="JavaScript" type="text/javascript" src="rtwreport_utils.js"></script>
+</head>
+<body bgcolor="#eeeeee" text="#1122aa" onload="try {if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window.document); else local_onload();}} catch(err) {};">
+<p>
+<table border="0" cellspacing="0" cellpadding="6" width="100%%" height="100%%"><tr><td width="100%%" valign="top" bgcolor="#ffffff">
+<h4>File: <a href="../resample.c" target="rtwreport_document_frame" id="linkToText_plain">resample.c</a></h4>
+<pre id="RTWcode">
+<a name="1"><font color="#888888 "><i>    1   </i></font></a><font color="#117755"><i>/*</i></font>
+<a name="2"><font color="#888888 "><i>    2   </i></font></a><font color="#117755"><I> * resample.c</i></font>
+<a name="3"><font color="#888888 "><i>    3   </i></font></a><font color="#117755"><I> *</i></font>
+<a name="4"><font color="#888888 "><i>    4   </i></font></a><font color="#117755"><I> * Code generation for function 'resample'</i></font>
+<a name="5"><font color="#888888 "><i>    5   </i></font></a><font color="#117755"><I> *</i></font>
+<a name="6"><font color="#888888 "><i>    6   </i></font></a><font color="#117755"><I> * C source code generated on: Tue Oct  8 14:08:18 2013</i></font>
+<a name="7"><font color="#888888 "><i>    7   </i></font></a><font color="#117755"><I> *</i></font>
+<a name="8"><font color="#888888 "><i>    8   </i></font></a><font color="#117755"><I> */</i></font>
+<a name="9"><font color="#888888 "><i>    9   </i></font></a>
+<a name="10"><font color="#888888 "><i>   10   </i></font></a><font color="#117755"><i>/* Include files */</i></font>
+<a name="11"><font color="#888888 "><i>   11   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;rt_nonfinite.h&quot;</font>
+<a name="12"><font color="#888888 "><i>   12   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;receiveOFDM80211a_sdru.h&quot;</font>
+<a name="13"><font color="#888888 "><i>   13   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;resample.h&quot;</font>
+<a name="14"><font color="#888888 "><i>   14   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;setup.h&quot;</font>
+<a name="15"><font color="#888888 "><i>   15   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;SystemCore.h&quot;</font>
+<a name="16"><font color="#888888 "><i>   16   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;FIRRateConverter.h&quot;</font>
+<a name="17"><font color="#888888 "><i>   17   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&lt;stdio.h&gt;</font>
+<a name="18"><font color="#888888 "><i>   18   </i></font></a>
+<a name="19"><font color="#888888 "><i>   19   </i></font></a><font color="#117755"><i>/* Variable Definitions */</i></font>
+<a name="20"><font color="#888888 "><i>   20   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_of_emlrtRSI">of_emlrtRSI</a> = <b>{</b> 84, <font color="#1122ff">&quot;resample&quot;</font>,
+<a name="21"><font color="#888888 "><i>   21   </i></font></a>  <font color="#1122ff">&quot;/opt/MATLAB/R2013a/toolbox/signal/eml/resample.m&quot;</font> <b>}</b>;
+<a name="22"><font color="#888888 "><i>   22   </i></font></a>
+<a name="23"><font color="#888888 "><i>   23   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_pf_emlrtRSI">pf_emlrtRSI</a> = <b>{</b> 146, <font color="#1122ff">&quot;upfirdn&quot;</font>,
+<a name="24"><font color="#888888 "><i>   24   </i></font></a>  <font color="#1122ff">&quot;/opt/MATLAB/R2013a/toolbox/signal/eml/upfirdn.m&quot;</font> <b>}</b>;
+<a name="25"><font color="#888888 "><i>   25   </i></font></a>
+<a name="26"><font color="#888888 "><i>   26   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_qf_emlrtRSI">qf_emlrtRSI</a> = <b>{</b> 149, <font color="#1122ff">&quot;upfirdn&quot;</font>,
+<a name="27"><font color="#888888 "><i>   27   </i></font></a>  <font color="#1122ff">&quot;/opt/MATLAB/R2013a/toolbox/signal/eml/upfirdn.m&quot;</font> <b>}</b>;
+<a name="28"><font color="#888888 "><i>   28   </i></font></a>
+<a name="29"><font color="#888888 "><i>   29   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_rf_emlrtRSI">rf_emlrtRSI</a> = <b>{</b> 150, <font color="#1122ff">&quot;upfirdn&quot;</font>,
+<a name="30"><font color="#888888 "><i>   30   </i></font></a>  <font color="#1122ff">&quot;/opt/MATLAB/R2013a/toolbox/signal/eml/upfirdn.m&quot;</font> <b>}</b>;
+<a name="31"><font color="#888888 "><i>   31   </i></font></a>
+<a name="32"><font color="#888888 "><i>   32   </i></font></a><font color="#117755"><i>/* Function Definitions */</i></font>
+<a name="33"><font color="#888888 "><i>   33   </i></font></a><font color="#112266"><b>void</b></font> <a name="fcn_resample">resample</a>(<a href="receiveOFDM80211a_sdru_types_h.html#type_receiveOFDM80211a_sdruStackData" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_receiveOFDM80211a_sdruStackData');" target="rtwreport_document_frame"><font color="#1122aa">receiveOFDM80211a_sdruStackData</font></a> *SD, <font color="#112266"><b>const</b></font> creal_T x[48], creal_T
+<a name="34"><font color="#888888 "><i>   34   </i></font></a>              yout[576])
+<a name="35"><font color="#888888 "><i>   35   </i></font></a><b>{</b>
+<a name="36"><font color="#888888 "><i>   36   </i></font></a>  <a href="receiveOFDM80211a_sdru_types_h.html#type_dspcodegen_FIRRateConverter_112" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_dspcodegen_FIRRateConverter_112');" target="rtwreport_document_frame"><font color="#1122aa">dspcodegen_FIRRateConverter_112</font></a> s;
+<a name="37"><font color="#888888 "><i>   37   </i></font></a>  creal_T b_x[288];
+<a name="38"><font color="#888888 "><i>   38   </i></font></a>  int32_T i20;
+<a name="39"><font color="#888888 "><i>   39   </i></font></a>  int32_T i21;
+<a name="40"><font color="#888888 "><i>   40   </i></font></a>  emlrtPushRtStackR2012b(&amp;<a href="#var_of_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_of_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">of_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="41"><font color="#888888 "><i>   41   </i></font></a>  emlrtPushRtStackR2012b(&amp;<a href="#var_pf_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pf_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">pf_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="42"><font color="#888888 "><i>   42   </i></font></a>  <a href="FIRRateConverter_c.html#fcn_c_FIRRateConverter_FIRRateConve" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_c_FIRRateConverter_FIRRateConve');" target="rtwreport_document_frame"><font color="#1122aa">c_FIRRateConverter_FIRRateConve</font></a>(&amp;s);
+<a name="43"><font color="#888888 "><i>   43   </i></font></a>  emlrtPopRtStackR2012b(&amp;<a href="#var_pf_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pf_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">pf_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="44"><font color="#888888 "><i>   44   </i></font></a>  emlrtPushRtStackR2012b(&amp;<a href="#var_qf_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_qf_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">qf_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="45"><font color="#888888 "><i>   45   </i></font></a>  <font color="#112266"><b>for</b></font> (i20 = 0; i20 &lt; 12; i20++) <b>{</b>
+<a name="46"><font color="#888888 "><i>   46   </i></font></a>    memcpy(&amp;b_x[24 * i20], &amp;x[i20 &lt;&lt; 2], <font color="#112266"><b>sizeof</b></font>(creal_T) &lt;&lt; 2);
+<a name="47"><font color="#888888 "><i>   47   </i></font></a>    <font color="#112266"><b>for</b></font> (i21 = 0; i21 &lt; 20; i21++) <b>{</b>
+<a name="48"><font color="#888888 "><i>   48   </i></font></a>      b_x[(i21 + 24 * i20) + 4].re = 0.0;
+<a name="49"><font color="#888888 "><i>   49   </i></font></a>      b_x[(i21 + 24 * i20) + 4].im = 0.0;
+<a name="50"><font color="#888888 "><i>   50   </i></font></a>    <b>}</b>
+<a name="51"><font color="#888888 "><i>   51   </i></font></a>  <b>}</b>
+<a name="52"><font color="#888888 "><i>   52   </i></font></a>
+<a name="53"><font color="#888888 "><i>   53   </i></font></a>  <a href="SystemCore_c.html#fcn_c_SystemCore_step" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_c_SystemCore_step');" target="rtwreport_document_frame"><font color="#1122aa">c_SystemCore_step</font></a>(&amp;s, b_x, SD-&gt;u1.f0.y);
+<a name="54"><font color="#888888 "><i>   54   </i></font></a>  emlrtPopRtStackR2012b(&amp;<a href="#var_qf_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_qf_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">qf_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="55"><font color="#888888 "><i>   55   </i></font></a>  emlrtPushRtStackR2012b(&amp;<a href="#var_rf_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_rf_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">rf_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="56"><font color="#888888 "><i>   56   </i></font></a>  <a href="SystemCore_c.html#fcn_SystemCore_reset" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_SystemCore_reset');" target="rtwreport_document_frame"><font color="#1122aa">SystemCore_reset</font></a>(&amp;s);
+<a name="57"><font color="#888888 "><i>   57   </i></font></a>  emlrtPopRtStackR2012b(&amp;<a href="#var_rf_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_rf_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">rf_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="58"><font color="#888888 "><i>   58   </i></font></a>  <a href="setup_c.html#fcn_Destructor" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_Destructor');" target="rtwreport_document_frame"><font color="#1122aa">Destructor</font></a>(&amp;s.cSFunObject);
+<a name="59"><font color="#888888 "><i>   59   </i></font></a>  emlrtPopRtStackR2012b(&amp;<a href="#var_of_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_of_emlrtRSI');" target="rtwreport_document_frame"><font color="#1122aa">of_emlrtRSI</font></a>, <a href="receiveOFDM80211a_sdru_mex_c.html#var_emlrtRootTLSGlobal" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRootTLSGlobal');" target="rtwreport_document_frame"><font color="#1122aa">emlrtRootTLSGlobal</font></a>);
+<a name="60"><font color="#888888 "><i>   60   </i></font></a>  <font color="#112266"><b>for</b></font> (i20 = 0; i20 &lt; 12; i20++) <b>{</b>
+<a name="61"><font color="#888888 "><i>   61   </i></font></a>    memcpy(&amp;yout[48 * i20], &amp;SD-&gt;u1.f0.y[121 + 288 * i20], 48U * <font color="#112266"><b>sizeof</b></font>(creal_T));
+<a name="62"><font color="#888888 "><i>   62   </i></font></a>  <b>}</b>
+<a name="63"><font color="#888888 "><i>   63   </i></font></a><b>}</b>
+<a name="64"><font color="#888888 "><i>   64   </i></font></a>
+<a name="65"><font color="#888888 "><i>   65   </i></font></a><font color="#117755"><i>/* End of code generation (resample.c) */</i></font>
+<a name="66"><font color="#888888 "><i>   66   </i></font></a></pre>
+</td></tr></table>
+</p>
+</body>
+</html>

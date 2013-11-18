@@ -11,6 +11,6 @@ To do:
 Modules
 
  - Base tx rx phy
- + CRC
+   - CRC
 
 --Energy detection

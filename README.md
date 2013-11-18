@@ -10,7 +10,7 @@ To do:
 
 Modules
 
--Base tx rx phy
-+CRC
+ - Base tx rx phy
+ + CRC
 
 --Energy detection

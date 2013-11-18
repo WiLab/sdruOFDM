@@ -12,5 +12,4 @@ Modules
 
  - Base tx rx phy
    - CRC
-
---Energy detection
+ - Energy detection

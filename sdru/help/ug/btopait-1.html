@@ -1,0 +1,67 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>Optimizing Model Performance :: Performance Improvements (User's Guide)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="ug">
+<meta name="description" content="Run your application with Accelerator or Rapid Accelerator instead of Normal mode." />
+<script type="text/javascript" src="../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btopait-1"></a><h2 class="title" id="btopait-1">Optimizing Model Performance</h2><table border="0" cellpadding="4" cellspacing="0" class="pagenavtable"><tr><th>On this page&#8230;</th></tr><tr><td><p><a href="btopait-1.html#btopait-2">Acceleration</a></p><p><a href="btopait-1.html#btopait-3">Model Tuning</a></p><p><a href="btopait-1.html#btjfyb8">Simulink Code Generation</a></p></td></tr></table><a name="btopait-2"></a><h3 class="title" id="btopait-2">Acceleration</h3><p>Run your application with Accelerator or Rapid Accelerator instead
+of Normal mode. Be aware that some scopes do not plot data when run
+in Rapid Accelerator mode.</p><p>When you do use Accelerator or Rapid Accelerator, set <b>Model Configuration Parameters</b> &gt; <b>Optimization</b> &gt; <b>Compiler optimization level</b> to <b>Optimizations
+on (faster runs)</b>.</p><a name="btopait-3"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btopait-3");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btopait-3">Model Tuning</h3><ul type="disc"><li><p>Use frame-based processing. With frame-based processing,
+the model processes multiple samples during a single execution call
+to a block. Consider using frame sizes from roughly 100 to several
+thousand.</p></li><li><p>In <b>Model Configuration Parameters</b> &gt; <b>Data Import/Export</b>, turn off
+all logging.</p></li><li><p>The model should be single-rate. If the model requires
+resampling, then choose rational coefficients that will keep the model
+single-rate.</p></li><li><p>Do not add any Buffer blocks to the model. If you
+want to create convenient frame sizes, do it in your data sources.
+Using a Buffer block typically degrades performance.</p></li><li><p>Avoid feedback loops. Typically, such loops imply
+scalar processing, which will slow down the model considerably.</p></li><li><p>Avoid using scopes. To visualize your data, send it
+to a workspace variable and post-process it.</p></li><li><p>If the model has many Constant blocks, you might want
+to check <b>Model Configuration Parameters</b> &gt; <b>Optimization (Signals and Parameters)</b> &gt; <b>Inline parameters</b>. This settings
+causes the sample time of those Constant blocks to truly become inf,
+and Simulink will get the values once and only once during a
+run.</p></li></ul><a name="btjfyb8"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btjfyb8");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btjfyb8">Simulink Code Generation</h3><ul type="disc"><li><p>If you are generating code from the model, set the
+Solver setting to Fixed-step/ discrete. Set tasking mode to SingleTasking.</p></li><li><p>You can generate a standalone executable for your Simulink model
+to improve performance. The generated code runs without Simulink in
+the loop. To perform any code generation, you must have an appropriate
+compiler installed. See <a href="http://www.mathworks.com/support/compilers/R2013a/win64.html" target="_top">http://www.mathworks.com/support/compilers/R2013a/win64.html</a> for
+a list of supported compilers. </p><p>You can generate generic real-time target (GRT) code if you
+have a <span>Simulink Coder&#8482;</span> license. To do so, set <b>Model Configuration Parameters</b> &gt; <b>Code
+Generation</b> &gt; <b>System target file </b> to <tt>grt.tlc (Generic Real-Time Target)</tt>.</p></li><li><p>When you generate code for any target (not just GRT),
+uncheck the <b>Model Configuration Parameters</b> &gt; <b>Hardware Implementation</b> &gt; <b>Emulation
+hardware (code generation only)</b> checkbox.
+After the checkbox is unchecked, set the Device type popup to <tt>MATLAB
+Host Computer</tt>.</p></li><li><p>You can create generated code with a smaller stack
+then the GRT code if you have an Embedded Coder&#8482; license. To do
+so, set the <b>Model Configuration Parameters</b> &gt; <b>Code Generation</b> &gt; <b>System target
+file </b> to <tt>ert.tlc (Embedded Coder)</tt>.
+Then, add the following lines to the <b>Model
+Configuration Parameters</b> &gt; <b>Code Generation</b> &gt; <b>Custom Code </b> &gt; <b>Include custom
+C code in generated:</b> &gt; <b>Source file</b> edit field:</p><pre class="programlisting">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;</pre></li></ul>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btopab6.html"><img src="b_prev.gif" border="0" align="bottom" alt="Performance Improvements"></a>&nbsp;</td><td align="left">Performance Improvements</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/patents.html">Patents</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/trademarks.html">Trademarks</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/">Privacy Policy</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/piracy.html">Preventing Piracy</a></p>
+  <!-- Last updated: Wed Oct  3 11:11:42 EDT 2012--></body></html>

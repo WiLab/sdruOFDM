@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2011-2012 The MathWorks, Inc. -->
+<demos>
+    <name>Communications System Toolbox Support Package for USRP(R) Radio</name>
+    <type>matlab</type>
+    <icon>$toolbox/matlab/icons/matlabicon.gif</icon>
+    <description isCdata="no">
+        <p>Communications System Toolbox Support Package for USRP&#174; Radio provides a library of blocks and System objects 
+          to utilize USRP hardware for rapid prototyping.
+        </p>
+    </description>
+    
+    <demosection>
+        <label>MATLAB Examples</label>
+        <demoitem>
+            <label>FM Monophonic Receiver with USRP(R) Hardware</label>
+            <type>M-file</type>
+            <source>sdruFMMonoReceiver</source>
+        </demoitem>            
+        <demoitem>
+            <label>FM Stereo Receiver with USRP(R) Hardware</label>
+            <type>M-file</type>
+            <source>sdruFMStereoReceiver</source>
+        </demoitem>            
+        <demoitem>
+            <label>FRS/GMRS Walkie-Talkie Receiver with USRP(R) Hardware</label>
+            <type>M-file</type>
+            <source>sdruFRSGMRSReceiver</source>
+        </demoitem>            
+        <demoitem>
+            <label>FRS/GMRS Walkie-Talkie Transmitter with USRP(R) Hardware</label>
+            <type>M-file</type>
+            <source>sdruFRSGMRSTransmitter</source>
+        </demoitem>
+        <demoitem>
+            <label>QPSK Receiver with USRP(R) Hardware</label>
+            <type>M-file</type>
+            <source>sdruQPSKReceiver</source>
+        </demoitem>            
+        <demoitem>
+            <label>QPSK Transmitter with USRP(R) Hardware</label>
+            <type>M-file</type>
+            <source>sdruQPSKTransmitter</source>
+        </demoitem>                
+    </demosection>
+        
+    <demosection>
+        <label>Simulink Examples</label>
+        <demoitem>
+            <label>FM Monophonic Receiver with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruFMMono</source>
+            <file>html/sdruFMMono.html</file> 
+        </demoitem>            
+        <demoitem>
+            <label>FM Stereo Receiver with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruFMStereo</source>
+            <file>html/sdruFMStereo.html</file> 
+        </demoitem> 
+        <demoitem>
+            <label>FPGA Targeting with USRP(R) N210 Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruFMMonoFPGA</source>
+            <file>html/sdruFMMonoFPGA.html</file>             
+        </demoitem>        
+        <demoitem>
+            <label>FRS/GMRS Walkie-Talkie Receiver with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruFRSGMRSRx</source>
+            <file>html/sdruFRSGMRSRx.html</file> 
+        </demoitem>            
+        <demoitem>
+            <label>FRS/GMRS Walkie-Talkie Transmitter with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruFRSGMRSTx</source>
+            <file>html/sdruFRSGMRSTx.html</file> 
+        </demoitem>
+        <demoitem>
+            <label>IEEE 802.11 WLAN - Beacon Frame Receiver with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruwlan80211BeaconRx</source>
+            <file>html/sdruwlan80211BeaconRx.html</file> 
+        </demoitem>        
+        <demoitem>
+            <label>QPSK Receiver with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruqpskrx</source>
+            <file>html/sdruqpskrx.html</file> 
+        </demoitem>
+        <demoitem>
+            <label>QPSK Transmitter with USRP(R) Hardware</label>
+            <dependency>Simulink</dependency>
+            <type>model</type>
+            <source>sdruqpsktx</source>
+            <file>html/sdruqpsktx.html</file> 
+        </demoitem>
+    </demosection>
+</demos>

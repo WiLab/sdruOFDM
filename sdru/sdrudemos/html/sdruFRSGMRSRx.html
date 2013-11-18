@@ -1,0 +1,184 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>FRS/GMRS Walkie-Talkie Receiver with USRP&reg; Hardware</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-19"><meta name="DC.source" content="sdruFRSGMRSRx.m"><link rel="stylesheet" type="text/css" href="./style.css"></head><body><div class="header"><div class="left">sdruFRSGMRSRx.mdl</div><div class="right"><a href="matlab:sdruFRSGMRSRx">Open this model</a></div></div><div class="content"><h1>FRS/GMRS Walkie-Talkie Receiver with USRP&reg; Hardware</h1><!--introduction--><p>This model shows how to use the Universal Software Radio Peripheral&reg; (USRP&reg;) device with Simulink&reg; to build a walkie-talkie that can receive messages from a physical walkie-talkie.  The specific radio standard that this example follows is FRS/GMRS (Family Radio Service / General Mobile Radio Service) with CTCSS (Continuous Tone-Coded Squelch System).</p><p>In order to run this model, you need a USRP&reg; board with an appropriate receiver daughterboard that supports the UHF 462-467 MHz band (for example, WBX). Please refer to <a href="../../help/index.html">Getting Started</a> for details on configuring your host computer to work with the SDRu Receiver block.</p><p>This example is designed to work with USA standards for FRS/GMRS operation. The technical specifications for these standards can be found at <a href="http://en.wikipedia.org/wiki/Family_Radio_Service">[1]</a> and <a href="http://en.wikipedia.org/wiki/General_Mobile_Radio_Service">[2]</a>. Operation in other countries may or may not work.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Overview</a></li><li><a href="#2">Structure of the Example</a></li><li><a href="#4">Running the Example</a></li><li><a href="#5">FRS/GMRS Receiver Subsystem</a></li><li><a href="#7">Automatic Gain Control</a></li><li><a href="#8">Channel Selectivity and FM Demodulation</a></li><li><a href="#12">Continuous Tone-Coded Squelch System (CTCSS) and Decision Block</a></li><li><a href="#13">Audio Output</a></li><li><a href="#14">Exploring the Example</a></li><li><a href="#15">References</a></li><li><a href="#16">Copyright Notice</a></li></ul></div><h2>Overview<a name="1"></a></h2><p>Please refer to the <a href="sdruFRSGMRSTx.html">FRS/GMRS Walkie-Talkie Transmitter with USRP&reg; Hardware</a> example for general information and overview details.  Note that all the information in that section applies to this example, except that this example is designed to receive signals instead of transmit them.</p><h2>Structure of the Example<a name="2"></a></h2><p>This is the top-level block diagram of the model:</p><img vspace="5" hspace="5" src="sdruFRSGMRSRx_01.png" alt=""> <h2>Running the Example<a name="4"></a></h2><p>Turn on your walkie-talkie, set the channel to be one of the 14 channels (numbered 1 to 14) and the private code to be either one of the 38 private codes (numbered 1 to 38) or 0, in which case no squelch system is used and all received messages are accepted.  Note that the private codes above 38 are digital codes and are not implemented in this example.</p><p>Set the channel and private code in the <tt>Model Parameters</tt> GUI in the model so that they match the settings on the walkie-talkie.  Run the model, speak into the walkie-talkie, and see if you can hear your voice come out of the computer speakers.  If not, try adjusting the "Average signal threshold for squelch" parameter downward slightly.  You can change the channel and private code without stopping and restarting the model.</p><p>If you hear some dropouts or delay in the sound, run the model in Accelerator mode.  From the model menu, select Simulation-&gt;Accelerator, then click the run button.  If you still experience dropouts or delay in Accelerator mode, try running the model in Rapid Accelerator mode.</p><p>You can also run this model alongside an additional USRP&reg; device running the FRS/GMRS transmitter example, instead of with a physical walkie-talkie.</p><h2>FRS/GMRS Receiver Subsystem<a name="5"></a></h2><p>The <tt>SDRu Receiver</tt> block converts the RF waveform to complex baseband samples, which become the input to this subsystem.</p><p>This subsystem is an enabled subsystem, which means that it is only active when the driving 'Data Len' output is greater than 0.</p><p>Below is the block diagram of the <tt>FRS-GMRS Receiver</tt> subsystem:</p><img vspace="5" hspace="5" src="sdruFRSGMRSRx_02.png" alt=""> <h2>Automatic Gain Control<a name="7"></a></h2><p>The <tt>Automatic Gain Control</tt> block is the first block that processes the received signal. It processes the signal to ensure that the average magnitude of the samples is about 1.  In this case, the walkie-talkie transmitter is likely nearby the USRP&reg; radio, which implies that the received signal should not suffer from fading, and the received noise should be low.  However, in general this may not be the case.</p><h2>Channel Selectivity and FM Demodulation<a name="8"></a></h2><p>The channel selectivity filter is the next block.  If the incoming signal is from an adjacent channel, a low pass channel separation filter will reduce its power significantly.  The gap between adjacent channels is 25 kHz, which means the baseband bandwidth is at most 12.5 kHz. Thus, we choose the cutoff frequency to be 10 kHz.</p><p>Next, a channel selector computes the average power of the filtered signal, and if it is greater than a threshold (set to a default of 10%), the channel selector determines that the received signal is from the correct channel and it allows the signal to pass through.  In the case of an out-of-band signal, although the channel separation filter reduces its magnitude, it is still FM modulated and the modulating signal will be present after FM demodulation.  To reject such a signal completely, the channel selector outputs zero.</p><p>The output goes into the <tt>FM Demodulator</tt> block, where a simple differentiation operation performs the demodulation.</p><img vspace="5" hspace="5" src="sdruFRSGMRSRx_03.png" alt=""> <p>After FM demodulation, the <tt>FIR Decimation</tt> block converts the sampling rate to 200 kHz / 25 = 8 kHz.  This is one of the native sample rates of the audio device on your host computer.</p><h2>Continuous Tone-Coded Squelch System (CTCSS) and Decision Block<a name="12"></a></h2><p>The CTCSS <a href="http://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System">[3]</a> decoder computes the power at each CTCSS tone frequency using the Goertzel algorithm <a href="http://en.wikipedia.org/wiki/Goertzel_algorithm">[4]</a> and outputs the code with the largest power into the <tt>Decision</tt> block. The Goertzel algorithm is used because it provides an efficient method to compute the frequency components at predetermined frequencies (namely, the tone code frequencies used by FRS/GMRS).</p><p>The <tt>Decision</tt> block compares the decoded code with a preselected code and sends the signal to the audio device if the two codes match. When the preselected code is zero, it indicates no squelch system is used and the decision block passes the signal at the channel to the audio device no matter which code is used.</p><h2>Audio Output<a name="13"></a></h2><p>Before the audio device, a high pass filter with a cutoff frequency of 260 Hz is used to filter out the CTCSS tones (which have a maximum frequency of 250 Hz) so that they are not heard.</p><p>The <tt>To Audio Device</tt> block is set up by default to output to the current audio device in your system preferences.</p><h2>Exploring the Example<a name="14"></a></h2><p>The performance of the model may vary depending on the board that you use.  If your model does not produce any sound, you can vary the <tt>Gain (dB)</tt> parameter in the mask of the SDRu Receiver block.</p><p>The CTCSS decoding computes the DTFT (Discrete-Time Fourier Transform) of the incoming signal using the Goertzel algorithm and computes the power at the tone frequencies.  Since the tone frequencies are very close to each other (only 3-4 Hz apart) the block length of the DTFT should be large enough to provide enough resolution for the frequency analysis. However, long block lengths cause decoding delay; for example, a block length of 16000 will cause 2 seconds of delay, since the CTCSS decoder operates at an 8 kHz sampling rate.  This creates a tradeoff between detection performance and processing latency. The optimal block length may depend on the quality of the transmitter and receiver, the distance between the transmitter and receiver, and other factors. You are encouraged to change the block length in the initialization function by navigating to the getParamsSdruFRSGMRSRxDemo function and changing the value of the FRSRxParams.DecodeBlockSize field.  This will enable you to observe the tradeoff and find the optimal value for your transmitter/receiver pair.</p><h2>References<a name="15"></a></h2><div><ul><li><a href="http://en.wikipedia.org/wiki/Family_Radio_Service">Family Radio Service on Wikipedia</a></li><li><a href="http://en.wikipedia.org/wiki/General_Mobile_Radio_Service">General Mobile Radio Service on Wikipedia</a></li><li><a href="http://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System">Continuous Tone-Coded Squelch System on Wikipedia</a></li><li><a href="http://en.wikipedia.org/wiki/Goertzel_algorithm">Goertzel Algorithm on Wikipedia</a></li></ul></div><h2>Copyright Notice<a name="16"></a></h2><p>USRP&reg; is a trademark of National Instruments Corp.</p><p class="footer">Copyright 2011-2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% FRS/GMRS Walkie-Talkie Receiver with USRP(R) Hardware
+% This model shows how to use the Universal Software Radio Peripheral(R)
+% (USRP(R)) device with Simulink(R) to build a walkie-talkie that can
+% receive messages from a physical walkie-talkie.  The specific radio
+% standard that this example follows is FRS/GMRS (Family Radio Service /
+% General Mobile Radio Service) with CTCSS (Continuous Tone-Coded Squelch
+% System).
+%
+% In order to run this model, you need a USRP(R) board with an appropriate
+% receiver daughterboard that supports the UHF 462-467 MHz band (for
+% example, WBX). Please refer to <../../help/index.html Getting Started>
+% for details on configuring your host computer to work with the SDRu
+% Receiver block.
+% 
+% This example is designed to work with USA standards for FRS/GMRS
+% operation. The technical specifications for these standards can be found
+% at <http://en.wikipedia.org/wiki/Family_Radio_Service [1]> and
+% <http://en.wikipedia.org/wiki/General_Mobile_Radio_Service [2]>.
+% Operation in other countries may or may not work.
+%
+
+%   Copyright 2011-2012 The MathWorks, Inc.
+%   $Revision: 1.1.6.3 $ $Date: 2012/10/29 19:27:04 $
+
+%% Overview
+% Please refer to the <sdruFRSGMRSTx.html FRS/GMRS Walkie-Talkie
+% Transmitter with USRP(R) Hardware> example for general information and
+% overview details.  Note that all the information in that section applies
+% to this example, except that this example is designed to receive signals
+% instead of transmit them.
+
+
+%% Structure of the Example
+% This is the top-level block diagram of the model:
+%%
+open_system('sdruFRSGMRSRx');
+set_param('sdruFRSGMRSRx', 'SimulationCommand', 'update');
+
+%% Running the Example
+% Turn on your walkie-talkie, set the channel to be one of the 14 channels
+% (numbered 1 to 14) and the private code to be either one of the 38
+% private codes (numbered 1 to 38) or 0, in which case no squelch system is
+% used and all received messages are accepted.  Note that the private codes
+% above 38 are digital codes and are not implemented in this example.
+%
+% Set the channel and private code in the |Model Parameters| GUI in 
+% the model so that they match the settings on the walkie-talkie.  Run the 
+% model, speak into the walkie-talkie, and see if you can hear your voice 
+% come out of the computer speakers.  If not, try adjusting the 
+% "Average signal threshold for squelch" parameter downward slightly.  You can change 
+% the channel and private code without stopping and restarting the model.
+%
+% If you hear some dropouts or delay in the sound, run the model
+% in Accelerator mode.  From the model menu, select 
+% Simulation->Accelerator, then click the run button.  If you still
+% experience dropouts or delay in Accelerator mode, try running the model
+% in Rapid Accelerator mode.
+%
+% You can also run this model alongside an additional USRP(R) device
+% running the FRS/GMRS transmitter example, instead of with a physical
+% walkie-talkie.
+
+%% FRS/GMRS Receiver Subsystem
+% The |SDRu Receiver| block converts the RF waveform to complex baseband 
+% samples, which become the input to this subsystem.  
+%
+% This subsystem is an enabled subsystem, which means that it is only
+% active when the driving 'Data Len' output is greater than 0.
+%
+% Below is the block diagram of the |FRS-GMRS Receiver| subsystem:
+%%
+open_system('sdruFRSGMRSRx/FRS-GMRS Receiver/FRS-GMRS Receiver');
+
+%% Automatic Gain Control
+% The |Automatic Gain Control| block is the first block that processes the
+% received signal. It processes the signal to ensure that the average
+% magnitude of the samples is about 1.  In this case, the walkie-talkie
+% transmitter is likely nearby the USRP(R) radio, which implies that the
+% received signal should not suffer from fading, and the received noise
+% should be low.  However, in general this may not be the case.
+%
+
+%% Channel Selectivity and FM Demodulation
+% The channel selectivity filter is the next block.  If the incoming signal
+% is from an adjacent channel, a low pass channel separation filter will
+% reduce its power significantly.  The gap between adjacent channels is
+% 25 kHz, which means the baseband bandwidth is at most 12.5 kHz. Thus, we
+% choose the cutoff frequency to be 10 kHz.
+%
+% Next, a channel selector computes the average power of the filtered 
+% signal, and if it is greater than a threshold (set to a default of 10%), 
+% the channel selector determines that the received signal is from the
+% correct channel and it allows the signal to pass through.  In the case of 
+% an out-of-band signal, although the channel separation filter reduces its 
+% magnitude, it is still FM modulated and the modulating signal will be 
+% present after FM demodulation.  To reject such a signal completely, the 
+% channel selector outputs zero.  
+%
+% The output goes into the |FM Demodulator| block, where a 
+% simple differentiation operation performs the demodulation.
+
+%%
+open_system('sdruFRSGMRSRx/FRS-GMRS Receiver/FRS-GMRS Receiver/FM Demodulator');
+
+%%
+close_system('sdruFRSGMRSRx',0);
+
+%%
+% After FM demodulation, the |FIR Decimation| block converts the sampling
+% rate to 200 kHz / 25 = 8 kHz.  This is one of the native sample rates of
+% the audio device on your host computer.
+%
+
+%% Continuous Tone-Coded Squelch System (CTCSS) and Decision Block
+% The CTCSS
+% <http://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System [3]>
+% decoder computes the power at each CTCSS tone frequency using 
+% the Goertzel algorithm 
+% <http://en.wikipedia.org/wiki/Goertzel_algorithm [4]>
+% and outputs the code with the largest power into the |Decision| block.  
+% The Goertzel algorithm is used because it provides an efficient method to 
+% compute the frequency components at predetermined frequencies (namely, 
+% the tone code frequencies used by FRS/GMRS).
+%
+% The |Decision| block compares the decoded code with a preselected code and
+% sends the signal to the audio device if the two codes match. When the
+% preselected code is zero, it indicates no squelch system is used and the
+% decision block passes the signal at the channel to the audio device no
+% matter which code is used.
+%
+
+%% Audio Output
+% Before the audio device, a high pass filter with a cutoff frequency of
+% 260 Hz is used to filter out the CTCSS tones (which have a maximum 
+% frequency of 250 Hz) so that they are not heard.
+%
+% The |To Audio Device| block is set up by default to output to the current
+% audio device in your system preferences.  
+
+%% Exploring the Example
+% The performance of the model may vary depending on the board that you
+% use.  If your model does not produce any sound, you can vary the |Gain
+% (dB)| parameter in the mask of the SDRu Receiver block.
+%
+% The CTCSS decoding computes the DTFT (Discrete-Time Fourier Transform) of
+% the incoming signal using the Goertzel algorithm and computes the power
+% at the tone frequencies.  Since the tone frequencies are very close to
+% each other (only 3-4 Hz apart) the block length of the DTFT should be
+% large enough to provide enough resolution for the frequency analysis.
+% However, long block lengths cause decoding delay; for example, a block
+% length of 16000 will cause 2 seconds of delay, since the CTCSS decoder
+% operates at an 8 kHz sampling rate.  This creates a tradeoff between
+% detection performance and processing latency. The optimal block length
+% may depend on the quality of the transmitter and receiver, the distance
+% between the transmitter and receiver, and other factors. You are
+% encouraged to change the block length in the initialization function by
+% navigating to the getParamsSdruFRSGMRSRxDemo function and changing the
+% value of the FRSRxParams.DecodeBlockSize field.  This will enable you to
+% observe the tradeoff and find the optimal value for your
+% transmitter/receiver pair.
+
+%% References
+% * <http://en.wikipedia.org/wiki/Family_Radio_Service Family Radio Service on Wikipedia>
+% * <http://en.wikipedia.org/wiki/General_Mobile_Radio_Service General Mobile Radio Service on Wikipedia>
+% * <http://en.wikipedia.org/wiki/Continuous_Tone-Coded_Squelch_System Continuous Tone-Coded Squelch System on Wikipedia>
+% * <http://en.wikipedia.org/wiki/Goertzel_algorithm Goertzel Algorithm on Wikipedia>
+
+%% Copyright Notice
+% USRP(R) is a trademark of National Instruments Corp.
+
+##### SOURCE END #####
+--></body></html>

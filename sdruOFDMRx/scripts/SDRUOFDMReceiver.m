@@ -9,8 +9,8 @@ InterpolationFactor = USRPDACSamplingRate/desiredSamplingFrequency;
 
 % Parameters
 enableMA = true;
-numFrames = 10e4; % Number of frames to find
-offsetCompensationValue = 55000; %Generated from sdruFrequencyCalibration demos
+numFrames = 1000; % Number of frames to find
+offsetCompensationValue = -73242.187500; %Generated from sdruFrequencyCalibration demos
 % Visuals
 printReceivedData = true;
 useScopes = false;
@@ -24,7 +24,11 @@ tx.FreqBin = tx.samplingFreq/tx.FFTLength;% Set frequency bin width
 if compileIt
     disp('Compiling receiver...');
     %codegen  receiveOFDM80211a_sdru -args { coder.Constant(tx), offsetCompensationValue, numFrames, coder.Constant(useScopes) , coder.Constant(printReceivedData) }
-    compilesdru('receiveOFDM80211a_sdru','mex','-args', { coder.Constant(tx), offsetCompensationValue, numFrames, coder.Constant(useScopes) , coder.Constant(printReceivedData) });
+    result = compilesdru('receiveOFDM80211a_sdru','mex','-args', { coder.Constant(tx), offsetCompensationValue, numFrames, coder.Constant(useScopes) , coder.Constant(printReceivedData) });
+    if isempty(result.summary.buildResults)
+        disp('Shits broke yo');
+        return;
+    end
 end
 
 % Run receiver

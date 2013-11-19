@@ -56,6 +56,8 @@ numBuffersProcessed = 0; %Track received data, needed for separate indexing of p
 
 totalBER = 0;
 
+messageBits = zeros(numFrames,tx.messageCharacters*7+3);%3 for CRC
+
 %% Process received data
 % Locate frames in buffer and compensate for channel affects
 %for frames = 1 : numFrames
@@ -95,14 +97,13 @@ while estimate.numProcessed < numFrames
         rFrame = buffer(estimate.delay + 1 : estimate.delay + tx.frameLength);        
                
         % Correct frequency offset
-        [ rFreqShifted, estimate ] = coarseOFDMFreqEst_sdr( rFrame, tx, estimate);        
-                
+        [ rFreqShifted, estimate ] = coarseOFDMFreqEst_sdr( rFrame, tx, estimate);                 
         % Equalize
         [ RPostEqualizer, RPreEqualizer, estimate] = equalizeOFDM( rFreqShifted, tx, estimate, hPreambleDemod, hDataDemod );
         
         % Demod subcarriers
-        [ frameBER, estimate ] = demodOFDMSubcarriers_sdr( RPostEqualizer, tx, estimate );
-        
+        [ frameBER, estimate, RHard ] = demodOFDMSubcarriers_sdr( RPostEqualizer, tx, estimate );
+
         % Visualize
         if useScopes
             stepOFDMScopes( ScopehArrayPilot, ScopehArrayPreamble,ScopehSpect,ScopehConstPre,...
@@ -114,11 +115,34 @@ while estimate.numProcessed < numFrames
          %   fprintf('Averge frame BER: %f\n',frameBER);
          %   %disp(['MSG: ', estimate.message.']);
         %end
-	totalBER = totalBER + frameBER;
-        
+	
+        messageBits(estimate.numProcessed,:) = RHard;
+        totalBER = totalBER + frameBER;
     end
     
    
+end
+
+coder.varsize('recovMessage', [1, 80], [0 1]);
+
+% CRC
+hDetect = comm.CRCDetector([1 0 0 1], 'ChecksumsPerFrame',1);
+
+%% Print Messages
+for recMessage = 1:estimate.numProcessed
+    
+    
+   [~, err] = step(hDetect, messageBits(recMessage,:).'>0);
+   %disp(tx);
+   
+   message = char(OFDMbits2letters(messageBits(recMessage,1:end-3) > 0).');
+   %Remove padding
+   messageEnd = strfind(message,'EOF');
+   if ~isempty(messageEnd)
+    recovMessage = message(1:messageEnd(1,1)-1);
+    disp(recovMessage);
+    fprintf('CRC Error: %f\n',double(err));
+   end
 end
 
 %% Cleanup

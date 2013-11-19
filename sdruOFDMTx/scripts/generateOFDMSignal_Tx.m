@@ -1,4 +1,4 @@
-function [ r, tx ] = generateOFDMSignal( numFrames, enableMA )
+function [ r, tx ] = generateOFDMSignal_Tx( numFrames, enableMA, payloadMessage )
 % generateOFDMSignal: Generate OFDM signal based on the 802.11a standard.
 % This function returns the time domain signal and a structure containing
 % details about the signal itself.  This information is required by the
@@ -10,8 +10,6 @@ tx.FFTLength = 64;         % OFDM modulator FFT size
 tx.enableMA = enableMA;    % Enable moving averages for estimates
 
 % Message to transmit
-payloadMessage = 'This is a test';
-
 if length(payloadMessage) < 77
    payloadMessage = [payloadMessage,'EOF',repmat('-',1,77 - length(payloadMessage))];
 end

@@ -16,7 +16,6 @@ for messageNum = 1 : messagesToReceive
     toc;
     
     messages{messageNum} = recoveredMessage;
-    %disp(messages);
 end
 
 

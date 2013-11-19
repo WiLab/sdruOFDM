@@ -2,18 +2,17 @@
 [ tx, offsetCompensationValue, numFrames, useScopes, printReceivedData ] = setupSDRuReceiver( true );
 
 messagesToReceive = 1;
+timeouts = 0; maxTimeouts = 4;
 
 messages = cell(1);
 messages{1} = 'runRx';
 
 % Run system
-timeouts = 0; maxTimeouts = 4;
-%for i = 1 : 10
 while 1
     % Process Messages
     switch messages{messageNum}
         case 'runRx'
-            [ messages ] = getMessagesSDRu( messagesToReceive, tx, offsetCompensationValue, numFrames, useScopes, printReceivedData );
+            messages = getMessagesSDRu( messagesToReceive, tx, offsetCompensationValue, numFrames, useScopes, printReceivedData );
             
         case 'Timeout';
             disp('Timeout occured');
@@ -33,6 +32,7 @@ while 1
             
         otherwise
             disp(['MSG: ',messages{messageNum}])
+            disp(['Timeouts: ',num2str(timeouts)])
             break;
     end
     

@@ -12,7 +12,8 @@ function [recoveredMessage, err, frameBER, estimate] = receiveOFDM80211a_sdru( t
 
 persistent ScopehArrayPilot  ScopehArrayPreamble ScopehSpect ScopehConstPre ScopehConstPost ScopehTimePeaks ScopehTimeFreqEst
 coder.extrinsic('createOFDMScopes');%Ignore scopes when generating code
-
+coder.extrinsic('exist')
+ 
 %% Setup buffer parameters and system objects
 % "buffer" is a window of samples from the input signal "recv".  This
 % window is slid across the input signal in order to locate the start of
@@ -38,13 +39,14 @@ end
 
 % Setup USRP
 DecimationFactor = 100e6/tx.samplingFreq;
+%if ~exist('hSDRu','var')
 hSDRu = comm.SDRuReceiver( '192.168.10.2', ...
     'CenterFrequency',      2.2e9 + offsetCompensationValue, ...
     'DecimationFactor',     DecimationFactor,...
     'FrameLength',          receiveBufferLength,...
     'OutputDataType',       'double',...
     'Gain',                 18);
-
+%end
 % Gain control
 hAGC = comm.AGC('UpdatePeriod', receiveBufferLength);
 

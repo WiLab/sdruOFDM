@@ -10,7 +10,13 @@ tx.FFTLength = 64;         % OFDM modulator FFT size
 tx.enableMA = enableMA;    % Enable moving averages for estimates
 
 % Message to transmit
-payloadMessage = 'Live long and prosper, from the Communications System Toolbox Team at MathWorks!';
+payloadMessage = 'This is a test';
+
+if length(payloadMessage) < 77
+   payloadMessage = [payloadMessage,'EOF',repmat('-',1,77 - length(payloadMessage))];
+end
+
+disp(length(payloadMessage));
 
 %% Create Short Preamble
 tx.shortPreamble = [ 0 0  1+1i 0 0 0  -1-1i 0 0 0 ... % [-27:-17]
@@ -59,11 +65,17 @@ PilotCarrierIndices = [12;26;40;54];
 tx.originalData = OFDMletters2bits(payloadMessage);
 tx.originalData = reshape(tx.originalData.',size(tx.originalData,1)*size(tx.originalData,2),1);
 
+% Generate CRC
+hGen = comm.CRCGenerator([1 0 0 1], 'ChecksumsPerFrame',1);
+dataWithCRC = step(hGen, tx.originalData);% Add CRC
+
+
 % Construct modulator for each subcarrier
 hMod = comm.BPSKModulator; % BPSK
 
 % Apply modulator for each subcarrier
-modData = step(hMod, tx.originalData);
+%modData = step(hMod, tx.originalData);
+modData = step(hMod, dataWithCRC);
 
 % Pad IFFT
 tx.padBits = tx.numCarriers - mod(length(modData),tx.numCarriers);

@@ -1,4 +1,4 @@
-function [frameBER, estimate] = receiveOFDM80211a_sdru( tx, offsetCompensationValue, numFrames, useScopes, printReceivedData )
+function [recoveredMessage, err, frameBER, estimate] = receiveOFDM80211a_sdru( tx, offsetCompensationValue, numFrames, useScopes, printReceivedData )
 %#codegen
 % receiveOFDM80211a: Recover OFDM signal from input data stream and 
 % return synchronization estimates and BER values of that recovered data.
@@ -58,21 +58,30 @@ totalBER = 0;
 
 messageBits = zeros(numFrames,tx.messageCharacters*7+3);%3 for CRC
 
+% String holder
+coder.varsize('recoveredMessage', [1, 80], [0 1]);
+recoveredMessage = '';
+
+% Timeout info
+buffersPerSecond = (100e6/DecimationFactor)/receiveBufferLength;
+timeoutDuration = buffersPerSecond*20;
+
+
 %% Process received data
 % Locate frames in buffer and compensate for channel affects
 %for frames = 1 : numFrames
 while estimate.numProcessed < numFrames    
     
-    numBuffersProcessed = numBuffersProcessed + 1;% Increment processed data index
-    
     %buffer = rChannel(windowIndex : windowIndex + estimate.inputBufferLength - 1);% Add incoming samples to buffer
     buffer = step(hSDRu);
-    %if max(buffer)==0
-    %    % All zeros from radio (Bug?)
-    %    disp('All zeros (Bug?)');
-    %    continue;
-    %end
+    if sum(buffer)==0
+       % All zeros from radio (Bug?)
+       %disp('All zeros (Bug?)');
+       continue;
+    end
     buffer = step(hAGC, buffer);
+    
+    numBuffersProcessed = numBuffersProcessed + 1;% Increment processed data index
     
     %% Find preamble in buffer
     [estimate.delay, estimate.numPeaks] = locateOFDMFrame_sdr( tx.FFTLength, tx.shortPreambleOFDM, buffer);
@@ -120,29 +129,42 @@ while estimate.numProcessed < numFrames
         totalBER = totalBER + frameBER;
     end
     
+    %% Timeout
+    if numBuffersProcessed > timeoutDuration
+        disp('Receiver timed out');
+        recoveredMessage = 'Timeout';
+        break;
+    end
+    
+    
    
 end
 
-coder.varsize('recovMessage', [1, 80], [0 1]);
 
 % CRC
 hDetect = comm.CRCDetector([1 0 0 1], 'ChecksumsPerFrame',1);
+err = 1>1;
 
 %% Print Messages
 for recMessage = 1:estimate.numProcessed
     
+    % CRC Check
+    [msg, err] = step(hDetect, messageBits(recMessage,:).'>0);
     
-   [~, err] = step(hDetect, messageBits(recMessage,:).'>0);
-   %disp(tx);
-   
-   message = char(OFDMbits2letters(messageBits(recMessage,1:end-3) > 0).');
-   %Remove padding
-   messageEnd = strfind(message,'EOF');
-   if ~isempty(messageEnd)
-    recovMessage = message(1:messageEnd(1,1)-1);
-    disp(recovMessage);
-    fprintf('CRC Error: %f\n',double(err));
-   end
+    
+    if ~err
+        %Convert Bits to characters
+        message = char(OFDMbits2letters(msg > 0).');%messageBits(recMessage,1:end-3)
+        %Remove padding
+        messageEnd = strfind(message,'EOF');
+        if ~isempty(messageEnd)
+            recoveredMessage = message(1:messageEnd(1,1)-1);
+            disp(recoveredMessage);
+        end
+    else
+        disp('CRC Message Failure');
+        recoveredMessage = 'CRC Error';
+    end
 end
 
 %% Cleanup
@@ -160,8 +182,8 @@ release(hSDRu);
 
 
 % Print Results
-fprintf('Total BER: %f\n',totalBER/estimate.numProcessed);
-fprintf('Total received frames: %f\n',estimate.numProcessed);
+%fprintf('Total BER: %f\n',totalBER/estimate.numProcessed);
+%fprintf('Total received frames: %f\n',estimate.numProcessed);
 
 
 end

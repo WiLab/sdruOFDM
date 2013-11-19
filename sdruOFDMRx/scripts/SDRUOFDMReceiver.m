@@ -9,7 +9,7 @@ InterpolationFactor = USRPDACSamplingRate/desiredSamplingFrequency;
 
 % Parameters
 enableMA = true;
-numFrames = 1000; % Number of frames to find
+numFrames = 1; % Number of frames to find
 offsetCompensationValue = -73242.187500; %Generated from sdruFrequencyCalibration demos
 % Visuals
 printReceivedData = true;
@@ -23,14 +23,16 @@ tx.FreqBin = tx.samplingFreq/tx.FFTLength;% Set frequency bin width
 % Compile receiver with MATLAB Coder
 if compileIt
     disp('Compiling receiver...');
-    %codegen  receiveOFDM80211a_sdru -args { coder.Constant(tx), offsetCompensationValue, numFrames, coder.Constant(useScopes) , coder.Constant(printReceivedData) }
     result = compilesdru('receiveOFDM80211a_sdru','mex','-args', { coder.Constant(tx), offsetCompensationValue, numFrames, coder.Constant(useScopes) , coder.Constant(printReceivedData) });
+    %Error occured
     if isempty(result.summary.buildResults)
-        disp('Shits broke yo');
+        disp('Receiver unable to compile correctly:(');
         return;
     end
 end
 
+
+for i = 1 : 1
 % Run receiver
 disp('Starting receiver!');
 tic;
@@ -40,4 +42,4 @@ else
     receiveOFDM80211a_sdru( tx, offsetCompensationValue, numFrames, useScopes, printReceivedData );
 end    
 toc;
-
+end

@@ -1,0 +1,102 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>findsdru crashes or throws Invalid MEX-file error :: Troubleshooting Communications System Toolbox Support Package for USRP&reg; Radio (Getting Started)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="gs">
+<meta name="description" content="The function findsdru may crash or throw an error similar to the following:" />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btokhe5-1"></a><h2 class="title" id="btokhe5-1">findsdru crashes or throws Invalid MEX-file error</h2><a name="btokhg7"></a><h3 class="title" id="btokhg7">Problem</h3><p>The function <tt>findsdru</tt> may crash or throw
+an error similar to the following:</p><pre class="programlisting codeoutput">??? Invalid MEX-file 
+
+&lt;SDRuInstallRoot&gt;/bin/glnxa64/usrp_uhd_mapi.mexa64':
+&lt;SDRuInstallRoot&gt;/bin/glnxa64/libmwusrp_uhd_capi.so: undefined symbol:_ZN3uhd7warning16register_handlerERKSsRKN5boost8functionIFvSsEEE
+Error in ==&gt; mapiPrivate at 19
+[retStr, errStat, errStr] = usrp_uhd_mapi(cmd);
+Error in ==&gt; findsdru at 25
+[flatAddrList, errStat, errStr] = mapiPrivate('findsdru');
+</pre><p>This type of error usually occur when:</p><ul type="disc"><li><p>A correct version of the libuhd or Boost libraries
+was <span class="emphasis"><em>not</em></span> loaded.</p></li><li><p>An incorrect version of these libraries <span class="emphasis"><em>was</em></span> loaded.</p></li></ul><p>This situation may happen if either the system path does not
+contain the correct path information for these libraries or a previously
+installed version of these libraries shadows the Support Package for USRP&reg; Radio
+required libraries.</p><a name="btokhhc-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btokhhc-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btokhhc-1">Possible Solution</h3><p>You can diagnose this issue by following these steps:</p><ol type="1"><li><p>Navigate to <tt>&lt;SDRuInstallRoot&gt;/bin/glnxa64</tt> within
+the MATLAB&reg; command window. For example:</p><pre class="programlisting">cd <span style="color:#A020F0">c:/work/sdr/sdru/bin/glnxa64</span> </pre></li><li><p>Type the following command:</p><pre class="programlisting"><span style="color:#B28C00">!ldd libmwusrp_uhd_capi.so</span></pre><p>You should see messages similar to the following:</p><pre class="programlisting codeoutput">linux-vdso.so.1 =&gt; (0x00007ffff35ff000)
+libuhd.so.003=&gt; 
+&lt;SDRuInstallRoot&gt;/glnxa64/commusrp/bin/glnxa64/./libuhd.so.003 (0x00007fc9476bb000)
+
+libstdc++.so.6=&gt; 
+&lt;MATLABROOT&gt;&gt;/sys/os/glnxa64/libstdc++.so.6 (0x00007fc9473b4000)
+
+libm.so.6 =&gt; /lib/libm.so.6 (0x00007fc947113000)
+
+libgcc_s.so.1 =&gt; 
+&lt;MATLABROOT&gt;&gt;/sys/os/glnxa64/libgcc_s.so.1 (0x00007fc946efd000)
+
+libpthread.so.0 =&gt; /lib/libpthread.so.0 (0x00007fc946ce0000)
+
+libc.so.6 =&gt; /lib/libc.so.6 (0x00007fc94697f000)
+
+
+libboost_date_time.so.1.44.0=&gt;&lt;MATLABROOT&gt;&gt;/bin/glnxa64/libboost_date_time.so.1.44.0 
+(0x00007fc94676d000)
+
+libboost_filesystem.so.1.44.0=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libboost_filesystem.so.1.44.0 
+(0x00007fc946549000)
+
+libboost_program_options.so.1.44.0=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libboost_program_options.so.1.44.0 
+(0x00007fc9462ef000)
+
+libboost_regex.so.1.44.0=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libboost_regex.so.1.44.0 (0x00007fc945fdd000)
+
+libboost_system.so.1.44.0=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libboost_system.so.1.44.0 (0x00007fc945dd9000)
+
+l/ibboost_thread.so.1.44.0=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libboost_thread.so.1.44.0 (0x00007fc945bc2000)
+
+libboost_unit_test_framework.so.1.44.0=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libboost_unit_test_framework.so.1.44.0 (0x00007fc945906000)
+
+librt.so.1 =&gt; /lib/librt.so.1 (0x00007fc9456fd000)
+
+libdl.so.2 =&gt; /lib/libdl.so.2 (0x00007fc9454f9000)
+
+/lib64/ld-linux-x86-64.so.2 (0x00007fc947d73000)
+
+libicuuc.so.44=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libicuuc.so.44 (0x00007fc945196000)
+
+libicui18n.so.44=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libicui18n.so.44(0x00007fc944d9e000)
+
+libicudata.so.44=&gt;&lt;MATLABROOT&gt;/bin/glnxa64/libicudata.so.44 (0x00007fc943d5e000)</pre><p> Make sure that all the boost libraries are pulled from the MATLAB installation
+locations but not from the system (for example, <tt>/usr/lib</tt> or <tt>/lib</tt>),
+or some other local installation.</p><p>If you do not get these results, for example if either the libraries
+are not being found or different versions of boost or libuhd are found,
+then the <tt>LD_LIBRARY_PATH</tt> is likely incorrect. You
+can check the value of the <tt>LD_LIBRARY_PATH</tt> by typing
+the following command in the MATLAB command window.</p><pre class="programlisting">getenv(&#8216;LD_LIBRARY_PATH')</pre><pre class="programlisting">ans =
+&lt;MATLABROOT&gt;/sys/os/glnxa64:
+
+&lt;MATLABROOT&gt;/bin/glnxa64:
+
+&lt;MATLABROOT&gt;/extern/lib/glnxa64:
+
+&lt;MATLABROOT&gt;/sys/java/jre/glnxa64/jre/lib/amd64/native_threads:
+
+&lt;MATLABROOT&gt;/sys/java/jre/glnxa64/jre/lib/amd64/server:
+
+&lt;MATLABROOT&gt;/sys/java/jre/glnxa64/jre/lib/amd64:
+
+&lt;SDRuInstallRoot&gt;/glnxa64/commusrp/bin/glnxa64</pre><p>This example shows the default value as created by MATLAB and
+the <tt>setupsdru</tt> function.</p></li></ol>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btojxzc.html"><img src="b_prev.gif" border="0" align="bottom" alt="Troubleshooting"></a>&nbsp;</td><td align="left">Troubleshooting</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.</p>
+  <!-- Last updated: Wed Oct  3 10:45:06 EDT 2012--></body></html>

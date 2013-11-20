@@ -1,0 +1,48 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>findsdru function returns an empty IPAddress :: Troubleshooting Communications System Toolbox Support Package for USRP&reg; Radio (Getting Started)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="gs">
+<meta name="description" content="The function findsdru returns an empty IPAddress field, as shown in the following figure." />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btoj2gu"></a><h2 class="title" id="btoj2gu">findsdru function returns an empty IPAddress</h2><a name="btokazl"></a><h3 class="title" id="btokazl">Problem</h3><p>The function <tt>findsdru</tt> returns an empty
+IPAddress field, as shown in the following figure.</p><p>
+<img src="findsdru_emptyip.png" height="228" width="537" alt=""></p><a name="btoka4c"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btoka4c");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btoka4c">Possible Reasons and Solutions</h3><p>The problem may be caused by one of the following:</p><ul type="disc"><li><p>An Ethernet connectivity problem </p><p>If you are having an Ethernet connectivity problem, see <a href="btpn6dm.html#btona_i-1">Check Ethernet Configuration</a>.</p></li><li><p>You have multiple versions of  software on
+the host machine.</p><p>Sometimes, in this case, you can still run the examples and
+get a proper IP address when you issue the call from <tt>&lt;SDRuInstallRoot&gt;/bin/&lt;ARCH&gt;</tt>.
+This is because the host is calling a different version of the  driver
+than when you issue the function from <tt>&lt;SDRuInstallRoot&gt;</tt>.</p><p>Examine the PATH environment variable to see if any system installs
+of  software precede the Support Package for USRP&reg; Radio
+install of  software.</p><ul type="circle"><li><p>Linux: Examine <tt>LD_LIBRARY_PATH</tt> </p></li><li><p>Mac: Examine <tt>DYLD_LIBRARY_PATH</tt></p></li></ul></li><li><p>The radio is at an IP address that doesn't match your
+NIC. For example, your NIC may have an IP address of 192.168.10.1,
+while the USRP&reg; radio may have an address of 192.168.20.2.
+Notice the difference in the third octet. </p><p>Check that the subnet value of the host and radio are the same.
+See <a href="btpn6dm.html#btry722-1">Check Subnet Values on Host and Radio</a>.</p></li><li><p>Your anti-virus software may be blocking broadcast
+Ethernet packets.</p><p>The UHD<sup>TM</sup> software uses broadcast packets to find radios.
+Disable your anti-virus software program or selectively stop the blocking
+of broadcast packets. </p></li></ul>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btojxzc.html"><img src="b_prev.gif" border="0" align="bottom" alt="Troubleshooting"></a>&nbsp;</td><td align="left">Troubleshooting</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/patents.html">Patents</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/trademarks.html">Trademarks</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/">Privacy Policy</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/piracy.html">Preventing Piracy</a></p>
+
+  <!-- Last updated: Mon Jan  7 15:22:25 EST 2013--></body></html>

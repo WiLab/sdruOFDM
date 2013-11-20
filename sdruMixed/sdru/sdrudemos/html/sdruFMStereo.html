@@ -1,0 +1,126 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>FM Stereo Receiver with USRP&reg; Hardware</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-01-19"><meta name="DC.source" content="sdruFMStereo.m"><link rel="stylesheet" type="text/css" href="./style.css"></head><body><div class="header"><div class="left">sdruFMStereo.mdl</div><div class="right"><a href="matlab:sdruFMStereo">Open this model</a></div></div><div class="content"><h1>FM Stereo Receiver with USRP&reg; Hardware</h1><!--introduction--><p>This model shows how to use the Universal Software Radio Peripheral&reg; (USRP&reg;) device with Simulink&reg; to build an FM stereo receiver. The model plays out the left and right channels.</p><p>In order to run this model, you need a USRP&reg; board with an appropriate receiver daughterboard that supports the FM band (e.g., TVRX or WBX). Please refer to <a href="../../help/index.html">Getting Started</a> for details on configuring your host computer to work with the SDRu Receiver block.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Structure of the Example</a></li><li><a href="#8">Results and Displays</a></li><li><a href="#9">Exploring the Example</a></li><li><a href="#11">References</a></li><li><a href="#12">Copyright Notice</a></li></ul></div><h2>Structure of the Example<a name="1"></a></h2><p>This is the top-level block diagram of the model.</p><img vspace="5" hspace="5" src="sdruFMStereo_01.png" alt=""> <p>The USRP&reg; hardware samples its received signal at 100 Msps, then decimates by a factor of 500 for a resultant sample rate of 200 kHz.  Prior to FM demodulation, a rate converter resamples the signal again to a rate of 152 kHz.  This sample rate is convenient for downstream processing in the stereo decoder.  An FM demodulator follows the 152 kHz resampler, and is implemented in the same fashion as the one described in <a href="sdruFMMono.html">FM Monophonic Receiver with USRP&reg; Hardware</a>.</p><p>Below is the block diagram of the stereo decoder inside the FM Receiver subsystem.</p><img vspace="5" hspace="5" src="sdruFMStereo_02.png" alt=""> <p>The peaking filter picks out the 19 kHz pilot tone, from which a 38 kHz carrier is created via an open loop technique.  The technique exploits trigonometric identities and the fact that the 19 kHz tone is sampled precisely eight times per cycle.  The carrier is used to downconvert the L-R signal, centered at 38 kHz, to baseband.  The Gain Compensation is to compensate for the L-R signal loss during the transmission.  A resampler then converts the sampling rate to 48 kHz. This rate is one of the native sampling rates of the output audio device.  During the rate conversion, the resampling filter removes the undesirable signals above 15 kHz. Next, the baseband L+R and L-R signals pass through a 75 microsecond deemphasis filter [ <a href="#10">1</a> ].  Finally, a MATLAB&reg; Function block separates the L and R signals, and the audio device plays them out.</p><p>Set the Center Frequency to a local FM radio station, click the run button, and listen to the sound from the audio device. Change the Center Frequency to listen to a different station.</p><p>If you hear some dropouts or delay in the sound, run the model under Accelerator mode. From the model menu, select Simulation-&gt;Accelerator, then click the run button.</p><h2>Results and Displays<a name="8"></a></h2><p>If you insert a Spectrum Scope block right before the 19n/6 resampler, the spectrum looks like the following. The black spectrum contains L+R at baseband, L-R at 38 kHz, and the 19 kHz tone. The red spectrum is the downconverted signal with L-R at baseband.</p><p><img vspace="5" hspace="5" src="usrpFMStereo_Spec2.png" alt=""> </p><p>The figure below shows the spectrum of the left (black) and the right (red) channel corresponding to the spectrum above. This spectrum represents music from a broadcast FM station.  There is some stereo separation between the left and the right channel up to 20 kHz.</p><p><img vspace="5" hspace="5" src="usrpFMStereo_Spec1.png" alt=""> </p><p>The figure below illustrates the separation between left and right channels achieved by the model with a known, controlled source. It shows the spectrum of the left (black) and the right (red) channel for a stereo test signal transmitted by a hand-held FM transmitter. The test signal consists of a single 500 Hz tone in the left channel and a single 1 kHz tone in the right channel. The model achieves approximately 20 dB separation between left and right channels.</p><p><img vspace="5" hspace="5" src="usrpFMStereo_Spec3.png" alt=""> </p><h2>Exploring the Example<a name="9"></a></h2><p>If you have your own FM transmitter that can transmit .wma files, you can duplicate the test that shows the channel separation result above. Load the <tt>sdruFMStereoTestSignal.wma</tt> file into your transmitter. The channel separation can be easily observed from the Spectrum Scope block and heard from the audio device. You can also adjust the Gain Compensation to see its effect on stereo separation.</p><p>To optimize the filtering speed, you can combine the resampling filter in the 19n/6 resampler and the deemphasis filter into a single filter.</p><p><b>MIDI Controller for Station Selection</b></p><p>The <a href="matlab:open_system('sdruFMStereoMidi')">FM Stereo Receiver with USRP&reg; Hardware and MIDI Controller</a> example includes a <tt>MIDI Controls</tt> block. If you have a MIDI controller connected to your computer, you can change the center frequency, i.e. FM radio station, using the controller.</p><h2>References<a name="11"></a></h2><div><ul><li><a href="http://en.wikipedia.org/wiki/FM_broadcasting">FM broadcasting on Wikipedia</a></li></ul></div><h2>Copyright Notice<a name="12"></a></h2><p>USRP&reg; is a trademark of National Instruments Corp.</p><p class="footer">Copyright 2011-2012 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="http://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% FM Stereo Receiver with USRP(R) Hardware
+% This model shows how to use the Universal Software Radio Peripheral(R)
+% (USRP(R)) device with Simulink(R) to build an FM stereo receiver. The
+% model plays out the left and right channels.
+%
+% In order to run this model, you need a USRP(R) board with an appropriate
+% receiver daughterboard that supports the FM band (e.g., TVRX or WBX).
+% Please refer to <../../help/index.html Getting Started> for details on
+% configuring your host computer to work with the SDRu Receiver block.
+
+% Copyright 2011-2012 The MathWorks, Inc.
+% $Revision: 1.1.6.3 $ $Date: 2012/10/29 19:27:01 $
+
+%% Structure of the Example
+% This is the top-level block diagram of the model.
+%%
+open_system('sdruFMStereo');
+set_param('sdruFMStereo', 'SimulationCommand', 'update');
+
+%%
+% The USRP(R) hardware samples its received signal at 100 Msps, then decimates
+% by a factor of 500 for a resultant sample rate of 200 kHz.  Prior to FM
+% demodulation, a rate converter resamples the signal again to a rate of
+% 152 kHz.  This sample rate is convenient for downstream processing in the
+% stereo decoder.  An FM demodulator follows the 152 kHz resampler, and is
+% implemented in the same fashion as the one described in <sdruFMMono.html
+% FM Monophonic Receiver with USRP(R) Hardware>.
+% 
+% Below is the block diagram of the stereo decoder inside the FM Receiver
+% subsystem.
+%%
+open_system('sdruFMStereo/FM Receiver/Stereo Decoder');
+
+%%
+close_system('sdruFMStereo',0);
+
+%%
+% The peaking filter picks out the 19 kHz pilot tone, from which a 38 kHz
+% carrier is created via an open loop technique.  The technique exploits
+% trigonometric identities and the fact that the 19 kHz tone is sampled
+% precisely eight times per cycle.  The carrier is used to downconvert the
+% L-R signal, centered at 38 kHz, to baseband.  The Gain Compensation is to
+% compensate for the L-R signal loss during the transmission.  A resampler
+% then converts the sampling rate to 48 kHz. This rate is one of the native
+% sampling rates of the output audio device.  During the rate conversion,
+% the resampling filter removes the undesirable signals above 15 kHz.
+% Next, the baseband L+R and L-R signals pass through a 75 microsecond
+% deemphasis filter [ <#10 1> ].  Finally, a MATLAB(R) Function block
+% separates the L and R signals, and the audio device plays them out.
+%
+
+%% 
+% Set the Center Frequency to a local FM radio station, click the
+% run button, and listen to the sound from the audio device. Change the
+% Center Frequency to listen to a different station. 
+%
+% If you hear some dropouts or delay in the sound, run the model
+% under Accelerator mode. From the model menu, select Simulation->Accelerator, 
+% then click the run button. 
+%
+
+%% Results and Displays
+% If you insert a Spectrum Scope block right before the 19n/6 resampler,
+% the spectrum looks like the following. The black spectrum contains L+R at
+% baseband, L-R at 38 kHz, and the 19 kHz tone. The red spectrum is the
+% downconverted signal with L-R at baseband.
+% 
+% <<usrpFMStereo_Spec2.png>>
+%
+% The figure below shows the spectrum of the left (black) and the right
+% (red) channel corresponding to the spectrum above. This spectrum
+% represents music from a broadcast FM station.  There is some stereo separation
+% between the left and the right channel up to 20 kHz.
+%
+% <<usrpFMStereo_Spec1.png>>
+%
+% The figure below illustrates the separation between left and right
+% channels achieved by the model with a known, controlled source. It shows
+% the spectrum of the left (black) and the right (red) channel for a stereo
+% test signal transmitted by a hand-held FM transmitter. The test signal
+% consists of a single 500 Hz tone in the left channel and a single 1 kHz
+% tone in the right channel. The model achieves approximately 20 dB
+% separation between left and right channels.
+%
+% <<usrpFMStereo_Spec3.png>>
+
+%% Exploring the Example
+% If you have your own FM transmitter that can transmit .wma files, you can
+% duplicate the test that shows the channel separation result above. Load
+% the |sdruFMStereoTestSignal.wma| file into your transmitter. The
+% channel separation can be easily observed from the Spectrum Scope block and
+% heard from the audio device. You can also adjust the Gain Compensation to
+% see its effect on stereo separation.
+%
+% To optimize the filtering speed, you can combine the resampling filter in
+% the 19n/6 resampler and the deemphasis filter into a single filter.
+
+%% 
+% *MIDI Controller for Station Selection*
+%
+% The <matlab:open_system('sdruFMStereoMidi') FM Stereo Receiver with
+% USRP(R) Hardware and MIDI Controller> example includes a |MIDI Controls|
+% block. If you have a MIDI controller connected to your computer, you can
+% change the center frequency, i.e. FM radio station, using the controller.
+
+%% References
+% * <http://en.wikipedia.org/wiki/FM_broadcasting FM broadcasting on Wikipedia>
+% 
+
+%% Copyright Notice
+% USRP(R) is a trademark of National Instruments Corp.
+
+##### SOURCE END #####
+--></body></html>

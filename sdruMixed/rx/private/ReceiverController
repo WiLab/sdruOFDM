@@ -1,0 +1,7 @@
+% Run receiver with function calls
+
+[ tx, offsetCompensationValue, numFrames, useScopes, printReceivedData ] = setupSDRuReceiver( compileIt );
+
+messagesToReceive = 10;
+% Need to setup timeout mechanism
+[ messages ] = getMessagesSDRu( messagesToReceive, tx, offsetCompensationValue, numFrames, useScopes, printReceivedData );

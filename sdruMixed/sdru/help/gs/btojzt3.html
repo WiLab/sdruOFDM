@@ -1,0 +1,51 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>MTU is larger than the FastSendDatagramThreshold :: Troubleshooting Communications System Toolbox Support Package for USRP&reg; Radio (Getting Started)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="gs">
+<meta name="description" content="You may see a message similar to the following on Windows machines when using the Support Package for USRP&reg; Radio Rx or Tx System objects or blocks:" />
+<script type="text/javascript" src="../../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btojzt3"></a><h2 class="title" id="btojzt3">MTU is larger than the FastSendDatagramThreshold</h2><a name="btokfzy"></a><h3 class="title" id="btokfzy">Problem</h3><p>You may see a message similar to the following on Windows machines
+when using the Support Package for USRP&reg; Radio Rx or Tx System
+objects or blocks:</p><pre class="programlisting">The MTU (1472) is larger than the FastSendDatagramThreshold (1024)!
+This will negatively affect the transmit performance.
+See the transport application notes for more detail.
+</pre><a name="btokfz3-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btokfz3-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btokfz3-1">Possible Solution</h3><p>The Ettus Research<sup>TM</sup> web site has a document, <a href="http://files.ettus.com/uhd_docs/manual/html/transport.html#windows-specific-notes" target="_top">UHD
+- Transport Application Notes</a>, that describes this problem.
+See the Microsoft<sup>&reg;</sup> web site: <a href="http://www.microsoft.com/windows/windowsmedia/howto/articles/optimize_web.aspx#appendix_e" target="_top">Optimizing
+Windows Media Services for Appendix E: Registry Keys</a> for information
+on increasing this setting. After you have perused these documents,
+follow the instructions in this section to apply the change.</p><ul><a name="zmw57dd0e1575"></a><table cellspacing="0" class="note" summary="Note" cellpadding="5" border="1"><tr width="90%"><td><p><b>Warning</b>&nbsp;&nbsp;
+
+
+ Incorrectly editing the registry may severely damage your system.
+Before making changes to the registry, you should back up any valued
+data on the computer.</p></td></tr></table></ul><p>To increase the FastSendDatagramThreshold , follow these steps:</p><ol type="1"><li><p>Click Windows <b>Start</b>. Enter <tt>regedit</tt> in <span class="emphasis"><em>Search
+programs and files</em></span>.</p></li><li><p>Using the left side navigation window, go to <tt>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\AFD\Parameters\</tt>.</p><p class="listimage">
+<img src="win_registry_editor.png" height="140" width="470" alt=""></p></li><li><p>Right click on <tt>Parameters</tt> and
+select <b>New</b> &gt; <b>DWORD
+(32-bit) Value</b>.</p></li><li><p>Enter <tt>FastSendDatagramThreshold</tt> as
+the name.</p><p class="listimage">
+<img src="win_registry_editor_fast.png" height="139" width="470" alt=""></p></li><li><p>Right click on the FastSendDatagramThreshold value
+and select <tt>Modify</tt>.</p></li><li><p> Enter <tt>1500</tt> for <b>Value
+data</b>. Select<b>Decimal</b> as Base
+value.</p><p class="listimage">
+<img src="edit_dword.png" height="131" width="223" alt=""></p></li><li><p>Click <b>OK</b>. FastSendDatagramThreshold
+should now have the following settings:</p><p class="listimage">
+<img src="win_registry_editor_done.png" height="140" width="470" alt=""></p></li><li><p>Close the registry editor. A system reboot is recommended
+after the registry key change.</p></li></ol>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btojxzc.html"><img src="b_prev.gif" border="0" align="bottom" alt="Troubleshooting"></a>&nbsp;</td><td align="left">Troubleshooting</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.</p>
+  <!-- Last updated: Wed Oct  3 10:45:06 EDT 2012--></body></html>

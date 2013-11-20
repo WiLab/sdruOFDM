@@ -1,0 +1,96 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>FPGA Targeting Procedure :: Targeting FPGA (User's Guide)</title><link rel="stylesheet" href="docstyle.css" type="text/css">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="toctype" itemprop="pagetype" content="ug">
+<meta name="description" content="The general workflow for FPGA targeting consists of the following steps:" />
+<script type="text/javascript" src="../../includes/product/scripts/jquery/jquery-latest.js"></script><script type="text/javascript" src="docscripts.js"></script>
+</head>
+<body><a name="top_of_page"></a><p style="font-size:1px;">&nbsp;</p>
+
+<a name="btbzcgw-1"></a><h2 class="title" id="btbzcgw-1">FPGA Targeting Procedure</h2><table border="0" cellpadding="4" cellspacing="0" class="pagenavtable"><tr><th>On this page&#8230;</th></tr><tr><td><p><a href="btbzcgw-1.html#bth5t2d">FPGA Targeting Procedure Overview</a></p><p><a href="btbzcgw-1.html#btb2st8-1">Create Algorithm</a></p><p><a href="btbzcgw-1.html#btb2suh-1">Set Tool Path</a></p><p><a href="btbzcgw-1.html#btb2su3-1">Create FPGA Files with HDL Workflow Advisor Workflow</a></p><p><a href="btbzcgw-1.html#btb2svi-1">Burn Custom FPGA File</a></p><p><a href="btbzcgw-1.html#btb4hdw-1">Verify FPGA Implementation</a></p></td></tr></table><a name="bth5t2d"></a><h3 class="title" id="bth5t2d">FPGA Targeting Procedure Overview</h3><p>The general workflow for FPGA targeting consists of the following
+steps:</p><ol type="1"><li><p>Create FPGA algorithm in Simulink, following recommended
+guidelines and limitations (see <a href="btbzcgw-1.html#btb2st8-1">Create Algorithm</a>).</p></li><li><p>Set up your system environment to access Xilinx<sup>&reg;</sup> ISE
+(see <a href="btbzcgw-1.html#btb2suh-1">Set Tool Path</a>).</p></li><li><p>Use Workflow Advisor to generate FPGA programming
+files (see <a href="btbzcgw-1.html#btb2su3-1">Create FPGA Files with HDL Workflow Advisor Workflow</a>).</p></li><li><p>Burn custom FPGA file onto the N210 board (see <a href="btbzcgw-1.html#btb2svi-1">Burn Custom FPGA File</a>).</p></li><li><p>Verify your FPGA implementation (see <a href="btbzcgw-1.html#btb4hdw-1">Verify FPGA Implementation</a>).</p></li></ol><p>For an application of FPGA Targeting with N210, see the <a href="../../sdrudemos/html/sdruFMMonoFPGA.html" target="_top">FPGA Targeting with USRP&reg; N210
+Hardware</a> example.</p><a name="btb2st8-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btb2st8-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btb2st8-1">Create Algorithm</h3><p>As you develop your new FPGA algorithm in Simulink, consider
+the <a href="btbzbso-1.html#btbzchd">limitations</a> for
+this workflow. The following sections offer suggestions for working
+within these limitations.</p><a name="btcpr1y"></a><h4 class="title" id="btcpr1y">Output Signals</h4><p>Output from your targeted subsystem must consist of two 16-bit
+signed signals to match the output of the existing digital down converter
+(DDC) in the FPGA. If you need to convert signals, for example, you
+might create a subsystem that converts the output to 16-bit complex
+integers.</p><a name="btcpr3o-1"></a><h4 class="title" id="btcpr3o-1">Scalar Mode</h4><p>Your system should operate in scalar mode for HDL Code generation.
+You can convert frame-based input signals to scalar by using the Unbuffer
+block. You can then convert the output back to frame signals using
+the Buffer block. Within this boundary of Unbuffer and Buffer blocks,
+the system operates in scalar mode, which is necessary for HDL Code
+generation.</p><a name="btb2suh-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btb2suh-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btb2suh-1">Set Tool Path</h3><p>Set up your system environment for to access Xilinx ISE
+from MATLAB with the function <tt>hdlsetuptoolpath</tt>.
+This function adds the necessary folders to the MATLAB search
+path using the Xilinx installation folder as its argument. For
+example:   </p><pre class="programlisting">hdlsetuptoolpath('ToolName', 'Xilinx ISE', 'ToolPath', 'C:\Xilinx\13.1\ISE_DS\ISE\bin\nt64\ise.exe');</pre><pre class="programlisting">Setting XILINX environment variable to:
+C:\Xilinx\13.1\ISE_DS\ISE
+Prepending following Xilinx ISE path(s) to the system path:
+C:\Xilinx\13.1\ISE_DS\ISE\bin\nt64;C:\Xilinx\13.1\ISE_DS\ISE\lib\nt64</pre><p>This example assumes that the Xilinx ISE design suite is
+installed at C:\Xilinx\13.1\ISE_DS\ISE.</p><a name="btb2su3-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btb2su3-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btb2su3-1">Create FPGA Files with HDL Workflow Advisor Workflow</h3><ol type="1"><li><p>Select the subsystem for HDL code generation. This
+is the subsystem that models the algorithm.</p></li><li><p>Launch HDL Workflow Advisor by selecting <b>Code</b> &gt; <b>HDL Code</b> &gt; <b>HDL Workflow Advisor</b>.</p></li><li><p><b>Set Target</b> (HDL Workflow Advisor
+step 1).</p><p>At step 1.1, Set Target Device and Synthesis Tool, select the
+following:</p><ul type="disc"><li><p>For <b>Target workflow</b>: <tt>Customization
+for the USRP(R) Device</tt> </p></li><li><p>For <b>Target platform</b>, select one
+of the following: </p><ul type="circle"><li><p><tt>USRP(R) N210 Board Rev 4.0</tt></p></li><li><p><tt>USRP(R) N210 Board Rev 2.0</tt></p></li></ul></li></ul></li><li><p><b>Prepare Model for HDL Code Generation</b> (HDL
+Workflow Advisor step 2).</p><p>Run steps 2.1 through 2.5 to make sure your model is compatible
+with FPGA targeting. </p><ul><a name="zmw57dd0e1577"></a><table cellspacing="0" class="note" summary="Note" cellpadding="5" border="1"><tr width="90%"><td><p><b>Note</b>&nbsp;&nbsp;
+
+
+At step 2.5, Check USRP&reg; Compatibility, the software
+checks that the algorithm does not violate any <a href="btbzbso-1.html#btbzchd">limitations</a>.</p></td></tr></table></ul></li><li><p><b>HDL Code Generation</b> (HDL Workflow
+Advisor step 3).</p><ol type="a"><li><p>At step 3.1.2, Advanced Options, note the following
+settings but do not change them &#8212; they have been pre-set based
+on the FPGA Targeting workflow:</p><ul type="disc"><li><p><b>Reset type</b>: <tt>Synchronous</tt></p></li><li><p><b>Reset asserted level</b>: <tt>Active-high</tt></p></li><li><p><b>Clock inputs</b>: <tt>Single</tt></p></li><li><p><b>Oversampling</b>: <tt>1</tt></p></li></ul><p>Setting these HDL options generates code that is compatible
+with the original Ettus Research<sup>TM</sup>USRP&reg; FPGA code.</p></li><li><p>At step 3.2, Generate RTL Code and Testbench, select <b>Generate
+RTL Code</b>.</p></li></ol></li><li><p><b>Generate FPGA Implementation</b> (HDL
+Workflow Advisor step 4).</p><p>The USRP&reg; Source File Folder is already populated with
+the path to USRP&reg; FPGA root directory. The relevant USRP&reg; FPGA
+code was downloaded during the installation from Ettus Research<sup>TM</sup> UHD<sup>TM</sup> Mirror
+site.</p></li><li><p>Click <b>Run This Task</b>.</p><p>The HDL Workflow Advisor creates a new Xilinx ISE project
+and adds the following:</p><ul type="disc"><li><p>All the necessary files from the FPGA repository</p></li><li><p> The generated HDL files for the selected subsystem
+and algorithm</p></li></ul><p>If no errors are found during FPGA project generation and syntax
+checking, the FPGA programming file generation process starts. You
+can view this process in an external command shell and monitor its
+progress. When the process is finished, a message in the command window
+prompts you to close the window.</p></li></ol><p>For additional instructions on using the HDL Workflow Advisor,
+see the HDL Coder documentation.</p><a name="btb2svi-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btb2svi-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btb2svi-1">Burn Custom FPGA File</h3><p>You can burn the generated FPGA binary using the burner utility,
+as provided by Ettus Research<sup>TM</sup> and as per the instructions in the <a href="../gs/btokkb2-1.html" target="_top">Firmware Update</a> section of <a href="../index.html" target="_top">Getting Started</a>. In the USRP-N2XX Net
+Burner GUI, provide the generated FPGA binary <tt>usrp_n210_r4_fpga_mw.bin</tt> (or <tt>usrp_n210_r2_fpga_mw.bin</tt>)
+from a project location such as <tt>hdl_prj\usrp_prj</tt>.
+For the firmware image, use the original firmware (<tt>usrp_n210_fw_bin</tt>)
+as no changes are made to firmware during FPGA targetting.</p><a name="btb4hdw-1"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("btb4hdw-1");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><h3 class="title" id="btb4hdw-1">Verify FPGA Implementation</h3><p>To verify your FPGA implementation, first create a new targeted
+model based on your original model.</p><ol type="1"><li><p>Copy your original model to a new model. This new
+model will be the retargeted model.</p></li><li><p>Remove the top-level subsystem that you specified
+during targeting. This subsystem is now programmed onto the FPGA.</p></li><li><p>If you earlier created a subsystem to create the two
+16-bit signed signals required by the FPGA DDC, now put in place a
+method to reconvert your signals to match the expected output for
+your model (for example, a subsystem similar to the one you designed
+to create the signals).</p></li><li><p>Run simulation. The model now produces real-time data
+from your algorithm output.</p></li></ol>
+<a name="bottom_of_page"></a><p class="pagenavlink"><script language="Javascript">updateSectionId("bottom_of_page");</script><script language="Javascript">addTopOfPageButtons();</script><a href="#top_of_page">Back to Top</a></p><table class="feedbacklinkbot" border="0" width="100%" cellpadding="0" cellspacing="0"><tr><td>&nbsp;</td><td align="right"><script type="text/javascript" language="JavaScript">
+writeDocFeedbackSurveyLink();
+</script>&nbsp;
+</td></tr></table><p></p>
+<table class="nav" summary="Navigation aid" border="0" width="100%" cellpadding="0" cellspacing="0"><tr valign="top"><td align="left" width="20"><a href="btbzbso.html"><img src="b_prev.gif" border="0" align="bottom" alt="Targeting FPGA"></a>&nbsp;</td><td align="left">Targeting FPGA</td></tr></table><br>
+
+<p>USRP, UHD, and Ettus Research are trademarks of National Instruments Corp.</p>
+  <p class="copy">&copy; 1984-2013 The MathWorks, Inc.
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/patents.html">Patents</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/trademarks.html">Trademarks</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/">Privacy Policy</a>
+<tt class="minicdot">&#149;</tt>
+<a href="http://www.mathworks.com/company/aboutus/policies_statements/piracy.html">Preventing Piracy</a></p>
+  <!-- Last updated: Tue Nov  6 12:47:58 EST 2012--></body></html>

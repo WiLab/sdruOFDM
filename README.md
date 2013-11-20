@@ -9,6 +9,7 @@ __Complete__
 Modules
  - CRC (3 bits)
  - Custom messages
+ - timeout mechanism
 
 __To do:__
 Modules

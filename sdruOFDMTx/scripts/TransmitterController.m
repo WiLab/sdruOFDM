@@ -4,4 +4,12 @@ message = 'Greetings from WiLab';
 
 repeats = 10;
 
-sendMessageSDRu(  InterpolationFactor, message, repeats, framesToTxOnStep, numFrames )
+
+
+%sendMessageSDRu(  InterpolationFactor, message, repeats, framesToTxOnStep, numFrames )
+
+sendPacketSDRu(  InterpolationFactor, message, repeats, framesToTxOnStep, numFrames )
+
+
+
+

@@ -5,7 +5,7 @@ OFDM implemented in MATLAB for USRP radios
 
 The receiver and transmitter are split into separate branches (rx and tx)
 
-__Complete__
+__Complete:__
 Modules
  - CRC (3 bits)
  - Custom messages

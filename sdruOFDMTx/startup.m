@@ -1,1 +1,0 @@
-setupsdru([pwd,'/sdru']);

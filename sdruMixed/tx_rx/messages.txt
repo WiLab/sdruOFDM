@@ -1,0 +1,36 @@
+Now sensing
+0.91088
+Spectrum Clean, now transmitting
+Now sensing
+0.93961
+Spectrum Clean, now transmitting
+Now sensing
+0.93382
+Spectrum Clean, now transmitting
+Now sensing
+0.91603
+Spectrum Clean, now transmitting
+Now sensing
+0.88863
+Spectrum Clean, now transmitting
+Now sensing
+0.92759
+Spectrum Clean, now transmitting
+Now sensing
+0.93789
+Spectrum Clean, now transmitting
+Now sensing
+0.87646
+Spectrum Clean, now transmitting
+Now sensing
+0.99995
+Spectrum Clean, now transmitting
+Now sensing
+0.89724
+Spectrum Clean, now transmitting
+Now sensing
+1.1267
+Spectrum Occupied, now receiving
+Now sensing
+0.89959
+Spectrum Clean, now transmitting

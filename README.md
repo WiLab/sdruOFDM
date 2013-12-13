@@ -19,6 +19,6 @@ Modules
  - Turbo Coders
 
 
-Hardware:
+__Hardware:__
 
 ![alt tag](https://raw.github.com/WiLab/sdruOFDM/master/testbench.png)

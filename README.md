@@ -21,4 +21,4 @@ Modules
 
 Hardware:
 
-![alt tag](https://github.com/WiLab/sdruOFDM/blob/master/testbench.png)
+![alt tag](https://raw.github.com/WiLab/sdruOFDM/master/testbench.png)

@@ -15,5 +15,10 @@ Modules
 __To do:__
 Modules
  - Energy detection/Spectrum sensing
- - Packetizer
+ - Packetizer (modestly complete, has limitations)
  - Turbo Coders
+
+
+Hardware:
+
+![alt tag](http://url/to/img.png)

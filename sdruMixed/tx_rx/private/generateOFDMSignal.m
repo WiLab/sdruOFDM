@@ -10,6 +10,9 @@ tx.FFTLength = 64;         % OFDM modulator FFT size
 tx.enableMA = enableMA;    % Enable moving averages for estimates
 
 % Message to transmit
+% String holder
+coder.varsize('payloadMessage', [1, 80], [0 1]);
+%payloadMessage = '';
 payloadMessage = 'Live long and prosper, from the Communications System Toolbox Team at MathWorks!';
 
 %% Create Short Preamble
@@ -33,7 +36,8 @@ hPreambleMod = OFDMModulator(...
     'NumSymbols',           1); 
 
 % Modulate and scale
-tx.shortPreambleOFDM = sqrt(13/6)*step(hPreambleMod, tx.shortPreamble);
+shortPreamble = tx.shortPreamble;
+tx.shortPreambleOFDM = sqrt(13/6)*step(hPreambleMod, shortPreamble);
 
 % Form 10 Short Preambles
 tx.completeShortPreambleOFDM = [tx.shortPreambleOFDM; tx.shortPreambleOFDM; tx.shortPreambleOFDM(1:32)];

@@ -319,20 +319,20 @@ methods(Access = protected)
   end
   
   function validateInputsImpl(obj, x, varargin)
-    numSym = obj.NumSymbols;
-    numTx  = obj.NumTransmitAntennas;
-    
-    % Validate data input
-    validateattributes(x, {'numeric'}, {'3d','finite','size', ...
-        [getNumDataCarriers(obj, obj.InsertDCNull, obj.PilotInputPort) numSym numTx]}, ...
-        [class(obj) '.' 'Data input'], 'Data input');
-
-    % Validate pilot input
-    if obj.PilotInputPort
-        validateattributes(varargin{1}, {'numeric'}, {'3d','finite','size', ...
-            [size(obj.PilotCarrierIndices, 1)  numSym numTx]}, ...
-            [class(obj) '.' 'Pilot input'], 'Pilot input');        
-    end
+%     numSym = obj.NumSymbols;
+%     numTx  = obj.NumTransmitAntennas;
+%     
+%     % Validate data input
+%     validateattributes(x, {'numeric'}, {'3d','finite','size', ...
+%         [getNumDataCarriers(obj, obj.InsertDCNull, obj.PilotInputPort) numSym numTx]}, ...
+%         [class(obj) '.' 'Data input'], 'Data input');
+% 
+%     % Validate pilot input
+%     if obj.PilotInputPort
+%         validateattributes(varargin{1}, {'numeric'}, {'3d','finite','size', ...
+%             [size(obj.PilotCarrierIndices, 1)  numSym numTx]}, ...
+%             [class(obj) '.' 'Pilot input'], 'Pilot input');        
+%     end
   end  
   
   function setupImpl(obj, varargin)
@@ -395,9 +395,14 @@ methods(Access = protected)
     numTx  = obj.NumTransmitAntennas;
     
     % Pack data and pilots to full grid
-    packedData = obj.pFullGrid;
-    packedData(obj.pDataLinearIndices) = double(dataIn(:));
-    
+    if isreal(dataIn)
+        packedData = complex(obj.pFullGrid);
+        packedData(obj.pDataLinearIndices) = complex(dataIn(:),0);
+    else
+        packedData = complex(obj.pFullGrid);
+        packedData(obj.pDataLinearIndices) = dataIn(:);
+    end
+        
     if obj.PilotInputPort
         pilotIn = double(varargin{1});
         packedData(obj.pPilotLinearIndices) = pilotIn(:);

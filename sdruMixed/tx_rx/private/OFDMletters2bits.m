@@ -1,5 +1,6 @@
-function f = letters2bits(str)
+function f = OFDMletters2bits(str)
 % Encode a string of ASCII text into bits(1,0)
+coder.extrinsic('str2double');
 N=length(str);
 f=zeros(N,7);                          
 

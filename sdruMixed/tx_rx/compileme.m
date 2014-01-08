@@ -1,9 +1,12 @@
 function compileme
 
-rx1 = NodeRX2
-rx1.SetupParams;
-rx1.SetupObjects;
+rx1 = PHYReceive;
 
+[ Response ] = MAC_RX(rx1);
+
+tx1 = PHYTransmit;
+
+tx1.Run('Test');
 
 end
 

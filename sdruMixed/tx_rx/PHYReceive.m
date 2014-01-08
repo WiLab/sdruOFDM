@@ -1,5 +1,5 @@
 
-classdef NodeRX2 < handle %< matlab.System
+classdef PHYReceive < handle
     %#codegen
     properties
         estimate
@@ -22,7 +22,7 @@ classdef NodeRX2 < handle %< matlab.System
     
     methods
         % Construct Object
-        function obj = NodeRX2
+        function obj = PHYReceive
             
             % Setup Parameters
             [ obj.ObjPreambleDemod, obj.ObjDataDemod, ~, obj.rx ] = generateOFDMSignal;
@@ -61,14 +61,14 @@ classdef NodeRX2 < handle %< matlab.System
             lastFound = -2; %Flag for found frame, used for dup check
             numBuffersProcessed = 0; %Track received data, needed for separate indexing of processed and unprocessed data (processed==preamble found)
             
-            messageBits = zeros(numFrames,tx.messageCharacters*7+3);%3 for CRC
+            messageBits = zeros(numFrames,obj.rx.messageCharacters*7+3);%3 for CRC
             
-            % String holder
+            % Message string holder
             coder.varsize('recoveredMessage', [1, 80], [0 1]);
             recoveredMessage = '';
             
             % Timeout info
-            buffersPerSecond = (100e6/DecimationFactor)/receiveBufferLength;
+            buffersPerSecond = (100e6/obj.rx.DecimationFactor)/obj.pReceiveBufferLength;
             timeoutDuration = buffersPerSecond*20;
             
             
@@ -77,7 +77,7 @@ classdef NodeRX2 < handle %< matlab.System
             numFrames = 1; % Number of frames to find
             while obj.estimate.numProcessed < numFrames
                 
-                %buffer = rChannel(windowIndex : windowIndex + obj.estimate.inputBufferLength - 1);% Add incoming samples to buffer
+                % Get data from USRP
                 buffer = step(obj.pSDRuReceiver);
                 if sum(buffer)==0
                     % All zeros from radio (Bug?)
@@ -92,10 +92,10 @@ classdef NodeRX2 < handle %< matlab.System
                 numBuffersProcessed = numBuffersProcessed + 1;
                 
                 %% Find preamble in buffer
-                [obj.estimate.delay, obj.estimate.numPeaks] = locateOFDMFrame_sdr( tx.FFTLength, tx.shortPreambleOFDM, buffer);
+                [obj.estimate.delay, obj.estimate.numPeaks] = locateOFDMFrame_sdr( obj.rx.FFTLength, obj.rx.shortPreambleOFDM, buffer);
                 
                 % Check if frame exists in correct location and whether it's duplicate
-                FrameFound = ((obj.estimate.delay + tx.frameLength) < length(buffer) ) &&... %Check if full data frame exists in buffer
+                FrameFound = ((obj.estimate.delay + obj.rx.frameLength) < length(buffer) ) &&... %Check if full data frame exists in buffer
                     (obj.estimate.delay > -1 ) &&... %Check if preamble located
                     ((numBuffersProcessed-lastFound) >= 2 ); %Check if duplicate frame
                 
@@ -106,15 +106,16 @@ classdef NodeRX2 < handle %< matlab.System
                     obj.estimate.numProcessed = obj.estimate.numProcessed + 1;%Increment processed found frames
                     
                     % Extract single frame from input buffer
-                    rFrame = buffer(obj.estimate.delay + 1 : obj.estimate.delay + tx.frameLength);
+                    rFrame = buffer(obj.estimate.delay + 1 : obj.estimate.delay + obj.rx.frameLength);
                     
                     % Correct frequency offset
-                    [ rFreqShifted, obj.estimate ] = coarseOFDMFreqEst_sdr( rFrame, tx, obj.estimate);
+                    [ rFreqShifted, obj.estimate ] = coarseOFDMFreqEst_sdr( rFrame, obj.rx, obj.estimate);
+                    
                     % Equalize
-                    [ RPostEqualizer, ~, obj.estimate] = equalizeOFDM( rFreqShifted, tx, obj.estimate, hPreambleDemod, hDataDemod );
+                    [ RPostEqualizer, ~, obj.estimate] = equalizeOFDM( rFreqShifted, obj.rx, obj.estimate, obj.ObjPreambleDemod, obj.ObjDataDemod );
                     
                     % Demod subcarriers
-                    [ ~, obj.estimate, RHard ] = demodOFDMSubcarriers_sdr( RPostEqualizer, tx, obj.estimate );
+                    [ ~, obj.estimate, RHard ] = demodOFDMSubcarriers_sdr( RPostEqualizer, obj.rx, obj.estimate );
                     
                     % Save for later decoding and CRC
                     messageBits(obj.estimate.numProcessed,:) = RHard;

@@ -18,16 +18,17 @@ function [R, Rraw, estimate] = equalizeOFDM( recv, tx, estimate, hPreambleDemod,
 
     %% Preamble Equalization
     % Get Equalizer tap gains
-    preambleEqGains = preambleFDE([RLongFirst, RLongSecond], [tx.longPreamble, tx.longPreamble], tx);
+    preambleEqGains = preambleFDE([RLongFirst, RLongSecond], [tx.longPreamble, tx.longPreamble], hDataDemod);
       
     % Separate data from preambles
-    recvData = recv(length(tx.preambles)+1:length(tx.preambles)+(tx.hDataDemod.NumSymbols)*(tx.FFTLength+tx.hDataDemod.CyclicPrefixLength));
+    %recvData = recv(length(tx.preambles)+1:length(tx.preambles)+(hDataDemod.NumSymbols)*(tx.FFTLength+hDataDemod.CyclicPrefixLength));
+    recvData = recv(320+1:1280); % CG
     
     % OFDM Demod
     [Rraw, RXPilots] = step(hDataDemod, recvData);
         
     % Expand equalizer gains to full frame size
-    preambleGainsFull = repmat(preambleEqGains ,1 , tx.hDataDemod.NumSymbols);
+    preambleGainsFull = repmat(preambleEqGains ,1 , hDataDemod.NumSymbols);
     
     % Isolate pilot gains from preamble equalizer
     preamblePilotGains = preambleGainsFull(tx.pilotLocationsWithoutGuardbands,:); % Needed to correctly adjust pilot gains
@@ -51,10 +52,10 @@ function [R, Rraw, estimate] = equalizeOFDM( recv, tx, estimate, hPreambleDemod,
 end
 
 % Calculate Equalizer Taps with preamble symbols
-function RGains = preambleFDE(R, Known, tx)
+function RGains = preambleFDE(R, Known, hDataDemod)
 
 % Calculate non-normalized channel gains
-R = R(1:(tx.hDataDemod.FFTLength-sum(tx.hDataDemod.NumGuardBandCarriers)),1:2);
+R = R(1:(hDataDemod.FFTLength-sum(hDataDemod.NumGuardBandCarriers)),1:2);
 RNormal = R./Known; % Known is the original Long Preamble symbols 
 
 % Scale channel gains

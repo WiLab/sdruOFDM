@@ -7,8 +7,8 @@ Transmitter = PHYTransmit;
 while 1
 
     % Send something
-    MACLayerReceiver(Receiver,Transmitter)
-    
+    %MACLayerReceiver(Receiver,Transmitter)
+    Response = Receiver.Run;
     
 end
 

@@ -47,7 +47,7 @@ classdef PHYTransmit < handle
             [~,~, dataToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage);% create shorter simpler function
             
             % Run transmitter
-            disp('Transmitting... pew! pew!');
+            fprintf('Transmitting... pew! pew!\n');
             for framesTransmitted = 1:numFrames
                 step(obj.pSDRuTransmitter, dataToTx);
             end

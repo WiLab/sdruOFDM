@@ -41,14 +41,14 @@ classdef PHYTransmit < handle
         end
         
         % Send Messages
-        function Run(obj,inputPayloadMessage)
+        function Run(obj,inputPayloadMessage,numFrames)
             
             
             [~,~, dataToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage);% create shorter simpler function
             
             % Run transmitter
             disp('Transmitting... pew! pew!');
-            for framesTransmitted = 1:obj.numFrames
+            for framesTransmitted = 1:numFrames
                 step(obj.pSDRuTransmitter, dataToTx);
             end
             

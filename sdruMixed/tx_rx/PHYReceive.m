@@ -156,6 +156,42 @@ classdef PHYReceive < handle
             
         end
         
+        % Sense spectrum
+        function occupied = Sense(obj)
+            
+            powerThreshold = 10;
+            
+            counter = 1;
+            maxCount = 10;
+            energy = zeros(maxCount,1);
+            while 1
+                % Get data from USRP
+                buffer = step(obj.pSDRuReceiver);
+                if sum(buffer)==0
+                    % All zeros from radio (Bug?)
+                    %disp('All zeros (Bug?)');
+                    continue;
+                end
+                
+                % Calculate energy is spectrum
+                energy(counter) = sum(abs(fft(buffer(1:4096))));
+                counter = counter + 1;
+                
+                % Done sensing, now determine if spectrum is being used
+                if counter >= maxCount
+                    if sum(energy>powerThreshold)
+                        occupied = 1;
+                    else
+                        occupied = 0;
+                    end
+                    return;
+                end
+                
+            end
+            
+        end
+        
+        
         
     end
 end

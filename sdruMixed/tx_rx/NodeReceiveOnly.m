@@ -1,4 +1,4 @@
-function compileme
+function NodeReceiveOnly
 
 Receiver = PHYReceive;
 Transmitter = PHYTransmit;
@@ -7,8 +7,6 @@ Transmitter = PHYTransmit;
 while 1
 
     % Send something
-    message = 'TestMessage';
-    MACLayerTransmitter(Receiver,Transmitter,message);
     MACLayerReceiver(Receiver,Transmitter)
     
     

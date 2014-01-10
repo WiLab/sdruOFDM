@@ -124,6 +124,8 @@ classdef PHYReceive < handle
                 end
                 
                 %% Timeout
+                fprintf('%d\n',numBuffersProcessed);
+                fprintf('%d\n',timeoutDuration);
                 if numBuffersProcessed > timeoutDuration
                     fprintf('PHY: Receiver timed out\n');
                     recoveredMessage = 'Timeout';

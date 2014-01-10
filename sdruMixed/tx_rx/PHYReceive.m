@@ -82,7 +82,7 @@ classdef PHYReceive < handle
                 buffer = step(obj.pSDRuReceiver);
                 if sum(buffer)==0
                     % All zeros from radio (Bug?)
-                    fprintf('All zeros (Bug?)');
+                    fprintf('All zeros (Bug?)\n');
                     continue;
                 end
                 
@@ -125,7 +125,7 @@ classdef PHYReceive < handle
                 
                 %% Timeout
                 if numBuffersProcessed > timeoutDuration
-                    fprintf('PHY: Receiver timed out');
+                    fprintf('PHY: Receiver timed out\n');
                     recoveredMessage = 'Timeout';
                     break;
                 end
@@ -149,7 +149,7 @@ classdef PHYReceive < handle
                         %disp(recoveredMessage);
                     end
                 else
-                    fprintf('CRC Message Failure');
+                    fprintf('CRC Message Failure\n');
                     recoveredMessage = 'CRC Error';
                 end
             end

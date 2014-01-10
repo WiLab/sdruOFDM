@@ -40,6 +40,7 @@ classdef PHYReceive < handle
             
             % Gain control
             obj.pAGC = comm.AGC('UpdatePeriod', obj.pReceiveBufferLength);
+            
             % USRP
             obj.pSDRuReceiver = comm.SDRuReceiver( '192.168.10.2', ...
                 'CenterFrequency',      2.2e9 + obj.offsetCompensationValue, ...
@@ -81,7 +82,7 @@ classdef PHYReceive < handle
                 buffer = step(obj.pSDRuReceiver);
                 if sum(buffer)==0
                     % All zeros from radio (Bug?)
-                    %disp('All zeros (Bug?)');
+                    fprintf('All zeros (Bug?)');
                     continue;
                 end
                 
@@ -124,7 +125,7 @@ classdef PHYReceive < handle
                 
                 %% Timeout
                 if numBuffersProcessed > timeoutDuration
-                    %disp('PHY: Receiver timed out');
+                    fprintf('PHY: Receiver timed out');
                     recoveredMessage = 'Timeout';
                     break;
                 end
@@ -148,7 +149,7 @@ classdef PHYReceive < handle
                         %disp(recoveredMessage);
                     end
                 else
-                    %disp('CRC Message Failure');
+                    fprintf('CRC Message Failure');
                     recoveredMessage = 'CRC Error';
                 end
             end

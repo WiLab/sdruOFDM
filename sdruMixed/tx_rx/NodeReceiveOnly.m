@@ -1,14 +1,14 @@
 function NodeReceiveOnly
 
 Receiver = PHYReceive;
-Transmitter = PHYTransmit;
+%Transmitter = PHYTransmit;
 
 
 while 1
 
     % Send something
     %MACLayerReceiver(Receiver,Transmitter)
-    Response = Receiver.Run;
+    Receiver.Run;
     
 end
 

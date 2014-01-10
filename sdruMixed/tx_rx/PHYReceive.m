@@ -145,10 +145,10 @@ classdef PHYReceive < handle
                     messageEnd = strfind(message,'EOF');
                     if ~isempty(messageEnd)
                         recoveredMessage = message(1:messageEnd(1,1)-1);
-                        disp(recoveredMessage);
+                        %disp(recoveredMessage);
                     end
                 else
-                    disp('CRC Message Failure');
+                    %disp('CRC Message Failure');
                     recoveredMessage = 'CRC Error';
                 end
             end

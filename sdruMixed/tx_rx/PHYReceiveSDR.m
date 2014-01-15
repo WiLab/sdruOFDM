@@ -75,7 +75,7 @@ end
 
 
 %% Print Messages
-for recMessage = 1:estimate.numProcessed
+for recMessage = 1:estimate.numProcessed % this is usually just 1
     
     % CRC Check
     [msg, err] = step(ObjCRC, messageBits(recMessage,:).'>0);

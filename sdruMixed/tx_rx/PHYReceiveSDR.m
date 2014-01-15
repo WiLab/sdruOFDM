@@ -1,4 +1,4 @@
-function [ output_args ] = PHYReceiveSDR(objSDRuReceiver, objAGC, objCRC, ObjPreambleDemod, ObjDataDemod, rx)
+function recoveredMessage = PHYReceiveSDR(ObjSDRuReceiver, ObjAGC, ObjCRC, ObjPreambleDemod, ObjDataDemod, rx, estimate)
 %% Physical Layer
 numFrames = 1; % Frames to capture
 lastFound = -2; %Flag for found frame, used for dup check
@@ -18,7 +18,7 @@ numFrames = 1; % Number of frames to find
 while estimate.numProcessed < numFrames
     
     % Get data from USRP
-    buffer = step(pSDRuReceiver);
+    buffer = step(ObjSDRuReceiver);
     if sum(buffer)==0
         % All zeros from radio (Bug?)
         fprintf('All zeros (Bug?)\n');
@@ -26,7 +26,7 @@ while estimate.numProcessed < numFrames
     end
     
     % Automatic Gain Control
-    buffer = step(pAGC, buffer);
+    buffer = step(ObjAGC, buffer);
     
     % Increment processed data index
     numBuffersProcessed = numBuffersProcessed + 1;
@@ -64,8 +64,8 @@ while estimate.numProcessed < numFrames
     
     %% Timeout
     fprintf('%f\n',numBuffersProcessed);
-    fprintf('%f\n',timeoutDuration);
-    if numBuffersProcessed > timeoutDuration
+    fprintf('%f\n',rx.timeoutDuration);
+    if numBuffersProcessed > rx.timeoutDuration
         fprintf('PHY: Receiver timed out\n');
         recoveredMessage = 'Timeout';
         break;
@@ -78,7 +78,7 @@ end
 for recMessage = 1:estimate.numProcessed
     
     % CRC Check
-    [msg, err] = step(pDetect, messageBits(recMessage,:).'>0);
+    [msg, err] = step(ObjCRC, messageBits(recMessage,:).'>0);
     
     if ~err
         %Convert Bits to characters

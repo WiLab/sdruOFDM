@@ -23,7 +23,7 @@ end
 % Spectrum clear, send message
 for tries = 1:4
     % Send message
-    Transmitter.Run(message,10);
+    Transmitter.Run(message,1e4);
     % Listen for acknowledgement
     %Response = Receiver.Run;
     fprintf('Transmission finished, waiting for ACK\n');

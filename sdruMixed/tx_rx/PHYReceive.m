@@ -12,7 +12,7 @@ classdef PHYReceive < handle
         pAGC
         pDetect
         numFreqToAverage
-        DebugFlag = 1;
+        DebugFlag = 0;
     end
     
     properties (Constant)
@@ -25,7 +25,7 @@ classdef PHYReceive < handle
         function obj = PHYReceive
             
             % Setup Parameters
-            [ obj.ObjPreambleDemod, obj.ObjDataDemod, ~, obj.rx ] = generateOFDMSignal_TX2('HelloShannon');
+            [ obj.ObjPreambleDemod, obj.ObjDataDemod, ~, obj.rx ] = generateOFDMSignal;%_TX2('HelloShannon');
             
             obj.rx.receiveBufferLength = ceil( obj.rx.frameLength*4 ); %Size of Buffer of sliding window
             
@@ -166,7 +166,7 @@ classdef PHYReceive < handle
         % Sense spectrum
         function occupied = Sense(obj)
             
-            powerThreshold = 10;
+            powerThreshold = 10e10;
             
             counter = 1;
             maxCount = 10;

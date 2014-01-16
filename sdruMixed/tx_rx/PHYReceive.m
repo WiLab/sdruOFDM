@@ -58,6 +58,7 @@ classdef PHYReceive < handle
         % Get Messages
         function [recoveredMessage] = Run(obj)
             
+	    obj.estimate.numProcessed = 0;
             numFrames = 1; % Frames to capture
             lastFound = -2; %Flag for found frame, used for dup check
             numBuffersProcessed = 0; %Track received data, needed for separate indexing of processed and unprocessed data (processed==preamble found)
@@ -135,7 +136,7 @@ classdef PHYReceive < handle
             
             
             
-            %% Print Messages
+            %% Process Messages
             for recMessage = 1:obj.estimate.numProcessed
                 
                 % CRC Check
@@ -148,7 +149,8 @@ classdef PHYReceive < handle
                     messageEnd = strfind(message,'EOF');
                     if ~isempty(messageEnd)
                         recoveredMessage = message(1:messageEnd(1,1)-1);
-                        %disp(recoveredMessage);
+                        fprintf('Message recovered\n');
+                        fprintf('%s\n',recoveredMessage);
                     end
                 else
                     fprintf('CRC Message Failure\n');

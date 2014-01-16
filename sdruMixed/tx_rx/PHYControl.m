@@ -23,10 +23,12 @@ while 1
         %Wait for message
         case 0
             if timeouts > maxTimeouts
+                disp('Max timeouts reached');
                 Response = 'Timeout';
-                break;
+                return;
             end
             Response = Receiver.Run;
+	    disp(['|',Response,'|']);
             if strcmp(Response, 'Timeout')
                 state = 1;
             elseif strcmp(Response,'CRC Error')
@@ -42,7 +44,7 @@ while 1
             if timeouts > maxTimeouts
                 disp('Max timeouts reached');
                 Response = 'Timeout';
-                break;
+                return;
             end
             state = 0;%Get another message
             
@@ -53,10 +55,10 @@ while 1
             state = 0;%Get another message
             
         % Default: Message successfully received    
-        otherwise
+        case 3%otherwise
             disp(['MSG: ',Response])
             disp(['Timeouts: ',num2str(timeouts)])
-            break;
+            return;
     end
     
 end

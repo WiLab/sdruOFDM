@@ -2,3 +2,4 @@ codegen
 *.m~
 *.swp
 *.mexa64
+*.mexmaci64

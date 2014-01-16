@@ -7,7 +7,8 @@ for tries = 1:4 % try only so many times
     occupied = Receiver.Sense;
     if occupied
         %Recover signal and/or wait
-        MACLayerReceiver(Receiver,Transmitter);
+        lookingForACK = false;
+        MACLayerReceiver(Receiver,Transmitter,lookingForACK);
     else% Yay we can transmit now
         break;
     end    
@@ -24,11 +25,14 @@ for tries = 1:4
     Transmitter.Run(message,10);
     % Listen for acknowledgement
     %Response = Receiver.Run;
+    fprintf('Transmission finished, waiting for ACK\n');
     lookingForACK = true;
     Response = MACLayerReceiver(Receiver,Transmitter, lookingForACK);
     if strcmp(Response,'ACK')
         fprintf('Got ACK\n');
         break
+    else
+        fprintf('Retransmitting message\n');
     end
     if tries >= 4
         fprintf('No ACK received :(');

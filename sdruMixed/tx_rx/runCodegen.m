@@ -1,4 +1,4 @@
 
-
 % SDRU Codegen
-compilesdru('Node','mex');
+compilesdru('NodeReceiveOnly','mex');
+compilesdru('NodeTransmitOnly','mex');

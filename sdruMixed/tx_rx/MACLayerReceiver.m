@@ -12,7 +12,9 @@ coder.extrinsic('disp');
 if ~strcmp(Response,'Timeout')
     fprintf('MAC| Got message: ');
     disp(Response);
+    pause(3);
     Transmitter.Run('ACK',1e3);% Send ACK
+    pause(3);
 end
 
 

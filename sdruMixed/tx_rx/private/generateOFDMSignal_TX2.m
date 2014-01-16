@@ -5,7 +5,7 @@ function [hPreambleDemod,hDataDemod, r, tx ] = generateOFDMSignal_TX2(inputPaylo
 % receiver to operate correctly.
 
 %% System Parameters
-samplingFreq = 20e6;    % Sampling frequency (Hz)
+samplingFreq = 5e6;    % Sampling frequency (Hz)
 FFTLength = 64;         % OFDM modulator FFT size
 enableMA = true;    % Enable moving averages for estimates
 numFrames = 10;

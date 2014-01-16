@@ -8,7 +8,7 @@ classdef PHYTransmit < handle
         USRPADCSamplingRate
         pSDRuTransmitter
         numFrames = 10;
-        
+        DebugFlag = 1;
     end
     
     properties (Constant)
@@ -47,7 +47,10 @@ classdef PHYTransmit < handle
             [~,~, dataToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage);% create shorter simpler function
             
             % Run transmitter
-            fprintf('Transmitting... pew! pew!\n');
+            if obj.DebugFlag
+                fprintf('Transmitting... pew! pew!\n');
+                fprintf('TX Message: %s\n',inputPayloadMessage);
+            end
             for framesTransmitted = 1:numFrames
                 step(obj.pSDRuTransmitter, dataToTx);
             end

@@ -3,12 +3,14 @@ function NodeReceiveOnly
 Receiver = PHYReceive;
 Transmitter = PHYTransmit;
 
-
+coder.extrinsic('disp');
 while 1
 
     % Send something
-    MACLayerReceiver(Receiver,Transmitter)
-    %Receiver.Run;
+    lookingForACK = false;
+    MACLayerReceiver(Receiver,Transmitter, lookingForACK);
+    %response = Receiver.Run;
+    %disp(response);
     
 end
 

@@ -25,7 +25,7 @@ while 1
             if timeouts > maxTimeouts
                 disp('Max timeouts reached');
                 Response = 'Timeout';
-                return;
+                break;
             end
             Response = Receiver.Run;
 	    disp(['|',Response,'|']);
@@ -44,7 +44,7 @@ while 1
             if timeouts > maxTimeouts
                 disp('Max timeouts reached');
                 Response = 'Timeout';
-                return;
+                break;
             end
             state = 0;%Get another message
             
@@ -58,7 +58,7 @@ while 1
         case 3%otherwise
             disp(['MSG: ',Response])
             disp(['Timeouts: ',num2str(timeouts)])
-            return;
+            break;
     end
     
 end

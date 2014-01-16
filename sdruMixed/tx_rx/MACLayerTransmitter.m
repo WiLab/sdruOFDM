@@ -6,8 +6,9 @@ function MACLayerTransmitter(Receiver,Transmitter,message)
 for tries = 1:4 % try only so many times
     occupied = Receiver.Sense;
     if occupied
+        %Recover signal and/or wait
         MACLayerReceiver(Receiver,Transmitter);
-    else
+    else% Yay we can transmit now
         break;
     end    
     if tries >=4
@@ -17,13 +18,16 @@ for tries = 1:4 % try only so many times
 end
 
 
-% Spectrum clear send message
+% Spectrum clear, send message
 for tries = 1:4
     % Send message
     Transmitter.Run(message,10);
     % Listen for acknowledgement
-    Response = Receiver.Run;
+    %Response = Receiver.Run;
+    lookingForACK = true;
+    Response = MACLayerReceiver(Receiver,Transmitter, lookingForACK);
     if strcmp(Response,'ACK')
+        fprintf('Got ACK\n');
         break
     end
     if tries >= 4

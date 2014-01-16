@@ -1,6 +1,5 @@
-function MACLayerReceiver(Receiver,Transmitter)
+function Response = MACLayerReceiver(Receiver,Transmitter, lookingForACK)
 
-coder.extrinsic('disp');
 % This function is called when the node is just listening to the spectrum
 % waiting for a message to be transmitted to them
 
@@ -10,11 +9,12 @@ coder.extrinsic('disp');
 % 1.) Timeout
 % 2.) Some message
 if ~strcmp(Response,'Timeout')
-    fprintf('MAC| Got message: ');
-    disp(Response);
-    pause(3);
-    Transmitter.Run('ACK',1e3);% Send ACK
-    pause(3);
+    fprintf('MAC| Got message: %s\n',Response);
+    if ~lookingForACK
+        pause(3);
+        Transmitter.Run('ACK',1e3);% Send ACK
+        pause(3);
+    end
 end
 
 

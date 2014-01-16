@@ -25,14 +25,14 @@ classdef PHYReceive < handle
         function obj = PHYReceive
             
             % Setup Parameters
-            [ obj.ObjPreambleDemod, obj.ObjDataDemod, ~, obj.rx ] = generateOFDMSignal;
+            [ obj.ObjPreambleDemod, obj.ObjDataDemod, ~, obj.rx ] = generateOFDMSignal_TX2('HelloShannon');
             
             obj.rx.receiveBufferLength = ceil( obj.rx.frameLength*4 ); %Size of Buffer of sliding window
             
             obj.USRPDACSamplingRate = 100e6;
             obj.rx.DecimationFactor = obj.USRPDACSamplingRate/obj.rx.samplingFreq;
             
-            obj.offsetCompensationValue = -7000;
+            obj.offsetCompensationValue = -70800.781250;% Get from calibration
             
             %Create memory structure to collect measurements for sync algorithms
             obj.numFreqToAverage = 15; %Number of frequency estimates to be averaged together for frequency corrections (Higher==More stability, Lower==More responsiveness)
@@ -149,11 +149,13 @@ classdef PHYReceive < handle
                     messageEnd = strfind(message,'EOF');
                     if ~isempty(messageEnd)
                         recoveredMessage = message(1:messageEnd(1,1)-1);
-                        fprintf('Message recovered\n');
-                        fprintf('%s\n',recoveredMessage);
+                        fprintf('Message recovered: %s\n',recoveredMessage);
                     end
                 else
                     fprintf('CRC Message Failure\n');
+                    %recoveredMessage = char(OFDMbits2letters(msg > 0).');%messageBits(recMessage,1:end-3)
+                    %recoveredMessage = message;
+                    %fprintf('Corrupted Message: %s\n',recoveredMessage);
                     recoveredMessage = 'CRC Error';
                 end
             end

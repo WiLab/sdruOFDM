@@ -11,9 +11,8 @@ function Response = MACLayerReceiver(Receiver,Transmitter, lookingForACK)
 if ~strcmp(Response,'Timeout')
     fprintf('MAC| Got message: %s\n',Response);
     if ~lookingForACK
-        pause(3);
-        Transmitter.Run('ACK',1e3);% Send ACK
-        pause(3);
+        pause(1);
+        Transmitter.Run('ACK',1e4);% Send ACK
     end
 end
 

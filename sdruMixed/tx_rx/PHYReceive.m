@@ -33,6 +33,7 @@ classdef PHYReceive < handle
             obj.rx.DecimationFactor = obj.USRPDACSamplingRate/obj.rx.samplingFreq;
             
             obj.offsetCompensationValue = -70800.781250;% Get from calibration
+            %obj.offsetCompensationValue = 60000;% Get from calibration
             
             %Create memory structure to collect measurements for sync algorithms
             obj.numFreqToAverage = 15; %Number of frequency estimates to be averaged together for frequency corrections (Higher==More stability, Lower==More responsiveness)

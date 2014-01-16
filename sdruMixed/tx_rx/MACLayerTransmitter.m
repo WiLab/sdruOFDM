@@ -33,6 +33,7 @@ for tries = 1:4
         fprintf('Got ACK\n');
         break
     else
+        pause(4);
         fprintf('Retransmitting message\n');
     end
     if tries >= 4

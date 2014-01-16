@@ -6,6 +6,7 @@ function MACLayerTransmitter(Receiver,Transmitter,message)
 for tries = 1:4 % try only so many times
     occupied = Receiver.Sense;
     if occupied
+        fprintf('Spectrum occupied, listening...\n');
         %Recover signal and/or wait
         lookingForACK = false;
         MACLayerReceiver(Receiver,Transmitter,lookingForACK);

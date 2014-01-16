@@ -12,7 +12,7 @@ classdef PHYReceive < handle
         pAGC
         pDetect
         numFreqToAverage
-        
+        DebugFlag = 1;
     end
     
     properties (Constant)
@@ -83,7 +83,7 @@ classdef PHYReceive < handle
                 buffer = step(obj.pSDRuReceiver);
                 if sum(buffer)==0
                     % All zeros from radio (Bug?)
-                    fprintf('All zeros (Bug?)\n');
+                    if obj.DebugFlag ;fprintf('All zeros (Bug?)\n');end;
                     continue;
                 end
                 
@@ -128,7 +128,7 @@ classdef PHYReceive < handle
                 %fprintf('%f\n',numBuffersProcessed);
                 %fprintf('%f\n',timeoutDuration);
                 if numBuffersProcessed > timeoutDuration
-                    fprintf('PHY: Receiver timed out\n');
+                    if obj.DebugFlag ;fprintf('PHY| Receiver timed out\n');end;
                     recoveredMessage = 'Timeout';
                     break;
                 end
@@ -149,10 +149,10 @@ classdef PHYReceive < handle
                     messageEnd = strfind(message,'EOF');
                     if ~isempty(messageEnd)
                         recoveredMessage = message(1:messageEnd(1,1)-1);
-                        fprintf('Message recovered: %s\n',recoveredMessage);
+                        if obj.DebugFlag ;fprintf('PHY| Message recovered: %s\n',recoveredMessage); end;
                     end
                 else
-                    fprintf('CRC Message Failure\n');
+                    if obj.DebugFlag ;fprintf('PHY| CRC Message Failure\n');end;
                     %recoveredMessage = char(OFDMbits2letters(msg > 0).');%messageBits(recMessage,1:end-3)
                     %recoveredMessage = message;
                     %fprintf('Corrupted Message: %s\n',recoveredMessage);

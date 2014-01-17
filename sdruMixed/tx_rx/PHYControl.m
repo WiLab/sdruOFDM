@@ -1,4 +1,4 @@
-function [ Response ] = PHYControl(Receiver)
+function [ Response ] = PHYControl(PHY)
 
 % 0 = Call PHY Receiver
 % 1 = Timeout
@@ -23,11 +23,11 @@ while 1
         %Wait for message
         case 0
             if timeouts > maxTimeouts
-                disp('Max timeouts reached');
+                fprintf('Max timeouts reached\n');
                 Response = 'Timeout';
                 break;
             end
-            Response = Receiver.Run;
+            Response = PHY.Receive;
             disp(['|',Response,'|']);
             if strcmp(Response, 'Timeout') || isempty(Response)
                 state = 1;
@@ -42,7 +42,7 @@ while 1
             disp('Timeout occured');
             timeouts = timeouts + 1;
             if timeouts > maxTimeouts
-                disp('Max timeouts reached');
+                fprintf('Max timeouts reached\n');
                 Response = 'Timeout';
                 break;
             end
@@ -50,7 +50,7 @@ while 1
             
         % Message corrupted    
         case 2
-            disp('Message corrupted');
+            fprintf('Message corrupted\n');
             timeouts = timeouts + 1;
             state = 0;%Get another message
             

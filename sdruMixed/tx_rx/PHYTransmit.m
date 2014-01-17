@@ -41,7 +41,7 @@ classdef PHYTransmit < handle
         end
         
         % Send Messages
-        function Run(obj,inputPayloadMessage,numFrames)
+        function Run(obj,inputPayloadMessage,numFrames,ObjReceiver)
             
             
             [~,~, dataToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage);% create shorter simpler function
@@ -53,6 +53,7 @@ classdef PHYTransmit < handle
             end
             for framesTransmitted = 1:numFrames
                 step(obj.pSDRuTransmitter, dataToTx);
+                step(ObjReceiver);% clean up receive buffer, will be corrupted anyway
             end
            
 	    obj.pSDRuTransmitter.reset;%stop transmitting? 

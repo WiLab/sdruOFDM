@@ -8,7 +8,7 @@ function [hPreambleDemod,hDataDemod, r, tx ] = generateOFDMSignal_TX2(inputPaylo
 samplingFreq = 5e6;    % Sampling frequency (Hz)
 FFTLength = 64;         % OFDM modulator FFT size
 enableMA = true;    % Enable moving averages for estimates
-numFrames = 1;
+numFrames = 20;     % Make larger to reduce underflow
 
 % Message to transmit
 % Message to transmit

@@ -57,7 +57,7 @@ classdef PHYLayer < handle
             
             obj.rx.DecimationFactor = obj.USRPADCSamplingRate/obj.rx.samplingFreq;
             
-            obj.offsetCompensationValue = -75683.593750;% Get from calibration
+            obj.offsetCompensationValue = -73242;% Get from calibration
             %obj.offsetCompensationValue = 60000;% Get from calibration
             
             %Create memory structure to collect measurements for sync algorithms
@@ -97,7 +97,7 @@ classdef PHYLayer < handle
             
             % Timeout info
             buffersPerSecond = (100e6/obj.rx.DecimationFactor)/obj.pReceiveBufferLength;
-            timeoutDuration = buffersPerSecond*200;
+            timeoutDuration = buffersPerSecond*4;
             
             
             %% Process received data
@@ -240,6 +240,20 @@ classdef PHYLayer < handle
                     return;
                 end
                 
+            end
+            
+        end
+      
+        % Do nothing aka waste time
+        function Wait(obj,time)
+           
+            % Calculate how many buffer needed to step through to wait
+            % desired time
+            timeToFillBuffer = obj.pReceiveBufferLength / obj.desiredSamplingFrequency;
+            buffersToProcess = ceil(time/timeToFillBuffer);
+            
+            for buffer = 1:buffersToProcess
+                step(obj.pSDRuReceiver);
             end
             
         end

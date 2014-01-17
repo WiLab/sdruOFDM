@@ -11,8 +11,8 @@ for i = 1 : 20e4
     MACLayerTransmitter(PHY,'HelloShannon')
     %Transmitter.Run('HelloShannon',10e4);
 
-    disp('TOP| Done for instance, waiting some time');
-    pause(60);
+    fprintf('TOP| Done for instance, waiting some time\n');
+    PHY.Wait(60);
     
 end
 

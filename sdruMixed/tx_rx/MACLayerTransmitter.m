@@ -23,7 +23,7 @@ end
 % Spectrum clear, send message
 for tries = 1:4
     % Send message
-    PHY.Transmit(message,1e4);
+    PHY.Transmit(message,1e2);
     % Listen for acknowledgement
     %Response = Receiver.Run;
     fprintf('MAC| Transmission finished, waiting for ACK\n');
@@ -33,7 +33,7 @@ for tries = 1:4
         fprintf('MAC| Got ACK\n');
         break
     else
-        pause(4);
+        %pause(4);
         fprintf('MAC| Retransmitting message\n');
     end
     if tries >= 4

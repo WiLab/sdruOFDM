@@ -4,15 +4,15 @@ function Response = MACLayerReceiver(PHY, lookingForACK)
 % waiting for a message to be transmitted to them
 
 % Listen to the spectrum
-[ Response ] = PHYControl(PHY);
+[ Response ] = DLLayer(PHY);
 % Possible response messages
 % 1.) Timeout
 % 2.) Some message
 if ~strcmp(Response,'Timeout')
     fprintf('MAC| Got message: %s\n',Response);
     if ~lookingForACK
-        pause(1);
-        PHY.Transmit('ACK',1e4);% Send ACK
+        %pause(1);
+        PHY.Transmit('ACK',1e2);% Send ACK
     end
 end
 

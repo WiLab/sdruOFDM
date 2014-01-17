@@ -1,4 +1,4 @@
-function [ Response ] = PHYControl(PHY)
+function [ Response ] = DLLayer(PHY)
 
 % 0 = Call PHY Receiver
 % 1 = Timeout

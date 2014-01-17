@@ -32,7 +32,7 @@ classdef PHYReceive < handle
             obj.USRPDACSamplingRate = 100e6;
             obj.rx.DecimationFactor = obj.USRPDACSamplingRate/obj.rx.samplingFreq;
             
-            obj.offsetCompensationValue = -70800.781250;% Get from calibration
+            obj.offsetCompensationValue = -75683.593750;% Get from calibration
             %obj.offsetCompensationValue = 60000;% Get from calibration
             
             %Create memory structure to collect measurements for sync algorithms
@@ -72,7 +72,7 @@ classdef PHYReceive < handle
             
             % Timeout info
             buffersPerSecond = (100e6/obj.rx.DecimationFactor)/obj.pReceiveBufferLength;
-            timeoutDuration = buffersPerSecond*20;
+            timeoutDuration = buffersPerSecond*200;
             
             
             %% Process received data
@@ -192,6 +192,7 @@ classdef PHYReceive < handle
                     else
                         occupied = 0;
                     end
+                    obj.pSDRuReceiver.reset;
                     return;
                 end
                 

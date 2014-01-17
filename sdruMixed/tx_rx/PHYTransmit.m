@@ -54,7 +54,8 @@ classdef PHYTransmit < handle
             for framesTransmitted = 1:numFrames
                 step(obj.pSDRuTransmitter, dataToTx);
             end
-            
+           
+	    obj.pSDRuTransmitter.reset;%stop transmitting? 
         end
         
         

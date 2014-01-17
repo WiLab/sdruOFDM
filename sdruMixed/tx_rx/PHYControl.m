@@ -28,8 +28,8 @@ while 1
                 break;
             end
             Response = Receiver.Run;
-	    disp(['|',Response,'|']);
-            if strcmp(Response, 'Timeout')
+            disp(['|',Response,'|']);
+            if strcmp(Response, 'Timeout') || isempty(Response)
                 state = 1;
             elseif strcmp(Response,'CRC Error')
                 state = 2;

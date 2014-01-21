@@ -17,6 +17,7 @@ classdef PHYLayer < handle
     end
     %RX
     properties
+        timeoutDuration
         estimate
         ObjPreambleDemod
         ObjDataDemod
@@ -26,6 +27,7 @@ classdef PHYLayer < handle
         pAGC
         pDetect
         numFreqToAverage
+        messageBits
     end
     
 
@@ -61,7 +63,6 @@ classdef PHYLayer < handle
             %obj.offsetCompensationValue = 60000;% Get from calibration
             
             %Create memory structure to collect measurements for sync algorithms
-            obj.numFreqToAverage = 15; %Number of frequency estimates to be averaged together for frequency corrections (Higher==More stability, Lower==More responsiveness)
             [obj.estimate, ~] = initializeOFDMSyncMemory_sdr( obj.rx.receiveBufferLength, obj.numFreqToAverage, obj.rx, false, obj.ObjPreambleDemod, obj.ObjDataDemod );
             
             % Gain control
@@ -78,31 +79,33 @@ classdef PHYLayer < handle
             % CRC
             obj.pDetect = comm.CRCDetector([1 0 0 1], 'ChecksumsPerFrame',1);
             
+            % Timeout info
+            buffersPerSecond = (100e6/obj.rx.DecimationFactor)/obj.pReceiveBufferLength;
+            obj.timeoutDuration = buffersPerSecond*4;
+            
+            % Sync Algorithms
+            obj.numFreqToAverage = 15; %Number of frequency estimates to be averaged together for frequency corrections (Higher==More stability, Lower==More responsiveness)
+            
+            % Soft decisions
+            obj.messageBits = zeros(numFrames,obj.rx.messageCharacters*7+3);%3 for CRC
+            
             
         end
         
         % Get Messages
         function [recoveredMessage] = Receive(obj)
             
-	    obj.estimate.numProcessed = 0;
+            obj.estimate.numProcessed = 0; % # correct frames found
             numFrames = 1; % Frames to capture
             lastFound = -2; %Flag for found frame, used for dup check
             numBuffersProcessed = 0; %Track received data, needed for separate indexing of processed and unprocessed data (processed==preamble found)
-            
-            messageBits = zeros(numFrames,obj.rx.messageCharacters*7+3);%3 for CRC
             
             % Message string holder
             coder.varsize('recoveredMessage', [1, 80], [0 1]);
             recoveredMessage = '';
             
-            % Timeout info
-            buffersPerSecond = (100e6/obj.rx.DecimationFactor)/obj.pReceiveBufferLength;
-            timeoutDuration = buffersPerSecond*4;
-            
-            
             %% Process received data
             % Locate frames in buffer and compensate for channel affects
-            numFrames = 1; % Number of frames to find
             while obj.estimate.numProcessed < numFrames
                 
                 % Get data from USRP
@@ -153,7 +156,7 @@ classdef PHYLayer < handle
                 %% Timeout
                 %fprintf('%f\n',numBuffersProcessed);
                 %fprintf('%f\n',timeoutDuration);
-                if numBuffersProcessed > timeoutDuration
+                if numBuffersProcessed > obj.timeoutDuration
                     if obj.DebugFlag ;fprintf('PHY| Receiver timed out\n');end;
                     recoveredMessage = 'Timeout';
                     break;
@@ -192,7 +195,6 @@ classdef PHYLayer < handle
         % Send Messages
         function Transmit(obj,inputPayloadMessage,numFrames)
             
-            
             [~,~, dataToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage);% create shorter simpler function
             
             % Run transmitter
@@ -205,7 +207,7 @@ classdef PHYLayer < handle
                 step(obj.pSDRuReceiver);% clean up receive buffer, will be corrupted anyway
             end
            
-	    obj.pSDRuTransmitter.reset;%stop transmitting? 
+            obj.pSDRuTransmitter.reset;%stop transmitting? 
         end
         
         % Sense spectrum

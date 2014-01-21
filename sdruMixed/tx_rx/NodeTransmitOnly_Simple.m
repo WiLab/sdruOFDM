@@ -1,14 +1,15 @@
 function NodeTransmitOnly_Simple
 
-Receiver = PHYReceive;
-Transmitter = PHYTransmit;
+% Receiver = PHYReceive;
+% Transmitter = PHYTransmit;
+PHY = PHYLayer;
 
 for i = 1 : 20e4
     
     
     % Send something
     %MACLayerTransmitter(Receiver,Transmitter,'HelloShannon')
-    Transmitter.Run('HelloShannon',10e4);
+    PHY.Transmit('HelloShannon',1e4);
     
 end
 

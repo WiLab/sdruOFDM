@@ -1,4 +1,3 @@
-
 classdef PHYLayer < handle
     %#codegen
     %TX
@@ -172,7 +171,7 @@ classdef PHYLayer < handle
                 [msg, err] = step(obj.pDetect, messageBits(recMessage,:).'>0);
                 
                 if ~err
-                    %Convert Bits to characters
+                    % Convert Bits to characters
                     message = char(OFDMbits2letters(msg > 0).');%messageBits(recMessage,1:end-3)
                     %Remove padding
                     messageEnd = strfind(message,'EOF');

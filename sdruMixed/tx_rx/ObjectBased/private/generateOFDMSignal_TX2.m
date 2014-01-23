@@ -1,20 +1,20 @@
-function [hPreambleDemod,hDataDemod, r, tx ] = generateOFDMSignal(samplingFreq)
+function [hPreambleDemod,hDataDemod, r, tx ] = generateOFDMSignal_TX2(inputPayloadMessage)
 % generateOFDMSignal: Generate OFDM signal based on the 802.11a standard.
 % This function returns the time domain signal and a structure containing
 % details about the signal itself.  This information is required by the
 % receiver to operate correctly.
 
 %% System Parameters
+samplingFreq = 5e6;    % Sampling frequency (Hz)
 FFTLength = 64;         % OFDM modulator FFT size
 enableMA = true;    % Enable moving averages for estimates
-numFrames = 20;%1e3
+numFrames = 20;%20     % Make larger to reduce underflow
 
 % Message to transmit
-% String holder
-%coder.varsize('payloadMessage', [1, 80], [0 1]);
-%payloadMessage = '';
-payloadMessage = 'Live long and prosper, from the Communications System Toolbox Team at MathWorks!';
-
+% Message to transmit
+if length(inputPayloadMessage) < 77
+   payloadMessage = [inputPayloadMessage,'EOF',repmat('-',1,77 - length(inputPayloadMessage))];
+end
 %% Create Short Preamble
 shortPreamble = [ 0 0  1+1i 0 0 0  -1-1i 0 0 0 ... % [-27:-17]
  1+1i 0 0 0  -1-1i 0 0 0 -1-1i 0 0 0   1+1i 0 0 0 ... % [-16:-1]
@@ -119,7 +119,7 @@ preambles = [completeShortPreambleOFDM; completeLongPreambleOFDM];
 r = [preambles; r];
 frameLength = length(r);
 
-% Repeat frame
+% Repeat frame (Used in debugging)
 r = repmat(r, numFrames, 1);
 
 % Save Demodulator object data for receiver
@@ -140,6 +140,8 @@ DCNullLocation = 33 - hDataDemod.NumGuardBandCarriers(1);%Remove index offsets f
 %dataSubcarrierIndexies([pilotLocationsWithoutGuardbands;DCNullLocation]) = [];%Remove pilot and DCNull locations
 dataSubcarrierIndexies = [1:5,7:19,21:26,28:33,35:47,49:53];
 
+
+% Preallocate values needed later
 
 % Create return structure
 tx = struct('originalData',originalData,...
@@ -163,6 +165,7 @@ tx = struct('originalData',originalData,...
             'numFrames',numFrames,...
             'frameLength',frameLength,...
             'freqBin',freqBin,...
+            ...
             'DecimationFactor',0,...
             'receiveBufferLength',0);
 

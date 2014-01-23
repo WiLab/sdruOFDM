@@ -1,10 +1,11 @@
-function [hPreambleDemod,hDataDemod, r, tx ] = generateOFDMSignal(samplingFreq)
+function [hPreambleDemod,hDataDemod, r, tx ] = generateOFDMSignal
 % generateOFDMSignal: Generate OFDM signal based on the 802.11a standard.
 % This function returns the time domain signal and a structure containing
 % details about the signal itself.  This information is required by the
 % receiver to operate correctly.
 
 %% System Parameters
+samplingFreq = 5e6;    % Sampling frequency (Hz)
 FFTLength = 64;         % OFDM modulator FFT size
 enableMA = true;    % Enable moving averages for estimates
 numFrames = 20;%1e3

@@ -1,4 +1,4 @@
-function [preambleEstimatedLocation, numPeaks ] = locateOFDMFrame_sdr( FFTLength, shortPreambleOFDM, recv)
+function [preambleEstimatedLocation, numPeaks ] = locateOFDMFrame( FFTLength, shortPreambleOFDM, recv)
 %#codegen
 % locateOFDMFrame: Locate 802.11a based preamble from input data stream.
 % It is assumed that the received signal is still in the time domain.  The
@@ -54,21 +54,17 @@ for i = 1:length(MLocations)
 end
 
 % Have at least 5 peaks for positive match
-requiredPeaks = 7; % (TUNABLE)
+requiredPeaks = 5; % (TUNABLE)
 peaks(peaks < requiredPeaks) = 0;
 
 % Pick earliest peak in time
-if ~isempty(peaks)
-    [numPeaks, frontPeakLocation] = max(peaks);
-    if ~isempty(frontPeakLocation) && ( numPeaks > 0 )
-        preambleEstimatedLocation = MLocations(frontPeakLocation);
-    else
-        preambleEstimatedLocation = -1; % no desirable location found
-    end
+[numPeaks, frontPeakLocation] = max(peaks);
+if ~isempty(frontPeakLocation) && ( numPeaks > 0 )
+    preambleEstimatedLocation = MLocations(frontPeakLocation);
 else
-    preambleEstimatedLocation = -1;
-    numPeaks = 0;
+    preambleEstimatedLocation = -1; % no desirable location found
 end
+
 % Normalize max peaks found
 numPeaks = numPeaks/numel(desiredPeakLocations);
 

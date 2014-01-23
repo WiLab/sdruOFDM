@@ -1,22 +1,10 @@
-function [ Response ] = DLLayer(...
-    ObjAGC,...           %Objects
-    ObjSDRuReceiver,...
-    ObjDetect,...
-    ObjPreambleDemod,...
-    ObjDataDemod,...
-    estimate,...         %Structs
-    tx,...
-    timeoutDuration,...  %Values/Vectors
-    messageBits...
-    )
+function [ Response ] = DLLayer(PHY)
 
 % 0 = Call PHY Receiver
 % 1 = Timeout
 % 2 = Corrupt Message
 % 3 = Message Reception Successfull
-state = 0;% Initial state
-
-DebugFlag = 0;
+state = 0;
 
 %coder.extrinsic('num2str','disp');
 
@@ -35,26 +23,12 @@ while 1
         %Wait for message
         case 0
             if timeouts > maxTimeouts
-                if DebugFlag;fprintf('DL| Max timeouts reached\n');end;
+                fprintf('DL| Max timeouts reached\n');
                 Response = 'Timeout';
                 break;
             end
-            
-            % Call Physical Layer
-            Response = PHYReceive(...
-                ObjAGC,...           %Objects
-                ObjSDRuReceiver,...
-                ObjDetect,...
-                ObjPreambleDemod,...
-                ObjDataDemod,...
-                estimate,...         %Structs
-                tx,...
-                timeoutDuration,...  %Values/Vectors
-                messageBits...
-                );
-            
-            
-            if DebugFlag;fprintf('DL| Message=|%s|\n',Response);end
+            Response = PHY.Receive;
+            fprintf('DL| Message=|%s|\n',Response);
             if strcmp(Response, 'Timeout')
                 state = 1;
             elseif strcmp(Response,'CRC Error') || isempty(Response)
@@ -65,11 +39,10 @@ while 1
                     
         % Timeout occured    
         case 1
-            if DebugFlag;fprintf('DL| Timeout occured\n');end
+            disp('Timeout occured');
             timeouts = timeouts + 1;
             if timeouts > maxTimeouts
-                %if DebugFlag;fprintf('DL| Max timeouts reached\n');end
-                fprintf('DL| Max timeouts reached\n');
+                fprintf('Max timeouts reached\n');
                 Response = 'Timeout';
                 break;
             end
@@ -77,7 +50,7 @@ while 1
             
         % Message corrupted    
         case 2
-            if DebugFlag;fprintf('DL| Message corrupted\n');end
+            fprintf('DL| Message corrupted\n');
             %timeouts = timeouts + 1;
             state = 0;%Get another message
             

@@ -1,4 +1,3 @@
+% Generate Code
 
-% SDRU Codegen
-compilesdru('NodeReceiveOnly','mex');
-compilesdru('NodeTransmitOnly','mex');
+compilesdru('TOPNode','mex');

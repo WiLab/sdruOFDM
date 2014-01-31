@@ -1,4 +1,4 @@
-function [ Response ] = DLLayer(...
+function [ Response, previousMessage ] = DLLayer(...
     ObjAGC,...           %Objects
     ObjSDRuReceiver,...
     ObjDetect,...
@@ -7,7 +7,8 @@ function [ Response ] = DLLayer(...
     estimate,...         %Structs
     tx,...
     timeoutDuration,...  %Values/Vectors
-    messageBits...
+    messageBits,...
+    previousMessage...
     )
 
 % 0 = Call PHY Receiver
@@ -85,6 +86,17 @@ while 1
         case 3%otherwise
             %disp(['DL| MSG: ',Response])
             %disp(['DL| Timeouts: ',num2str(timeouts)])
+            
+            % Final Duplication check
+            if strcmp(previousMessage, Response)
+                %if DebugFlag;fprintf('DL| Duplicate Message\n');end
+                previousMessage = Response;%Update history for next iteration
+                fprintf('DL| Duplicate Message\n');
+                Response = 'Duplicate';%Tell upper layers duplicate
+            else
+                previousMessage = Response;%Update history for next iteration
+            end
+            
             break;
     end
     

@@ -11,17 +11,15 @@ function [ Response, previousMessage ] = DLLayer(...
     previousMessage...
     )
 
+
+DebugFlag = 0;
+
 % 0 = Call PHY Receiver
 % 1 = Timeout
 % 2 = Corrupt Message
 % 3 = Message Reception Successfull
 % Duplicates are checked at the last stage
 state = 0;% Initial state
-
-DebugFlag = 0;
-
-%coder.extrinsic('num2str','disp');
-
 timeouts = 0; % Counter
 maxTimeouts = 4;
 

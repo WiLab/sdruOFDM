@@ -54,7 +54,7 @@ ObjDetect = comm.CRCDetector([1 0 0 1], 'ChecksumsPerFrame',1);
 
 % Timeout info
 buffersPerSecond = (100e6/rx.DecimationFactor)/rx.receiveBufferLength;
-timeoutDuration = buffersPerSecond*1;
+timeoutDuration = floor(buffersPerSecond*0.1);
 
 % Soft decisions
 messageBits = zeros(numFrames,rx.messageCharacters*7+3);%3 for CRC

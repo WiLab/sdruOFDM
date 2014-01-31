@@ -12,7 +12,7 @@ function testPHYReceive
     tx,...
     timeoutDuration,...  %Values/Vectors
     messageBits...
-    ] = CreateTXRX;
+    ] = CreateTXRX_2;
 
 lookingForACK = 0;
 

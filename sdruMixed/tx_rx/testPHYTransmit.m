@@ -23,7 +23,9 @@ previousMessage = '';
 
 
 for run = 1 : 1e4
-    message = ['Random Message',char(96+run)];
+    %message = ['Random Message',char(96+run)];%Create different messages each times
+    message = ['Random Message'];%Dont create different messages each times
+    
     previousMessage = MACLayerTransmitter(...
         ObjAGC,...           %Objects
         ObjSDRuReceiver,...
@@ -40,8 +42,9 @@ for run = 1 : 1e4
         );
     
     %Wait some time
+    waitTime = 2e2; % Calculated in seconds buts thats far from realistic 
     fprintf('TOP| Waiting some time between actions\n');
-    Wait(ObjSDRuReceiver,tx.samplingFreq,1e4);
+    Wait(ObjSDRuReceiver,tx.samplingFreq,waitTime);
     
     
 end

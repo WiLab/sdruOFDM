@@ -1,5 +1,5 @@
 function [ObjAGC,ObjSDRuReceiver, ObjSDRuTransmitter, ObjDetect, ObjPreambleDemod, ObjDataDemod,...
-          estimate, tx, timeoutDuration, messageBits, desiredSamplingFrequency] = CreateTXRX
+          estimate, tx, timeoutDuration, messageBits, desiredSamplingFrequency] = CreateTXRX_2
 
 % System parameters to adjust because of hardware limitation
 numFrames = 1; % Frames to capture
@@ -29,8 +29,8 @@ receiveBufferLength = 5120;
 rx.DecimationFactor = USRPADCSamplingRate/rx.samplingFreq;
 
 %offsetCompensationValue = 0;
-offsetCompensationValue = -77148;% Get from calibration
-%offsetCompensationValue = 71289;% Get from calibration
+%offsetCompensationValue = -77148;% Get from calibration
+offsetCompensationValue = 71289;% Get from calibration
 
 % Sync Algorithms
 numFreqToAverage = 15; %Number of frequency estimates to be averaged together for frequency corrections (Higher==More stability, Lower==More responsiveness)

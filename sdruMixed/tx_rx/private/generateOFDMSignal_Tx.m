@@ -10,8 +10,10 @@ tx.FFTLength = 64;         % OFDM modulator FFT size
 tx.enableMA = enableMA;    % Enable moving averages for estimates
 
 % Message to transmit
-if length(inputPayloadMessage) < 77
-   payloadMessage = [inputPayloadMessage,'EOF',repmat('-',1,77 - length(inputPayloadMessage))];
+% message is 80 characters max, so extra 3 for EOF and 1 for uniqueID
+if length(inputPayloadMessage) < 76
+   uniqueID = char(randi([0 (2^7)-1],1,1));%Add additional character to differentiate messages
+   payloadMessage = [inputPayloadMessage,uniqueID,'EOF',repmat('-',1,76 - length(inputPayloadMessage))];
 end
 
 

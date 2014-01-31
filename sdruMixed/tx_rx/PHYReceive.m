@@ -9,7 +9,11 @@ function [recoveredMessage] = PHYReceive(...
                 timeoutDuration,...  %Values/Vectors
                 messageBits...
                 )
+            
+            
+%DEBUG
 DebugFlag = 0;
+%DEBUG
 
 estimate.numProcessed = 0; % # correct frames found
 lastFound = -2; %Flag for found frame, used for dup check

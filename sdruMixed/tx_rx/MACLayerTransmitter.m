@@ -32,9 +32,10 @@ function previousMessage = MACLayerTransmitter(...
 %     end
 % end
 
+maxRetries = 4;
 
 %% Spectrum clear, send message
-for tries = 1:4
+for tries = 1:maxRetries
     % Send message
     PHYTransmit(...
         ObjSDRuTransmitter,...

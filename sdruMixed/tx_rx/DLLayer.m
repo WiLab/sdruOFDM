@@ -15,6 +15,7 @@ function [ Response, previousMessage ] = DLLayer(...
 % 1 = Timeout
 % 2 = Corrupt Message
 % 3 = Message Reception Successfull
+% Duplicates are checked at the last stage
 state = 0;% Initial state
 
 DebugFlag = 0;
@@ -22,7 +23,7 @@ DebugFlag = 0;
 %coder.extrinsic('num2str','disp');
 
 timeouts = 0; % Counter
-maxTimeouts = 10;
+maxTimeouts = 4;
 
 % Message string holder
 coder.varsize('Response', [1, 80], [0 1]);
@@ -54,13 +55,13 @@ while 1
                 messageBits...
                 );
             
-            
-            if DebugFlag;fprintf('DL| Message=|%s|\n',Response);end
+            % Choose next state
+            if DebugFlag;fprintf('DL| Message=|%s|\n',Response(1:end-1));end
             if strcmp(Response, 'Timeout')
                 state = 1;
             elseif strcmp(Response,'CRC Error') || isempty(Response)
                 state = 2;
-            else
+            else% Successfully decoded
                 state = 3;
             end
                     
@@ -79,7 +80,7 @@ while 1
         % Message corrupted    
         case 2
             if DebugFlag;fprintf('DL| Message corrupted\n');end
-            %timeouts = timeouts + 1;
+            timeouts = timeouts + 0.01;
             state = 0;%Get another message
             
         % Default: Message successfully received    
@@ -88,13 +89,14 @@ while 1
             %disp(['DL| Timeouts: ',num2str(timeouts)])
             
             % Final Duplication check
-            if strcmp(previousMessage, Response)
+            if strcmp(previousMessage, Response)%Dupe
                 %if DebugFlag;fprintf('DL| Duplicate Message\n');end
-                previousMessage = Response;%Update history for next iteration
                 fprintf('DL| Duplicate Message\n');
-                Response = 'Duplicate';%Tell upper layers duplicate
-            else
                 previousMessage = Response;%Update history for next iteration
+                Response = 'Duplicate';%Tell upper layers duplicate
+            else%No Dupe
+                previousMessage = Response;%Update history for next iteration
+                Response = Response(1:end-1);%Remove identifer key
             end
             
             break;

@@ -14,6 +14,9 @@ numFrames = 30;%30     % Make larger to reduce underflow
 if length(inputPayloadMessage) < 76
    uniqueID = char(randi([0 (2^7)-1],1,1));%Add additional character to differentiate messages
    payloadMessage = [inputPayloadMessage,uniqueID,'EOF',repmat('-',1,76 - length(inputPayloadMessage))];
+else
+    fprintf('Message too long for transmission\n');
+    return;
 end
 %% Create Short Preamble
 shortPreamble = [ 0 0  1+1i 0 0 0  -1-1i 0 0 0 ... % [-27:-17]

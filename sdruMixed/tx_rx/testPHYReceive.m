@@ -20,10 +20,16 @@ lookingForACK = 0;
 coder.varsize('previousMessage', [1, 80], [0 1]);
 previousMessage = '';
 
+% Open file to save data
+coder.extrinsic('fopen','fwrite','fclose');
+filename = 'output.jpg';
+fid = fopen(filename);
+
+
 for run = 1 : 1e8
     
     %MAC
-    [~, previousMessage] = MACLayerReceiver(...
+    [message, previousMessage] = MACLayerReceiver(...
         ObjAGC,...           %Objects
         ObjSDRuReceiver,...
         ObjSDRuTransmitter,...
@@ -37,7 +43,13 @@ for run = 1 : 1e8
         lookingForACK,...
         previousMessage...
         );
-    
+    % Are we done?
+    if strcmp(message,'EOF')
+        fclose(fid);
+        break;
+    else
+        fwrite(fid,message);
+    end
     
 end
 

@@ -59,7 +59,11 @@ elseif strcmp(Response,'Duplicate')
         'ACK',...
         tx.samplingFreq...
         );
+    Response = '';%reset
+else
+    Response = '';%reset
 end
+
 
 
 end

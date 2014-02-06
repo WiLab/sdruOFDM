@@ -11,7 +11,7 @@ DebugFlag = 0;
 %% Create message bits
 % The output needs to be duplicated to long vectors to help prevent
 % Underflow for the USRP
-[~,~, dataToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage,samplingFreq);% 30 Dupe frames created (NOTE! author shouldcreate shorter simpler function)
+[~,~, frameToTx, ~ ] = generateOFDMSignal_TX2(inputPayloadMessage,samplingFreq);% 30 Dupe frames created (NOTE! author shouldcreate shorter simpler function)
 
 %% Run transmitter
 if DebugFlag
@@ -24,10 +24,14 @@ numFramesToTx = 10;%increasing value will help receiver
 % cleaning its buffer
 
 for framesTransmitted = 1:numFramesToTx
-    step(ObjSDRuTransmitter, dataToTx);
     
+    % Transmit data
+    step(ObjSDRuTransmitter, frameToTx);
+    
+    % Call used to prevent Overflow.  Essentially will clean up receive
+    % buffer, will be filled with crosstalk frames anyway
     %if mod(framesTransmitted,60) == 0
-    step(ObjSDRuReceiver);% Call used to prevent Overflow.  Essentially will clean up receive buffer, will be filled with crosstalk frames
+    step(ObjSDRuReceiver);
     %end
 end
 

@@ -20,11 +20,7 @@ lookingForACK = 0;
 coder.varsize('previousMessage', [1, 80], [0 1]);
 previousMessage = '';
 
-% Open file to save data
-coder.extrinsic('fopen','fwrite','fclose');
-filename = 'output.jpg';
-fid = fopen(filename);
-
+fileNum = 49;%char(49)=='1'
 
 for run = 1 : 1e8
     
@@ -43,12 +39,11 @@ for run = 1 : 1e8
         lookingForACK,...
         previousMessage...
         );
+    
     % Are we done?
-    if strcmp(message,'EOF')
-        fclose(fid);
-        break;
-    else
-        fwrite(fid,message);
+    if fileSink( message, ['/Users/travis/Git/sdruOFDM/sdruMixed/tx_rx/monet_hat',char(fileNum),'.jpg'] );
+        fileNum = fileNum + 1;
+        %break
     end
     
 end

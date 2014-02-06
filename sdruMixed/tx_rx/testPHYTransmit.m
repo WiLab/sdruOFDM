@@ -20,21 +20,17 @@ function testPHYTransmit
 % Previous Message string holder
 coder.varsize('previousMessage', [1, 80], [0 1]);
 previousMessage = '';
-message = char(zeros(1,70));
+charsPerPacket = 70;
+message = char(zeros(1,charsPerPacket));
 
-% Get file to tx
-data = fileSource2('/Users/travis/Git/sdruOFDM/sdruMixed/tx_rx/monet.jpg');
-packetBits = 70;
-% Pad data
-if mod(length(data),packetBits)>0
-   data = [data,'END',repmat('-',1,packetBits- 3 - mod(length(data),70))]; 
-end
+% Get data to transmit from file, output must be multiple of message size
+% fileSource also adds EOF stubs to determine end of file
+data = fileSource('/Users/travis/Git/sdruOFDM/sdruMixed/tx_rx/monet.jpg',charsPerPacket);
 
-
-for packet = 1:packetBits:length(data)
+for packet = 1:charsPerPacket:length(data)
 
     % Pull out message
-    message(1:70) = data(packet:packet+packetBits-1);
+    message(1:70) = data(packet:packet+charsPerPacket-1);
     
     %message = ['Random Message',char(96+run)];%Create different messages each times
     %message = ['Random Message|Random Message|Random Message|Random Message|Random Message'];%Dont create different messages each times

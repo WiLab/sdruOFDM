@@ -39,7 +39,8 @@ filelen = coder.ceval('ftell', f);
 coder.ceval('fseek', f, int32(0), coder.opaque('int', 'SEEK_SET'));
 
 % Initialize a buffer
-buffer = zeros(1,65536,'uint8');
+%buffer = zeros(1,2^20,'uint8');
+buffer = char(zeros(1,2^20));
 
 % Remaining is the number of bytes to read (from the file)
 remaining = filelen;

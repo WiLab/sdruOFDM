@@ -77,6 +77,7 @@ coder.ceval('fclose', f);
 
 data = char(buffer(1:index));
 
+
 end
 
 % Create a NUL terminated C string given a MATLAB string

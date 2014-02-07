@@ -25,7 +25,9 @@ message = char(zeros(1,charsPerPacket));
 
 % Get data to transmit from file, output must be multiple of message size
 % fileSource also adds EOF stubs to determine end of file
-data = fileSource('/Users/travis/Git/sdruOFDM/sdruMixed/tx_rx/monet.jpg',charsPerPacket);
+fprintf('REEEaaaaaaCCCHHH!!!!!\n');
+data = fileSource('monet.jpg',charsPerPacket);
+fprintf('REEEaaaaaaCCCHHH\n');
 
 for packet = 1:charsPerPacket:length(data)
 

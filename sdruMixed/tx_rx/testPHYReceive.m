@@ -41,11 +41,12 @@ for run = 1 : 1e8
         );
     
     % Are we done?
-    if fileSink( message, ['/Users/travis/Git/sdruOFDM/sdruMixed/tx_rx/monet_hat',char(fileNum),'.jpg'] );
+    if ~isempty(message)
+    if fileSink( message, ['monet_hat',char(fileNum),'.jpg'] );
         fileNum = fileNum + 1;
         %break
     end
-    
+    end
 end
 
 end

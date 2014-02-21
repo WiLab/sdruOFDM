@@ -42,8 +42,9 @@ for run = 1 : 1e4
         );
     
     %Wait some time
-    waitTime = 2e2; % Calculated in seconds buts thats far from realistic 
+    waitTime = .2e2; % Calculated in seconds buts thats far from realistic 
     fprintf('TOP| DONE Iteration: Waiting some time between actions\n');
+    fprintf('Transmitted: %d\n',int32(run));
     Wait(ObjSDRuReceiver,tx.samplingFreq,waitTime);
     
     

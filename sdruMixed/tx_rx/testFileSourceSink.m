@@ -23,6 +23,9 @@ end
 
 fprintf('Done: %d\n',int32(done));
 fprintf('Remember to compare output files with md5 or SHA\n');
+fprintf('Compare\n');
+fprintf('md5sum alice_org.txt\n');
+fprintf('md5sum alice_hat.txt\n');
 
 
 end

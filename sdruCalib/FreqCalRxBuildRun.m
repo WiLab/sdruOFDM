@@ -9,7 +9,7 @@ prmFreqCalibRx.ADCSampleRate     = 100e6;
 prmFreqCalibRx.Gain              = 30;
 prmFreqCalibRx.DecimationFactor  = 100;
 prmFreqCalibRx.FrameLength       = 4096;
-prmFreqCalibRx.TotalFrames       = 8000;
+prmFreqCalibRx.TotalFrames       = 80000;
 prmFreqCalibRx.RxSineFrequency   = bbRxFreq;
 prmFreqCalibRx.Fs                = prmFreqCalibRx.ADCSampleRate/...
                                    prmFreqCalibRx.DecimationFactor;
@@ -25,6 +25,7 @@ compilesdru('FreqCalRx','mex','-args',{coder.Constant(prmFreqCalibRx)})
 
 %Run
 offset = FreqCalRx_mex(prmFreqCalibRx);
+fprintf('True offset: %f\n',offset);
 
 % Write result to file
 fid = fopen('offset.val','wb');

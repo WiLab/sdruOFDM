@@ -1,5 +1,9 @@
-function testPHYReceive
+function testPHYReceive(nodeOffsetTable)
 
+assert(isstruct(nodeOffsetTable));
+assert(isstruct(nodeOffsetTable.Transmitter,'string'));
+assert(isstruct(nodeOffsetTable.Receiver,'string'));
+assert(isstruct(nodeOffsetTable.Offset,'double'));
 
 [...
     ObjAGC,...           %Objects

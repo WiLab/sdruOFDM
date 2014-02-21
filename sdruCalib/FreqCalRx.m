@@ -33,11 +33,11 @@ for iFrame = 1 : prmFreqCalibRx.TotalFrames
         offset = step(hCFO, rxSig);
         % Print the frequency offset compensation value in MATLAB command
         % window.
-        offsetCompensationValue = -offset;
-        fprintf('Offset: %f\n',offsetCompensationValue);
+        %offsetCompensationValue = -offset;
+        %%fprintf('Offset: %f\n',offsetCompensationValue);
         % Save offsets
         if offset ~= 0
-            offsets(index) = offset;
+            offsets(index) = -offset;
             index = index + 1;
         end
     end

@@ -1,10 +1,7 @@
-function testPHYReceive(nodeOffsetTable)
+function testPHYReceive(offsets, nodeNum)
 
-assert(isstruct(nodeOffsetTable));
-assert(isstruct(nodeOffsetTable.Transmitter,'string'));
-assert(isstruct(nodeOffsetTable.Receiver,'string'));
-assert(isstruct(nodeOffsetTable.Offset,'double'));
 
+% Create needed objects and structs
 [...
     ObjAGC,...           %Objects
     ObjSDRuReceiver,...
@@ -19,6 +16,9 @@ assert(isstruct(nodeOffsetTable.Offset,'double'));
     ] = CreateTXRX_2;
 
 lookingForACK = 0;
+
+tx.offsetTable = offsets;
+tx.nodeNum = nodeNum;
 
 % Previous Message string holder
 coder.varsize('previousMessage', [1, 80], [0 1]);

@@ -11,7 +11,7 @@ CenterFrequency = 2.24e9;
 [ ~, ~, ~, tx ] = generateOFDMSignal_TX2( 'UnimportantMessage', desiredSamplingFrequency);
 tx.samplingFreq = desiredSamplingFrequency;% Set desired frequeny
 tx.freqBin = tx.samplingFreq/tx.FFTLength;% Set frequency bin width
-
+tx.CenterFrequency = CenterFrequency;
 
 % Setup transmitter
 ObjSDRuTransmitter = comm.SDRuTransmitter('192.168.10.2', ...
@@ -28,8 +28,8 @@ receiveBufferLength = 5120;
 
 rx.DecimationFactor = USRPADCSamplingRate/rx.samplingFreq;
 
-%offsetCompensationValue = 0;
-offsetCompensationValue = -77148;% Get from calibration
+offsetCompensationValue = 0;
+%offsetCompensationValue = -77148;% Get from calibration
 %offsetCompensationValue = 71289;% Get from calibration
 
 % Sync Algorithms

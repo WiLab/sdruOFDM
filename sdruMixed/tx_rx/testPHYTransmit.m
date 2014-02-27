@@ -1,4 +1,4 @@
-function testPHYTransmit
+function testPHYTransmit(offsets, nodeNum)
 
 
 

@@ -4,6 +4,14 @@ hostnames = {'k9','badwolf','thedoctor'};%,'tyco'};
 
 Nodes = length(hostnames);
 
+% Change from hostnames to node #'s
+for i = 1:Nodes
+    disp([hostnames{i},' is reassigned to node#: ',num2str(i)]);
+end
+
+% Make table for other functions to use
+nodeTable_offsets = zeros(Nodes, Nodes);
+
 index = 0;
 
 for i = 1:Nodes
@@ -11,7 +19,7 @@ for i = 1:Nodes
     killFreqCalTX( hostnames{i} );
     
     % Start Transmitter on a given node
-    disp(['Starting transmitter on: ',hostnames{i}]);
+    disp(['Starting transmitter on node: ',num2str(i),' (',hostnames{i},')']);
     runFreqCalTX( hostnames{i} );
     
     % Cycle through reception nodes
@@ -23,7 +31,7 @@ for i = 1:Nodes
         end
         
         % Measure offset at give node
-        disp(['Starting receiver on: ',hostnames{j}]);
+        disp(['Starting receiver on node: ',num2str(j),' (',hostnames{j},')']);
         offset = runFreqCalRX( hostnames{j} );        
         
         % Save measurement
@@ -32,10 +40,12 @@ for i = 1:Nodes
         nodeTable(index).Receiver = hostnames{j};
         nodeTable(index).Offset = offset;
 
+        nodeTable_offsets(j,i) = offset;
+        
     end
     
     % Kill transmitter
-    disp(['Stopping transmitter on: ',hostnames{i}]);
+    disp(['Stopping transmitter on node: ',num2str(i),' (',hostnames{i},')']);
     killFreqCalTX( hostnames{i} );
     
 end
@@ -48,7 +58,7 @@ for i=1:length(nodeTable)
 end
 
 % Publish for other scripts to use
-save('offsets.mat','nodeTable');
+save('offsets.mat','nodeTable_offsets','hostnames');
 
 
 
